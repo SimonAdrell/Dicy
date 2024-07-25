@@ -1,13 +1,14 @@
-import { FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, useColorScheme } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { getPlayers, storage } from "./playerHandler";
 import NewPlayer from "./newPlayer";
 import { useEffect, useState } from "react";
 import { PlayerDto } from "./playerObject";
 import Player from "./player";
-import MaxiYatzy from "../../../screens/maxiYatzy/maxiYatzyScreen";
+import { RootStackParamList } from "../../../../App";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
-export default function PlayerPicker() {
+export default function PlayerPicker({ navigation }: Props) {
     const [players, setActivePlayers] = useState<Array<PlayerDto>>(getPlayers());
 
     useEffect(() => {
@@ -15,7 +16,6 @@ export default function PlayerPicker() {
             if (changedKey === 'players') {
                 setActivePlayers(getPlayers);
             }
-            console.log(changedKey);
         });
         return () => {
             listener.remove();
@@ -30,20 +30,22 @@ export default function PlayerPicker() {
                 </Text>
             </View>
             <View style={styles.playersWrapper}>
-                <FlatList data={[...Array.from(players), { plusImage: true, name: '', imageUrl: '', playerId: -1 }]} style={styles.players}
+                <FlatList
+                    data={[...Array.from(players), { plusImage: true, name: '', imageUrl: '', playerId: -1 }]}
+                    contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
                     renderItem={({ item }) => {
                         if (!item.plusImage) {
                             return <Player playerDto={item}></Player>;
                         }
                         return <NewPlayer></NewPlayer>;
                     }}
-                    keyExtractor={item => item.playerId.toString()} numColumns={3} columnWrapperStyle={{ gap: (10) }}
+                    keyExtractor={item => item.playerId.toString()}
                 />
             </View>
             <View style={styles.nextWrapper}>
                 <Pressable style={styles.nextButton} onPress={() => {
-                    return <MaxiYatzy></MaxiYatzy>
-                }}><Text style={styles.nextButtonText}>NEXT</Text></Pressable>
+                    navigation.navigate('MaxiYatzy')
+                }}><Text style={styles.nextButtonText}>Next</Text></Pressable>
             </View>
         </View>
     </SafeAreaView>
@@ -57,9 +59,8 @@ var styles = StyleSheet.create({
     wrapperContainer: {
         flex: 1,
         flexDirection: 'column',
-        rowGap: 10,
-        columnGap: 10,
-        paddingTop: 90
+        paddingTop: 90,
+        width: '100%'
     },
     sectionView: {
         flex: 1,
@@ -68,20 +69,19 @@ var styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 40,
         textAlign: 'center',
-        justifyContent: 'center', //Centered vertically
-        alignItems: 'center', //Centered horizontally
+        justifyContent: 'center',
+        alignItems: 'center',
         color: '#000'
     },
     playersWrapper: {
         flex: 6,
     },
     players: {
-        padding: 0,
+        padding: 10,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        columnGap: 10,
         flex: 1,
-        backgroundColor: 'aliceblue',
+        backgroundColor: 'green'
     },
     nextWrapper: {
         flex: 1,

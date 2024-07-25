@@ -1,7 +1,9 @@
-import { Image, Modal, PermissionsAndroid, Platform, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, Text, View } from "react-native";
 import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import * as ImagePicker from 'react-native-image-picker';
+import { Avatar } from "./PlayerAvatar";
+import { ImageOrVideo } from "react-native-image-crop-picker";
 
 export type AddUserModalProps = {
     name: string;
@@ -9,32 +11,19 @@ export type AddUserModalProps = {
     onSubmit: Function;
 };
 
-const options: ImagePicker.CameraOptions = {
-    mediaType: "photo",
-    saveToPhotos: true
-}
-
 export function AddUserModal({
     visible,
-    onSubmit,
-    name
+    onSubmit
 }: AddUserModalProps) {
     const [playerName, onChangePlayerName] = React.useState('');
     const [playerImage, OnChangePlayerImage] = React.useState<string>()
-    var handleCamerClick = () => {
-        ImagePicker.launchCamera(options, (response) => {
-            response.assets?.forEach((asset) => {
-                OnChangePlayerImage(asset.uri);
-                console.log(asset.uri);
-            })
-            console.log(response);
-        })
-    }
-
     const onSavePress = () => {
         onSubmit(playerName, playerImage);
-
-        name = playerName;
+        onChangePlayerName('');
+        OnChangePlayerImage('');
+    };
+    const onAvatarChange = (image: ImageOrVideo) => {
+        OnChangePlayerImage(image.path);
     };
 
     return <View >
@@ -47,14 +36,7 @@ export function AddUserModal({
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>Create player</Text>
                     <View style={styles.formView}>
-                        <Pressable style={styles.circleView} onPress={handleCamerClick}>
-                            {
-                                (playerImage === undefined) ? 
-                                    (<Text>Upload Image</Text>) :
-                                     (<Image source={{ uri: playerImage,}}
-                                resizeMode='contain'></Image>)
-                            }
-                            </Pressable>
+                        <Avatar onChange={onAvatarChange}></Avatar>
                         <TextInput placeholder="Name"
                             value={playerName} autoFocus={true} onChangeText={onChangePlayerName} style={styles.textInput}></TextInput>
                     </View>
@@ -96,9 +78,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    circleViewText: {
-
     },
     centeredView: {
         flex: 1,

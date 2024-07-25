@@ -10,7 +10,6 @@ export default function NewPlayer() {
         players = getPlayers();
     }
     function GetPlayerid(): number {
-        console.log(players);
         return players.length > 0 ? players.reduce(function (prev, current) {
             return (prev && prev.playerId > current.playerId) ? prev : current
         }).playerId + 1
@@ -20,7 +19,7 @@ export default function NewPlayer() {
     const onPress = () => setModalVisible(true);
 
 
-    return <Pressable onPress={onPress}>
+    return <Pressable onPress={onPress} style={styles.wrapper}>
         <View style={styles.container}>
             <View style={styles.wrapperContainer}>
                 <View style={styles.circleView}></View>
@@ -45,15 +44,17 @@ export default function NewPlayer() {
 }
 
 var styles = StyleSheet.create({
+    wrapper:{
+        padding:5
+    },
     container: {
-        height: 161,
-        width: 119,
         backgroundColor: '#EDE8E8',
         marginTop: 10,
         borderRadius: 10,
         borderStyle: 'dotted',
         borderColor: '#FFF',
         borderWidth: 3,
+        paddingBottom:20
     },
     wrapperContainer: {
         padding: 10,
@@ -61,8 +62,8 @@ var styles = StyleSheet.create({
         alignItems: 'center',
     },
     circleView: {
-        width: 70,
-        height: 70,
+        width: 80,
+        height: 80,
         backgroundColor: "#FDFDFD",
         borderRadius: 1000 // High value
     },

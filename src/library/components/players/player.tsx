@@ -1,15 +1,18 @@
 import { SafeAreaView, StyleSheet, View, Text, Pressable, Image } from "react-native";
 import { PlayerDto } from "./playerObject";
 import { getPlayers, setPlayer } from "./playerHandler";
+import { Avatar } from "./PlayerAvatar";
 type playerProps = {
     playerDto: PlayerDto
 };
 
 export default function Player(player: playerProps) {
-    return <SafeAreaView style={styles.container} key={player.playerDto.playerId} >
-        <View>
+    return <SafeAreaView style={styles.wrapper} key={player.playerDto.playerId} >
+        <View style={styles.container} >
             <View style={styles.wrapperContainer} >
-                <View style={styles.circleView}></View>
+                <View style={styles.circleView}>
+                    <Avatar src={player.playerDto.imageUrl}></Avatar>
+                </View>
                 <View>
                     <Text style={styles.sectionTitle}>
                         {player.playerDto.name}
@@ -17,16 +20,13 @@ export default function Player(player: playerProps) {
                 </View>
                 <Pressable style={styles.remove} onPress={() => {
                     var players = getPlayers();
-                    console.log(players);
                     const indexOfObject = players.findIndex((object) => {
                         return object.playerId === player.playerDto.playerId;
                     });
                     if (indexOfObject !== -1) {
                         players.splice(indexOfObject, 1);
                     }
-                    console.log(player.playerDto.playerId);
                     setPlayer(players);
-                    console.log(players);
                 }}>
                     <Text style={styles.removeText}>REMOVE</Text>
                 </Pressable>
@@ -36,9 +36,10 @@ export default function Player(player: playerProps) {
 }
 
 var styles = StyleSheet.create({
+    wrapper:{
+        padding:5
+    },
     container: {
-        height: 161,
-        width: 119,
         backgroundColor: '#FFFFFF',
         marginTop: 10,
         borderRadius: 10,
@@ -52,8 +53,8 @@ var styles = StyleSheet.create({
         alignItems: 'center',
     },
     circleView: {
-        width: 70,
-        height: 70,
+        width: 80,
+        height: 80,
         borderColor: '#FFC700',
         borderWidth: 1,
         backgroundColor: "#FDFDFD",
