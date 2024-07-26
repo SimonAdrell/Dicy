@@ -53,8 +53,8 @@ export default function MaxiYatzy({ navigation }: Props) {
                     return <Row onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? '#f1f8ff' : '#FFF'} />
                 })
             }
-            <BonusRow players={players} GameState={game.upper} backgroundColor={'#f1f8ff'}></BonusRow>
             <SumRow players={players} GameState={game.upper} backgroundColor={'#f1f8ff'} />
+            <BonusRow players={players} GameState={game.upper} backgroundColor={'#f1f8ff'}></BonusRow>
             {
                 game.middle.map((element, index) => {
                     return <Row onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? '#f1f8ff' : '#FFF'} />
@@ -69,18 +69,14 @@ export default function MaxiYatzy({ navigation }: Props) {
             }
         </ScrollView>
         <Button title="Show or hide total" onPress={() => setTotalVisibility(!totalVisibilty)}></Button>
-        <AddScoreModal players={players} name={gameStateName} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={()=> setScoreModalVisible(false)}></AddScoreModal>
+        <AddScoreModal players={players} name={gameStateName} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={() => setScoreModalVisible(false)}></AddScoreModal>
     </View>
 };
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-    head: { height: 40, backgroundColor: '#f1f8ff' },
-    wrapper: { flexDirection: 'row' },
     title: { flex: 1, textAlign: 'center', alignItems: 'center' },
     player: { flex: 1, textAlign: 'center', alignItems: 'center' },
     row: { height: 28, flex: 1 },
-    text: { textAlign: 'center' },
     headerRow: { flexDirection: 'row' },
-    upperGroup: { flex: 1 }
 });

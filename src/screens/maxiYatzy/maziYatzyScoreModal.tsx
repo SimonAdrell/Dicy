@@ -1,12 +1,10 @@
-import { Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { PlayerScore } from "./maxiYatzyGame";
-import { Component, useEffect, useState } from "react";
+import { useState } from "react";
 import { MiniAvatar } from "../../library/components/players/PlayerAvatar";
 import { PlayerDto } from "../../library/components/players/playerObject";
 import Modal from "react-native-modal";
-import { setPlayer } from "../../library/components/players/playerHandler";
-
-
+import React from "react";
 
 export type scoreModalProps = {
     name: string;
@@ -22,10 +20,12 @@ export function AddScoreModal(options: scoreModalProps) {
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const [scoreString, onChangeScore] = useState<string>('');
     const [player, onchnagePlayer] = useState<PlayerDto | undefined>(getPlayer(options.playerScore?.playerId));
+    const inputRef = React.useRef<TextInput | null>(null);
+    const [modalShown, setModalShown] = useState(false);
 
-    function getValidNumber(): number{
+    function getValidNumber(): number {
         var scoreNumber = Number(scoreString);
-        if (scoreNumber === undefined){
+        if (scoreNumber === undefined) {
             options.onExit(undefined, options.name);
             return -1;
         }
@@ -40,7 +40,7 @@ export function AddScoreModal(options: scoreModalProps) {
             return -1;
         }
 
-        if(isNaN(scoreNumber)){
+        if (isNaN(scoreNumber)) {
             options.onExit(undefined, options.name);
             return -1;
         }
@@ -48,71 +48,74 @@ export function AddScoreModal(options: scoreModalProps) {
     }
 
     const onSave = () => {
-
         var scoreNumber = getValidNumber();
-
         if (options.playerScore === undefined) {
             options.onExit(undefined, options.name);
             return;
         }
 
-
-
         var playerScore: PlayerScore = { isRemoved: isRemoved, score: undefined, playerId: options.playerScore?.playerId };
         playerScore.isRemoved = isRemoved;
-        if(scoreNumber > -1){
+        if (scoreNumber > -1) {
             playerScore.score = scoreNumber;
         }
         var isChanged: boolean = false;
-        if(options.playerScore.isRemoved != playerScore.isRemoved){
+        if (options.playerScore.isRemoved != playerScore.isRemoved) {
             isChanged = true;
         }
-        if(options.playerScore.score != playerScore.score){
+        if (options.playerScore.score != playerScore.score) {
             isChanged = true;
         }
-
-        console.log('isChanged:', isChanged);
-        console.log('oldScore:', options.playerScore);
-        console.log('newScore:', playerScore);
-        console.log('ScoreNumber', (scoreNumber > 0 ?  scoreNumber : undefined))
-        if(isChanged)
+        if (isChanged)
             options.onExit(playerScore, options.name);
 
         onChangeScore('');
         setIsEnabled(false);
         onchnagePlayer(undefined);
+
     }
 
     function getPlayer(playerId: number | undefined): PlayerDto | undefined {
         if (playerId === undefined) {
             return undefined;
         }
-
-        var player = options.players.filter(p => p.playerId === playerId).find(() => true);
-        return player;
+        return options.players.filter(p => p.playerId === playerId).find(() => true);
     }
 
     const onModalShow = () => {
+        setModalShown(true);
         onchnagePlayer(getPlayer(options.playerScore?.playerId));
-        if (options.playerScore?.score === undefined) {
-        } else {
+        if (options.playerScore?.score)
             onChangeScore(options.playerScore?.score.toLocaleString());
-        }
         setIsEnabled(options.playerScore?.isRemoved);
+        setTimeout(() => inputRef.current?.focus(), 100);
     }
 
+    const onModalWillHide = () => {
+        setModalShown(false);
+    }
     return <View >
         <Modal
             style={styles.modal}
             isVisible={options.visible}
-            onBackdropPress={() => options.hideModal()}
-            onModalShow={onModalShow}>
+            onBackdropPress={() => {
+                options.hideModal();
+            }}
+            onModalShow={onModalShow} onModalWillHide={onModalWillHide}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <View style={styles.modalText}><MiniAvatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></MiniAvatar><Text>{player === undefined ? undefined : player.name}</Text></View>
                     <Text style={styles.modalText}>{options.name}</Text>
                     <View style={styles.formView}>
-                        <TextInput autoFocus={true} placeholder="Score" value={scoreString} onChangeText={onChangeScore} keyboardType="number-pad" style={styles.textInput}></TextInput>
+                        {modalShown && (
+                            <TextInput autoFocus={true} ref={inputRef} value={scoreString} onChangeText={onChangeScore} keyboardType="number-pad" style={styles.textInput}></TextInput>
+                        )}
+                        {!modalShown && (
+                            <TextInput
+                                style={styles.textInput}
+                                onChangeText={onChangeScore}
+                            />
+                        )}
                     </View>
                     <View style={styles.formView}>
                         <Switch
@@ -149,17 +152,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         borderWidth: 2,
         paddingLeft: 10,
-    },
-    circleView: {
-        width: 80,
-        height: 80,
-        backgroundColor: "#E8E8E8",
-        borderRadius: 1000, // High value
-        borderColor: '#FFC700',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     centeredView: {
         flex: 1,
