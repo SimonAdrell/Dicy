@@ -50,7 +50,7 @@ export default function MaxiYatzy({ navigation }: Props) {
         <ScrollView>
             {
                 game.upper.map((element, index) => {
-                    return <Row  onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? '#f1f8ff' : '#FFF'} />
+                    return <Row onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? '#f1f8ff' : '#FFF'} />
                 })
             }
             <SumRow players={players} GameState={game.upper} backgroundColor={'#f1f8ff'} />
@@ -69,7 +69,7 @@ export default function MaxiYatzy({ navigation }: Props) {
             }
         </ScrollView>
         <Button title="Show or hide total" onPress={() => setTotalVisibility(!totalVisibilty)}></Button>
-        <AddScoreModal players={players} name={gameStateName} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={()=> setScoreModalVisible(false)}></AddScoreModal>
+        <AddScoreModal players={players} name={gameStateName} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={() => setScoreModalVisible(false)}></AddScoreModal>
     </View>
 };
 

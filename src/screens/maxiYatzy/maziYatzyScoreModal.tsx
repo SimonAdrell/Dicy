@@ -72,7 +72,6 @@ export function AddScoreModal(options: scoreModalProps) {
         onChangeScore('');
         setIsEnabled(false);
         onchnagePlayer(undefined);
-        // inputRef.current?.blur();
 
     }
 
@@ -90,7 +89,6 @@ export function AddScoreModal(options: scoreModalProps) {
             onChangeScore(options.playerScore?.score.toLocaleString());
         setIsEnabled(options.playerScore?.isRemoved);
         setTimeout(() => inputRef.current?.focus(), 100);
-        // Keyboard.isVisible();
     }
 
     const onModalWillHide = () => {
@@ -109,11 +107,9 @@ export function AddScoreModal(options: scoreModalProps) {
                     <View style={styles.modalText}><MiniAvatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></MiniAvatar><Text>{player === undefined ? undefined : player.name}</Text></View>
                     <Text style={styles.modalText}>{options.name}</Text>
                     <View style={styles.formView}>
-                        {/* TextInput_A only shows when modal fully mounted. Has autofocus. */}
                         {modalShown && (
                             <TextInput autoFocus={true} ref={inputRef} value={scoreString} onChangeText={onChangeScore} keyboardType="number-pad" style={styles.textInput}></TextInput>
                         )}
-                        {/* TextInput_A sits around and looks pretty in the meantime */}
                         {!modalShown && (
                             <TextInput
                                 style={styles.textInput}
