@@ -12,32 +12,25 @@ interface playerSum {
     playerId: number;
     Sum: number;
 }
-export default function SumTotalRow(row: rowProps) {
+
+export default function SumTotalRow({Game, backgroundColor, players}: rowProps) {
     var playerSumArray: playerSum[] = [];
-    row.players.forEach(player => {
+    players.forEach(player => {
 
         var upperScore: number = 0;
-
-        row.Game.upper.forEach(state => {
-            upperScore += state.PlayerScore
-                .filter(e => e.playerId == player.playerId)
-                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+        Game.upper.forEach(state => {
+            upperScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
         });
-        upperScore += (upperScore > 75 ? 100 : 0)
+        upperScore += (upperScore >= 75 ? 100 : 0)
         
         var middleScore: number = 0;
-        row.Game.middle.forEach(state => {
-            middleScore += state.PlayerScore
-                .filter(e => e.playerId == player.playerId)
-                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+        Game.middle.forEach(state => {
+            middleScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
         });
 
         var lowerScore: number = 0;
-
-        row.Game.lower.forEach(state => {
-            lowerScore += state.PlayerScore
-                .filter(e => e.playerId == player.playerId)
-                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+        Game.lower.forEach(state => {
+            lowerScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
         });
 
         var sum: number = upperScore + middleScore + lowerScore;
@@ -48,7 +41,7 @@ export default function SumTotalRow(row: rowProps) {
     });
 
 
-    return <View style={[styles.row, { backgroundColor: row.backgroundColor }]} >
+    return <View style={[styles.row, { backgroundColor: backgroundColor }]} >
         <Text style={styles.head}>Sum</Text>
         {
             playerSumArray.sort(e => e.playerId).map((element, index) => {
