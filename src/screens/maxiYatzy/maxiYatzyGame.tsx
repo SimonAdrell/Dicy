@@ -22,6 +22,23 @@ const upperNames = ['Ettor', 'Tvåor', 'Treor', 'Fyror', 'Femmor', 'Sexor'];
 const middleNames = ['1 par', '2 par', '3 par', 'Tretal', 'Fyrtal', 'Femtal', 'Liten stege', 'Stor stege', 'Full stege', 'Kåk', 'Hus', 'Torn', 'Chans'];
 const lowerNames = ['Maxi Yatzy'];
 
+
+function sumPlayersValidPoints(this: PlayerScore[], playerId : number) : number {
+    return this.filter(e => e.playerId == playerId && !e.isRemoved)
+        .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+}
+
+  // Declare the Extension
+declare global {
+    interface Array<T> {
+        sumPlayersValidPoints(playerId: number): number;
+    }
+  }
+
+Array.prototype.sumPlayersValidPoints = sumPlayersValidPoints;
+   
+
+
 function generateGameState(names: Array<string>, players: Array<PlayerDto>): Array<GameState> {
     var playerScores: Array<PlayerScore> = []
     players.forEach(element => {

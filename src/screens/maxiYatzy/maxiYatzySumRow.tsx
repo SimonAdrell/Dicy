@@ -33,7 +33,7 @@ export default function SumRow(row: rowProps) {
     return <View style={[styles.row, { backgroundColor: row.backgroundColor }]}>
         <Text style={styles.head}>Sum</Text>
         {
-            playerSumArray.sort(e => e.playerId).map((element, index) => {
+            playerSumArray.sort(e => e.playerId).map((element) => {
                 return <Text key={element.playerId.toLocaleString()} style={styles.text}>
                     {element.Sum.toLocaleString()}
                 </Text>
