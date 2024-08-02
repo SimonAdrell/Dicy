@@ -1,4 +1,4 @@
-import { Keyboard, Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { PlayerScore } from "./maxiYatzyGame";
 import { useState } from "react";
 import { MiniAvatar } from "../../library/components/players/PlayerAvatar";
@@ -16,63 +16,70 @@ export type scoreModalProps = {
 };
 
 export function AddScoreModal(options: scoreModalProps) {
-    const [isRemoved, setIsEnabled] = useState(options.playerScore?.isRemoved);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
+    const toggleSwitch = () => onEnabledChange(previousState => !previousState);
     const [scoreString, onChangeScore] = useState<string>('');
-    const [player, onchnagePlayer] = useState<PlayerDto | undefined>(getPlayer(options.playerScore?.playerId));
+    const [player, onChangePlayer] = useState<PlayerDto | undefined>(getPlayer(options.playerScore?.playerId));
     const inputRef = React.useRef<TextInput | null>(null);
     const [modalShown, setModalShown] = useState(false);
 
+    function clearModal() {
+        onEnabledChange(false);
+        onChangePlayer(undefined);
+        onChangeScore('');
+    }
+
+    function exitModal(playerScore: PlayerScore | undefined, name: string) {
+        options.onExit(playerScore, name);
+        clearModal();
+        options.hideModal();
+    }
+
     function getValidNumber(): number {
         var scoreNumber = Number(scoreString);
-        if (scoreNumber === undefined) {
-            options.onExit(undefined, options.name);
+        if (scoreNumber === undefined) 
             return -1;
-        }
 
-        if (scoreNumber === null) {
-            options.onExit(undefined, options.name);
+        if (scoreNumber === null) 
             return -1;
-        }
 
-        if (scoreNumber === 0) {
-            options.onExit(undefined, options.name);
+        if (scoreNumber === 0) 
             return -1;
-        }
 
-        if (isNaN(scoreNumber)) {
-            options.onExit(undefined, options.name);
+        if (isNaN(scoreNumber)) 
             return -1;
-        }
+            
         return scoreNumber;
     }
 
     const onSave = () => {
         var scoreNumber = getValidNumber();
         if (options.playerScore === undefined) {
-            options.onExit(undefined, options.name);
+            exitModal(undefined, options.name);
             return;
         }
-
         var playerScore: PlayerScore = { isRemoved: isRemoved, score: undefined, playerId: options.playerScore?.playerId };
         playerScore.isRemoved = isRemoved;
         if (scoreNumber > -1) {
             playerScore.score = scoreNumber;
         }
-        var isChanged: boolean = false;
-        if (options.playerScore.isRemoved != playerScore.isRemoved) {
-            isChanged = true;
-        }
-        if (options.playerScore.score != playerScore.score) {
-            isChanged = true;
-        }
+        var isChanged: boolean = checkIfPlayerScoreIsChanged(playerScore);
         if (isChanged)
-            options.onExit(playerScore, options.name);
+            exitModal(playerScore, options.name);
 
-        onChangeScore('');
-        setIsEnabled(false);
-        onchnagePlayer(undefined);
+        exitModal(undefined,options.name);
 
+    }
+
+    function checkIfPlayerScoreIsChanged(playerScore: PlayerScore) {
+        var isChanged: boolean = false;
+        if (options.playerScore?.isRemoved != playerScore.isRemoved) {
+            isChanged = true;
+        }
+        if (options.playerScore?.score != playerScore.score) {
+            isChanged = true;
+        }
+        return isChanged;
     }
 
     function getPlayer(playerId: number | undefined): PlayerDto | undefined {
@@ -84,22 +91,22 @@ export function AddScoreModal(options: scoreModalProps) {
 
     const onModalShow = () => {
         setModalShown(true);
-        onchnagePlayer(getPlayer(options.playerScore?.playerId));
+        onChangePlayer(getPlayer(options.playerScore?.playerId));
         if (options.playerScore?.score)
             onChangeScore(options.playerScore?.score.toLocaleString());
-        setIsEnabled(options.playerScore?.isRemoved);
+        onEnabledChange(options.playerScore?.isRemoved);
         setTimeout(() => inputRef.current?.focus(), 100);
     }
 
     const onModalWillHide = () => {
-        setModalShown(false);
+        exitModal(undefined, options.name);
     }
     return <View >
         <Modal
             style={styles.modal}
             isVisible={options.visible}
             onBackdropPress={() => {
-                options.hideModal();
+                exitModal(undefined, options.name);
             }}
             onModalShow={onModalShow} onModalWillHide={onModalWillHide}>
             <View style={styles.centeredView}>

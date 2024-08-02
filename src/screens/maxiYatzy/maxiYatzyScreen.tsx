@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RootStackParamList } from "../../../App";
 import React, { useState } from "react";
 import { getPlayers } from "../../library/components/players/playerHandler";
 import { PlayerDto } from "../../library/components/players/playerObject";
-import { Avatar, MiniAvatar } from "../../library/components/players/PlayerAvatar";
+import { MiniAvatar } from "../../library/components/players/PlayerAvatar";
 import { Game, generateNewGame, PlayerScore, updatePlayerGameScore } from "./maxiYatzyGame";
 import Row from "./maxiYatzyRow";
 import SumRow from "./maxiYatzySumRow";
