@@ -33,6 +33,7 @@ export function AddScoreModal(options: scoreModalProps) {
         options.onExit(playerScore, name);
         clearModal();
         options.hideModal();
+        setModalShown(false);
     }
 
     function getValidNumber(): number {
