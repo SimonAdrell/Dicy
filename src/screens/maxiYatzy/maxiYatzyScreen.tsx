@@ -4,7 +4,7 @@ import { RootStackParamList } from "../../../App";
 import React, { useState } from "react";
 import { getPlayers } from "../../library/components/players/playerHandler";
 import { PlayerDto } from "../../library/components/players/playerObject";
-import { MiniAvatar } from "../../library/components/players/PlayerAvatar";
+import { Avatar } from "../../library/components/players/PlayerAvatar";
 import { Game, generateNewGame, PlayerScore, updatePlayerGameScore } from "./maxiYatzyGame";
 import Row from "./maxiYatzyRow";
 import SumRow from "./maxiYatzySumRow";
@@ -43,7 +43,7 @@ export default function MaxiYatzy({ navigation }: Props) {
             <View style={styles.title}></View>
             {
                 game.players.sort(e => e.playerId).map((player, index) => {
-                    return <View key={player.playerId} style={[styles.player, { backgroundColor: (isActivePlayer(player) ? '#fff8f1' : '') }]}><MiniAvatar imageHeight={40} src={player.imageUrl}></MiniAvatar><Text>{player.name}</Text></View>
+                    return <View key={player.playerId} style={[styles.player, { backgroundColor: (isActivePlayer(player) ? '#fff8f1' : '') }]}><Avatar imageHeight={40} src={player.imageUrl}></Avatar><Text>{player.name}</Text></View>
                 })
             }
         </View>

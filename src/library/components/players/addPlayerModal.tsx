@@ -2,7 +2,7 @@ import { Modal, Pressable, Text, View } from "react-native";
 import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import * as ImagePicker from 'react-native-image-picker';
-import { Avatar } from "./PlayerAvatar";
+import { AvatarCreation } from "./PlayerAvatar";
 import { ImageOrVideo } from "react-native-image-crop-picker";
 
 export type AddUserModalProps = {
@@ -34,19 +34,21 @@ export function AddUserModal({
             visible={visible}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Create player</Text>
+                    <Text style={styles.modalText}>Add dicer</Text>
                     <View style={styles.formView}>
-                        <Avatar onChange={onAvatarChange}></Avatar>
+                        <AvatarCreation onChange={onAvatarChange}></AvatarCreation>
                         <TextInput placeholder="Name"
                             value={playerName} autoFocus={true} onChangeText={onChangePlayerName} style={styles.textInput}></TextInput>
                     </View>
-                    <View style={styles.saveView}>
-                        <Pressable onPress={onSavePress}><Text style={styles.saveText}>Save</Text></Pressable>
+                    <View style={styles.lowerView} >
+                        <View style={styles.saveView}>
+                            <Pressable onPress={onSavePress}><Text style={styles.saveText}>Save</Text></Pressable>
+                        </View>
                     </View>
-
                 </View>
 
             </View>
+
         </Modal>
     </View>;
 }
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         lineHeight: 32,
         marginTop: -6,
-        padding: 10
+        padding: 10,
     },
     textInput: {
         fontSize: 14,
@@ -84,12 +86,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 0,
+        padding: 20,
+    },
+    lowerView: {
+        backgroundColor: '#F7F7F7',
+        width: '100%',
+        padding: 10
     },
     modalView: {
-        margin: 20,
-        backgroundColor: '#F7F7F7',
         borderRadius: 20,
-        padding: 20,
+        backgroundColor: '#FFF',
+        width: '100%',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -102,19 +109,25 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 24,
+        marginTop: 15,
     },
     formView: {
         alignItems: 'center',
+        padding: 20,
     },
     saveView: {
-        alignItems: 'center',
+        alignItems: 'flex-end'
     },
     saveText: {
-        marginTop: 40,
+        marginTop: 10,
+        marginBottom: 10,
         fontSize: 18,
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 10,
-        backgroundColor: '#FFC700'
+        borderRadius: 100,
+        backgroundColor: '#FFC700',
+        fontWeight: 'bold'
     }
 });
