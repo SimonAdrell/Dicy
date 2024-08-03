@@ -74,6 +74,7 @@ var styles = StyleSheet.create({
         color: '#000'
     },
     playersWrapper: {
+        padding:20,
         flex: 6,
     },
     players: {
@@ -93,10 +94,11 @@ var styles = StyleSheet.create({
         padding: 10,
         paddingLeft: 80,
         paddingRight: 80,
-        borderRadius: 10,
+        borderRadius: 100,
         color: '#FFF'
     },
     nextButtonText: {
         fontSize: 18,
+        fontWeight:'bold'
     }
 });

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { PlayerScore } from "./maxiYatzyGame";
 import { useState } from "react";
-import { MiniAvatar } from "../../library/components/players/PlayerAvatar";
+import { Avatar } from "../../library/components/players/PlayerAvatar";
 import { PlayerDto } from "../../library/components/players/playerObject";
 import Modal from "react-native-modal";
 import React from "react";
@@ -112,7 +112,7 @@ export function AddScoreModal(options: scoreModalProps) {
             onModalShow={onModalShow} onModalWillHide={onModalWillHide}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <View style={styles.modalText}><MiniAvatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></MiniAvatar><Text>{player === undefined ? undefined : player.name}</Text></View>
+                    <View style={styles.modalText}><Avatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></Avatar><Text>{player === undefined ? undefined : player.name}</Text></View>
                     <Text style={styles.modalText}>{options.name}</Text>
                     <View style={styles.formView}>
                         {modalShown && (
