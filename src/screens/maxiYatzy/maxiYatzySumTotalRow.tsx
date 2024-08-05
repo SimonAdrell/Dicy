@@ -8,8 +8,8 @@ type rowProps = {
     players: PlayerDto[];
 }
 
-interface playerSum {
-    playerId: number;
+export interface playerSum {
+    player: PlayerDto;
     Sum: number;
 }
 
@@ -35,7 +35,7 @@ export default function SumTotalRow({Game, backgroundColor, players}: rowProps) 
 
         var sum: number = upperScore + middleScore + lowerScore;
         playerSumArray.push({
-            playerId: player.playerId,
+            player: player,
             Sum: sum
         })
     });
@@ -44,8 +44,8 @@ export default function SumTotalRow({Game, backgroundColor, players}: rowProps) 
     return <View style={[styles.row, { backgroundColor: backgroundColor }]} >
         <Text style={styles.head}>Sum</Text>
         {
-            playerSumArray.sort(e => e.playerId).map((element, index) => {
-                return <Text key={element.playerId.toLocaleString()} style={styles.text}>
+            playerSumArray.sort(e => e.player.playerId).map((element, index) => {
+                return <Text key={element.player.playerId.toLocaleString()} style={styles.text}>
                     {element.Sum.toLocaleString()}
                 </Text>
             })
