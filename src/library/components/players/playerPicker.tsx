@@ -1,20 +1,26 @@
 import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { getPlayers, storage } from "./playerHandler";
 import NewPlayer from "./newPlayer";
 import { useEffect, useState } from "react";
 import { PlayerDto } from "./playerObject";
 import Player from "./player";
 import { RootStackParamList } from "../../../../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import playerStorageHandler from "../../../screens/players/playerHandler";
+import { useGame } from "../../../Helpers/Game/gameContext";
+import gameHelper from "../../../Helpers/Game/gameHelper";
+import { gameType } from "../../../Helpers/Game/gameType";
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
 export default function PlayerPicker({ navigation }: Props) {
-    const [players, setActivePlayers] = useState<Array<PlayerDto>>(getPlayers());
+    const playerHandler = playerStorageHandler();
+    const { setGame, game } = useGame();
+    let gamingHelper = gameHelper(game);
 
+    const [players, setActivePlayers] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
     useEffect(() => {
-        const listener = storage.addOnValueChangedListener(changedKey => {
+        let listener = playerHandler.setListener((changedKey: string)=> {
             if (changedKey === 'players') {
-                setActivePlayers(getPlayers);
+                setActivePlayers(playerHandler.getPlayers());
             }
         });
         return () => {
@@ -22,20 +28,26 @@ export default function PlayerPicker({ navigation }: Props) {
         };
     }, []);
 
+    const savePlayersToGame = () => {
+        // if(game){
+        //     gamingHelper.setPlayers(players)
+        // }else{
+        //     gamingHelper.generateNewgame(gameType.maxiYatzy);
+        //     gamingHelper.setPlayers(players)
+        // }
+        setGame(gamingHelper.getGame());
+        navigation.navigate('MaxiYatzy')
+    }
+
     return <SafeAreaView style={styles.container} >
         <View style={styles.wrapperContainer}>
-            <View style={styles.sectionView}>
-                <Text style={styles.sectionTitle}>
-                    DICY PEOPLE
-                </Text>
-            </View>
             <View style={styles.playersWrapper}>
                 <FlatList
                     data={[...Array.from(players), { plusImage: true, name: '', imageUrl: '', playerId: -1 }]}
-                    contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
+                    contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", justifyContent:'space-evenly' }}
                     renderItem={({ item }) => {
                         if (!item.plusImage) {
-                            return <Player playerDto={item}></Player>;
+                            return <Player gamingHelper={gamingHelper} playerDto={item}></Player>;
                         }
                         return <NewPlayer></NewPlayer>;
                     }}
@@ -44,7 +56,7 @@ export default function PlayerPicker({ navigation }: Props) {
             </View>
             <View style={styles.nextWrapper}>
                 <Pressable style={styles.nextButton} onPress={() => {
-                    navigation.navigate('MaxiYatzy')
+                    savePlayersToGame();
                 }}><Text style={styles.nextButtonText}>Next</Text></Pressable>
             </View>
         </View>
@@ -74,8 +86,10 @@ var styles = StyleSheet.create({
         color: '#000'
     },
     playersWrapper: {
-        padding:20,
+        // paddingTop:40,
         flex: 6,
+        alignItems:'center',
+        alignSelf:'center',
     },
     players: {
         padding: 10,

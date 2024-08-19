@@ -1,41 +1,22 @@
 import { StyleSheet, Text, View } from "react-native"
-import { GameState } from "./maxiYatzyGame"
-import { PlayerDto } from "../../library/components/players/playerObject";
+import { gameHelperType } from "../../Helpers/Game/gameHelperType";
 
 type rowProps = {
-    GameState: GameState[],
     backgroundColor: string,
-    players: PlayerDto[];
+    GameHelper: gameHelperType
 }
 
-interface playerSum {
-    playerId: number;
-    Sum: number;
-}
-export default function BonusRow(row: rowProps) {
+export default function BonusRow({ backgroundColor, GameHelper }: rowProps) {
+    var game = GameHelper.getGame();
+    var playersScore = GameHelper.scoreHandler().getPlayersTotalScore(game.upper, undefined);
 
-    var playerSumArray: playerSum[] = [];
-    row.players.forEach(player => {
-        var sum: number = 0;
-        row.GameState.forEach(state => {
-            sum = sum + state.PlayerScore
-                .filter(e => e.playerId == player.playerId)
-                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
-
-        });
-        playerSumArray.push({
-            playerId: player.playerId,
-            Sum: sum
-        })
-    });
-
-    return <View style={[styles.row, { backgroundColor: row.backgroundColor }]}>
+    return <View style={[styles.row, { backgroundColor: backgroundColor }]}>
         <Text style={styles.head}>Bonus</Text>
         {
-            playerSumArray.sort(e => e.playerId).map((element) => {
-                return <View style={styles.cell} key={element.playerId}>
-                    <Text key={element.playerId.toLocaleString()} style={[styles.text, element.Sum >= 74 ? styles.done : {}]}>
-                        {element.Sum >= 75 ? 100 : ''}
+            playersScore.sort(e => e.player.playerId).map((element) => {
+                return <View style={styles.cell} key={element.player.playerId}>
+                    <Text key={element.player.playerId.toLocaleString()} style={[styles.text, element.score >= game.bonusScore ? styles.done : {}]}>
+                        {element.score >= game.bonusScore ? 100 : ''}
                     </Text>
                 </View>
             })

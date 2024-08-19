@@ -1,0 +1,144 @@
+import { PlayerDto } from "../../library/components/players/playerObject";
+import { Game } from "./Game";
+import { gameHelperType } from "./gameHelperType";
+import { GameScore, lowerNames, middleNamesYatzy, middleNamesMaxiYatzy, upperNames } from "./GameScore";
+import { GameState } from "./GameState";
+import { gameType } from "./gameType";
+import { PlayerScore } from "./PlayerScore";
+import { playerTotalScore } from "./playerTotalScore";
+import { scoreHandler } from "./scoreHandler";
+import { state } from "./state";
+
+const getBonus = (typeOfGame: gameType): number => {
+    let bonusScore: number = 75;
+    switch (typeOfGame) {
+        case gameType.maxiYatzy:
+            bonusScore = 75;
+            break;
+        case gameType.yatzy:
+            bonusScore = 63;
+            break;
+        default:
+            bonusScore = 75;
+            break;
+    }
+    return bonusScore;
+}
+
+const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
+    var playerScores: Array<PlayerScore> = []
+    players.forEach(element => {
+        playerScores.push({
+            player: element,
+            isRemoved: false,
+            score: undefined
+        })
+    });
+
+    var gameStates: Array<GameState> = [];
+    names.forEach(element => {
+        gameStates.push({ score: element, PlayerScore: playerScores })
+    });
+
+    return gameStates;
+}
+
+const UpdateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore): GameState[] => {
+    var newGameState: GameState[] = [];
+    gameState.forEach(element => {
+        if (element.score.name != scoreToBeUpdated.name) {
+            newGameState.push(element);
+            return;
+        }
+        const matchesPlayerId = (playerScore: PlayerScore) => playerScore.player.playerId == newPlayerScore.player.playerId
+        var indexOfMatchingScore = element.PlayerScore.findIndex(matchesPlayerId)
+        if (indexOfMatchingScore == -1) {
+            newGameState.push(element);
+            return;
+        }
+
+        var playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
+        playerScores.push(newPlayerScore);
+        newGameState.push({ score: element.score, PlayerScore: playerScores })
+    });
+    return newGameState;
+}
+
+const gameHelper = (game: Game | undefined): gameHelperType => {
+    let savedGame: Game;
+    if (game)
+        savedGame = game;
+    return {
+        generateNewgame(typeOfGame: gameType) {
+            savedGame = {
+                gameType: typeOfGame,
+                state: state.created,
+                bonusScore: getBonus(typeOfGame),
+            }
+            return savedGame;
+        },
+        setPlayers(players: PlayerDto[]) {
+            savedGame.upper = generateGameState(upperNames, players);
+            savedGame.middle = generateGameState(savedGame.gameType === gameType.yatzy ? middleNamesYatzy : middleNamesMaxiYatzy, players);
+            savedGame.lower = generateGameState(lowerNames, players);
+            savedGame.players = players;
+            savedGame.state = state.readyForGame;
+        },
+        getPlayers(): PlayerDto[] | undefined {
+            return savedGame.players;
+        },
+        getGame: () => {
+            return savedGame;
+        },
+        scoreHandler: (): scoreHandler => {
+            return {
+                updatePlayerScore: (scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
+                    if (savedGame.upper?.some(g => g.score.name === scoreToBeUpdated.name)) {
+                        savedGame.upper = UpdateGameState(savedGame.upper,scoreToBeUpdated,newPlayerScore);
+                        return savedGame;
+                    }
+                    if (savedGame.middle?.some(g => g.score.name === scoreToBeUpdated.name)){
+                        savedGame.middle = UpdateGameState(savedGame.middle,scoreToBeUpdated,newPlayerScore);
+                        return savedGame;
+                    }
+                    
+                    if (savedGame.lower?.some(g => g.score.name === scoreToBeUpdated.name)){
+                        savedGame.lower = UpdateGameState(savedGame.lower,scoreToBeUpdated,newPlayerScore);
+                        return savedGame;
+                    }
+                    return savedGame;
+                },
+                getPlayersTotalScore: (gameState: GameState[] | undefined, upperGameState: GameState[] | undefined): Array<playerTotalScore> => {
+                    var playerSumArray: playerTotalScore[] = [];
+                   
+                    savedGame.players?.forEach(player => {
+                        var totalScore: number = 0;
+                        if(upperGameState){
+                            var upperTotalScore: number = 0;
+                            upperGameState?.forEach(state => {
+                                upperTotalScore = upperTotalScore + state.PlayerScore
+                                    .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                                    .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+                            });
+                            upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
+                            totalScore += upperTotalScore;
+                        }
+                        gameState?.forEach(state => {
+                            totalScore = totalScore + state.PlayerScore
+                                .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+                        });
+                        playerSumArray.push({
+                            player: player,
+                            score: totalScore
+                        })
+                    });
+                    return playerSumArray;
+                }
+            }
+        },
+
+    }
+}
+
+export default gameHelper;

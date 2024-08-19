@@ -2,14 +2,20 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import { AddUserModal } from "./addPlayerModal";
 import { useState } from "react";
 import { PlayerDto } from "./playerObject";
-import { getPlayers, setPlayer } from "./playerHandler";
-import { Avatar, NewPlayerAvatar } from "./PlayerAvatar";
+import { NewPlayerAvatar } from "./PlayerAvatar";
+import playerStorageHandler from "../../../screens/players/playerHandler";
+import { useGame } from "../../../Helpers/Game/gameContext";
+import gameHelper from "../../../Helpers/Game/gameHelper";
+import { gameType } from "../../../Helpers/Game/gameType";
 export default function NewPlayer() {
     const [modalVisible, setModalVisible] = useState(false);
+    const playerHandler = playerStorageHandler();
+    const { setGame, game } = useGame();
     let players: PlayerDto[] = [];
-    if (Array.isArray(getPlayers())) {
-        players = getPlayers();
+    if (Array.isArray(playerHandler.getPlayers())) {
+        players = playerHandler.getPlayers();
     }
+    let gamingHelper = gameHelper(game);
     function GetPlayerid(): number {
         return players.length > 0 ? players.reduce(function (prev, current) {
             return (prev && prev.playerId > current.playerId) ? prev : current
@@ -23,7 +29,7 @@ export default function NewPlayer() {
     return <Pressable onPress={onPress} style={styles.wrapper}>
         <View style={styles.container}>
             <View style={styles.wrapperContainer}>
-                <NewPlayerAvatar imageHeight={80} style={{backgroundColor:'#FFF', opacity:0.6}}></NewPlayerAvatar>
+                <NewPlayerAvatar imageHeight={80} style={{ backgroundColor: '#FFF', opacity: 0.6 }}></NewPlayerAvatar>
                 <Pressable onPress={onPress}>
                     <Text style={styles.sectionTitle}>
                         ADD DICER
@@ -38,7 +44,14 @@ export default function NewPlayer() {
                 player.playerId = GetPlayerid();
                 player.imageUrl = imageUrl;
                 players.push(player);
-                setPlayer(players);
+                playerHandler.savePlayers(players);
+                if(game){
+                    gamingHelper.setPlayers(players)
+                }else{
+                    gamingHelper.generateNewgame(gameType.maxiYatzy);
+                    gamingHelper.setPlayers(players)
+                }
+                setGame(gamingHelper.getGame())
             }}></AddUserModal>
         </View>
     </Pressable>
@@ -55,7 +68,7 @@ var styles = StyleSheet.create({
         borderStyle: 'dotted',
         borderColor: '#FFF',
         borderWidth: 3,
-        padding:15,
+        padding: 15,
         paddingBottom: 50
     },
     wrapperContainer: {

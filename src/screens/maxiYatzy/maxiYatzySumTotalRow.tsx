@@ -1,52 +1,30 @@
 import { StyleSheet, Text, View } from "react-native"
-import { Game } from "./maxiYatzyGame"
-import { PlayerDto } from "../../library/components/players/playerObject";
+import { gameHelperType } from "../../Helpers/Game/gameHelperType";
+import { GameState } from "../../Helpers/Game/GameState";
 
 type rowProps = {
-    Game: Game,
     backgroundColor: string,
-    players: PlayerDto[];
+    GameHelper: gameHelperType
 }
 
-export interface playerSum {
-    player: PlayerDto;
-    Sum: number;
-}
+export default function SumTotalRow({backgroundColor, GameHelper}: rowProps) {
+    var game = GameHelper.getGame();
+    if(game.middle === undefined)
+        throw new Error("Game not set up correctly");
+    if(game.lower === undefined)
+        throw new Error("Game not set up correctly");
+    if(game.upper === undefined)
+        throw new Error("Game not set up correctly");
 
-export default function SumTotalRow({Game, backgroundColor, players}: rowProps) {
-    var playerSumArray: playerSum[] = [];
-    players.forEach(player => {
-
-        var upperScore: number = 0;
-        Game.upper.forEach(state => {
-            upperScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
-        });
-        upperScore += (upperScore >= 75 ? 100 : 0)
-        
-        var middleScore: number = 0;
-        Game.middle.forEach(state => {
-            middleScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
-        });
-
-        var lowerScore: number = 0;
-        Game.lower.forEach(state => {
-            lowerScore += state.PlayerScore.sumPlayersValidPoints(player.playerId);
-        });
-
-        var sum: number = upperScore + middleScore + lowerScore;
-        playerSumArray.push({
-            player: player,
-            Sum: sum
-        })
-    });
-
+    var scores: GameState[] = [...game.middle, ...game.lower]
+    var playersTotalScore = GameHelper.scoreHandler().getPlayersTotalScore(scores, game.upper);
 
     return <View style={[styles.row, { backgroundColor: backgroundColor }]} >
         <Text style={styles.head}>Sum</Text>
         {
-            playerSumArray.sort(e => e.player.playerId).map((element, index) => {
+            playersTotalScore.sort(e => e.player.playerId).map((element, index) => {
                 return <Text key={element.player.playerId.toLocaleString()} style={styles.text}>
-                    {element.Sum.toLocaleString()}
+                    {element.score.toLocaleString()}
                 </Text>
             })
         }

@@ -1,41 +1,21 @@
 import { StyleSheet, Text, View } from "react-native"
-import { GameState } from "./maxiYatzyGame"
-import { PlayerDto } from "../../library/components/players/playerObject";
+import { gameHelperType } from "../../Helpers/Game/gameHelperType";
 
 type rowProps = {
-    GameState: GameState[],
     backgroundColor: string,
-    players: PlayerDto[];
+    GameHelper: gameHelperType
 }
+export default function SumRow({ backgroundColor, GameHelper }: rowProps) {
+    var game = GameHelper.getGame();
+    var playersScore = GameHelper.scoreHandler().getPlayersTotalScore(game.upper, undefined);
 
-interface playerSum {
-    playerId: number;
-    Sum: number;
-}
-export default function SumRow(row: rowProps) {
-
-    var playerSumArray: playerSum[] = [];
-    row.players.forEach(player => {
-        var sum: number = 0;
-        row.GameState.forEach(state => {
-            sum = sum + state.PlayerScore
-                .filter(e => e.playerId == player.playerId)
-                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
-
-        });
-        playerSumArray.push({
-            playerId: player.playerId,
-            Sum: sum
-        })
-    });
-
-
-    return <View style={[styles.row, { backgroundColor: row.backgroundColor }]}>
+    return <View style={[styles.row, { backgroundColor: backgroundColor }]}>
         <Text style={styles.head}>Sum</Text>
         {
-            playerSumArray.sort(e => e.playerId).map((element) => {
-                return <View style={styles.cell} key={element.playerId}><Text key={element.playerId.toLocaleString()} style={styles.text}>
-                    {element.Sum.toLocaleString()}
+
+            playersScore.sort(e => e.player.playerId).map((element) => {
+                return <View style={styles.cell} key={element.player.playerId}><Text key={element.player.toLocaleString()} style={styles.text}>
+                    {element.score.toLocaleString()}
                 </Text></View>
             })
         }

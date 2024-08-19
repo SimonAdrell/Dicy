@@ -1,6 +1,8 @@
 import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View } from "react-native"
-import { GameState, PlayerScore } from "./maxiYatzyGame"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { PlayerScore } from "../../Helpers/Game/PlayerScore";
+import { GameState } from "../../Helpers/Game/GameState";
+import { GameScore } from "../../Helpers/Game/GameScore";
 
 type rowProps = {
     GameState: GameState,
@@ -8,17 +10,17 @@ type rowProps = {
     backgroundColor: string,
     doneCellStyle: StyleProp<TextStyle>,
     removedCellStyle: StyleProp<TextStyle>,
-    onPress: (playerScore: PlayerScore, name: string) => void
+    onPress: (playerScore: PlayerScore, scoreToBeUpdated: GameScore) => void
 }
 export default function Row(row: rowProps) {
     return <View style={[styles.row, { backgroundColor: row.backgroundColor }]} key={row.key}>
-        <Text style={styles.head}>{row.GameState.name}</Text>
+        <Text style={styles.head}>{row.GameState.score.name}</Text>
         {
-            row.GameState.PlayerScore.sort((a, b) => a.playerId - b.playerId).map((element) => {
+            row.GameState.PlayerScore.sort((a, b) => a.player.playerId - b.player.playerId).map((element) => {
                 const cellClick = () => {
-                    row.onPress(element, row.GameState.name)
+                    row.onPress(element, row.GameState.score)
                 }
-                return <TouchableOpacity key={element.playerId} style={[styles.cell, element.isRemoved ? row.removedCellStyle : element.score ? row.doneCellStyle : {}]} onPress={cellClick}>
+                return <TouchableOpacity key={element.player.playerId} style={[styles.cell, element.isRemoved ? row.removedCellStyle : element.score ? row.doneCellStyle : {}]} onPress={cellClick}>
                     {element.isRemoved ?
                         <Icon name='close' style={styles.removedIcon}></Icon>
                         :

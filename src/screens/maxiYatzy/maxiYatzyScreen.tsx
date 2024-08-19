@@ -2,42 +2,47 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RootStackParamList } from "../../../App";
 import { useState } from "react";
-import { getPlayers } from "../../library/components/players/playerHandler";
 import { PlayerDto } from "../../library/components/players/playerObject";
 import { Avatar } from "../../library/components/players/PlayerAvatar";
-import { Game, generateNewGame, PlayerScore, updatePlayerGameScore } from "./maxiYatzyGame";
 import Row from "./maxiYatzyRow";
 import SumRow from "./maxiYatzySumRow";
 import { AddScoreModal } from "./maziYatzyScoreModal";
 import SumTotalRow from "./maxiYatzySumTotalRow";
 import BonusRow from "./maxiYatzyBonusRow";
+import playerStorageHandler from "../players/playerHandler";
+import gameHelper from "../../Helpers/Game/gameHelper";
+import { PlayerScore } from "../../Helpers/Game/PlayerScore";
+import { useGame } from "../../Helpers/Game/gameContext";
+import { GameScore } from "../../Helpers/Game/GameScore";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MaxiYatzy'>;
 
 export default function MaxiYatzy({ navigation }: Props) {
-    const [players] = useState<Array<PlayerDto>>(getPlayers());
-    const [activePlayer] = useState<PlayerDto>();
-    const [game, setGame] = useState<Game>(generateNewGame(players));
+    const playerHandler = playerStorageHandler();
+    const [players] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
+    const { setGame, game } = useGame();
+
     const [scoreModalVisible, setScoreModalVisible] = useState(false);
     const [totalVisibilty, setTotalVisibility] = useState(false);
-    const [gameStateName, setGameStateName] = useState<string>('');
     const [currentPlayerScore, setCurrentPlayerSccore] = useState<PlayerScore>();
+    const [currentGameScore, setCurrentGameScore] = useState<GameScore>();
 
-    const onRowPress = (playerScore: PlayerScore, name: string) => {
+    const onRowPress = (playerScore: PlayerScore, scoreToBeUpdated: GameScore) => {
         setCurrentPlayerSccore(playerScore);
-        setGameStateName(name);
+        setCurrentGameScore(scoreToBeUpdated);
         setScoreModalVisible(!scoreModalVisible);
     };
+    let gamingHelper = gameHelper(game);
 
-    const updateGame = (playerScore: PlayerScore | undefined, name: string) => {
+    const updateGame = (playerScore: PlayerScore | undefined, scoreToBeUpdated: GameScore | undefined) => {
         setScoreModalVisible(!scoreModalVisible)
         if (playerScore === undefined)
             return;
-        setGame(updatePlayerGameScore(playerScore, name, game));
+        if(scoreToBeUpdated === undefined)
+            return;
+        
+        gamingHelper.scoreHandler().updatePlayerScore(scoreToBeUpdated, playerScore);
     }
-
-    const isActivePlayer = (player: PlayerDto) => player.playerId === activePlayer?.playerId
-
     const color1: string = '#FFF';
     const color2: string = '#F1F3F9';
 
@@ -45,8 +50,8 @@ export default function MaxiYatzy({ navigation }: Props) {
         <View style={styles.headerRow}>
             <View style={styles.title}></View>
             {
-                game.players.sort(e => e.playerId).map((player) => {
-                    return <View key={player.playerId} style={[styles.player, { backgroundColor: (isActivePlayer(player) ? '#fff8f1' : '') }]}>
+                game?.players?.sort(e => e.playerId).map((player) => {
+                    return <View key={player.playerId} style={[styles.player]}>
                         <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
                         <Text style={styles.playerName}>{player.name.toLocaleUpperCase()}</Text>
                     </View>
@@ -55,36 +60,36 @@ export default function MaxiYatzy({ navigation }: Props) {
         </View>
         <ScrollView style={styles.board}>
             {
-                game.upper.map((element, index) => {
+                game?.upper?.map((element, index) => {
                     return <Row onPress={onRowPress} GameState={element} key={index}
                         backgroundColor={index % 2 == 0 ? color1 : color2}
                         doneCellStyle={index % 2 == 0 ? styles.doneCell1 : styles.doneCell2}
                         removedCellStyle={index % 2 == 0 ? styles.removedCell1 : styles.removedCell2} />
                 })
             }
-            <SumRow players={players} GameState={game.upper} backgroundColor={'#fff8f1'} />
-            <BonusRow players={players} GameState={game.upper} backgroundColor={'#fff8f1'}></BonusRow>
+            <SumRow GameHelper={gamingHelper} backgroundColor={'#fff8f1'} />
+            <BonusRow GameHelper={gamingHelper} backgroundColor={'#fff8f1'}></BonusRow>
             {
-                game.middle.map((element, index) => {
+                game?.middle?.map((element, index) => {
                     return <Row onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? color1 : color2}
                         doneCellStyle={index % 2 == 0 ? styles.doneCell1 : styles.doneCell2}
                         removedCellStyle={index % 2 == 0 ? styles.removedCell1 : styles.removedCell2} />
                 })
             }
             {
-                game.lower.map((element, index) => {
+                game?.lower?.map((element, index) => {
                     return <Row onPress={onRowPress} GameState={element} key={index} backgroundColor={index % 2 == 0 ? color2 : color1}
                         doneCellStyle={index % 2 == 0 ? styles.doneCell1 : styles.doneCell2}
                         removedCellStyle={index % 2 == 0 ? styles.removedCell1 : styles.removedCell2} />
                 })
             }
-            {totalVisibilty && <SumTotalRow players={players} Game={game} backgroundColor="#fff8f1"></SumTotalRow>
+            {totalVisibilty && <SumTotalRow GameHelper={gamingHelper} backgroundColor="#fff8f1"></SumTotalRow>
             }
 
         </ScrollView>
         <TouchableOpacity style={{ backgroundColor: '#E9EDC9' }} onPress={() => { setTotalVisibility(!totalVisibilty) }}><Text style={styles.buttonstyle}>Show or hide total</Text></TouchableOpacity>
 
-        <AddScoreModal players={players} name={gameStateName} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={() => setScoreModalVisible(false)}></AddScoreModal>
+        <AddScoreModal players={players} scoreToBeUpdated={currentGameScore} playerScore={currentPlayerScore} visible={scoreModalVisible} onExit={updateGame} hideModal={() => setScoreModalVisible(false)}></AddScoreModal>
     </View>
 };
 

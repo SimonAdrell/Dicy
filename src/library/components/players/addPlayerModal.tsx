@@ -1,7 +1,6 @@
 import { Modal, Pressable, Text, View } from "react-native";
 import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
-import * as ImagePicker from 'react-native-image-picker';
 import { AvatarCreation } from "./PlayerAvatar";
 import { ImageOrVideo } from "react-native-image-crop-picker";
 

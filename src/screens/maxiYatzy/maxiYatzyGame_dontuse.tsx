@@ -1,15 +1,6 @@
+import { PlayerScore } from "../../Helpers/Game/PlayerScore";
+import { GameState } from "../../Helpers/Game/GameState";
 import { PlayerDto } from "../../library/components/players/playerObject";
-
-export interface PlayerScore {
-    isRemoved?: boolean ;
-    playerId: number;
-    score: number | undefined;
-}
-
-export interface GameState {
-    name: string;
-    PlayerScore: PlayerScore[];
-}
 
 export interface Game {
     players: PlayerDto[];
@@ -24,11 +15,10 @@ const lowerNames = ['Maxi Yatzy'];
 
 
 function sumPlayersValidPoints(this: PlayerScore[], playerId : number) : number {
-    return this.filter(e => e.playerId == playerId && !e.isRemoved)
+    return this.filter(e => e.player.playerId == playerId && !e.isRemoved)
         .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
 }
 
-  // Declare the Extension
 declare global {
     interface Array<T> {
         sumPlayersValidPoints(playerId: number): number;
@@ -37,21 +27,22 @@ declare global {
 
 Array.prototype.sumPlayersValidPoints = sumPlayersValidPoints;
    
-
-
-function generateGameState(names: Array<string>, players: Array<PlayerDto>): Array<GameState> {
+const generateGameState = (names: Array<string>, players: Array<PlayerDto>): Array<GameState> =>  {
     var playerScores: Array<PlayerScore> = []
+    
     players.forEach(element => {
         playerScores.push({
-            playerId: element.playerId,
+            player: element,
             isRemoved: false,
             score: undefined
         })
     });
+    
     var gameStates : Array<GameState> =[];
     names.forEach(element => {
         gameStates.push({name: element, PlayerScore: playerScores})
     });
+    
     return gameStates;
 }
 
@@ -84,16 +75,16 @@ function updateGameState(gameState: GameState[],newPlayerScore : PlayerScore, na
             newGameState.push(element);
             return;
         }
-        const matchesPlayerId = (playerScore: PlayerScore) => playerScore.playerId == newPlayerScore.playerId
+        const matchesPlayerId = (playerScore: PlayerScore) => playerScore.player.playerId == newPlayerScore.player.playerId
         var indexOfMatchingScore = element.PlayerScore.findIndex(matchesPlayerId)
         if(indexOfMatchingScore == -1){
             newGameState.push(element);
             return;
         }
 
-        var playerScores = element.PlayerScore.filter(e => e.playerId != newPlayerScore.playerId);
+        var playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
         playerScores.push(newPlayerScore);
         newGameState.push({name: element.name, PlayerScore: playerScores})
     });
-    return newGameState;   
+    return newGameState;
 }
