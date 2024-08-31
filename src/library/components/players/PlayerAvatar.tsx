@@ -3,7 +3,6 @@ import {
     Image, ImageProps as DefaultImageProps,
     ImageURISource
     , StyleSheet, TouchableOpacity,
-    Text,
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -42,7 +41,7 @@ export const AvatarCreation = (props: AvatarProps) => {
                     source={uri ? { uri } : props.source}
                 />
                 :
-                <Icon name='face-man' style={styles.avatar}></Icon>
+                <Icon name='emoticon-outline' style={styles.avatar}></Icon>
             }
 
         </TouchableOpacity>
@@ -58,7 +57,7 @@ export const Avatar = (props: AvatarProps) => {
             {...props}
             source={props.source}
         />:
-                <Icon name='face-man' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight },props.style]} ></Icon> 
+                <Icon name='emoticon-outline' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight },props.style]} ></Icon> 
             }
         </View>
 
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
         borderRadius: 1000, // High value
         borderColor: '#FFC700',
         borderStyle: 'solid',
-        borderWidth: 1,
+        borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
         borderRadius: 1000, // High value
         borderColor: '#FFC700',
         borderStyle: 'solid',
-        borderWidth: 1,
+        borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center'
     },

@@ -1,18 +1,21 @@
-import { Modal, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { AvatarCreation } from "./PlayerAvatar";
 import { ImageOrVideo } from "react-native-image-crop-picker";
+import Modal from "react-native-modal";
 
 export type AddUserModalProps = {
     name: string;
     visible: boolean;
     onSubmit: Function;
+    onBackdropPress: () => void
 };
 
 export function AddUserModal({
     visible,
-    onSubmit
+    onSubmit,
+    onBackdropPress
 }: AddUserModalProps) {
     const [playerName, onChangePlayerName] = React.useState('');
     const [playerImage, OnChangePlayerImage] = React.useState<string>()
@@ -27,10 +30,11 @@ export function AddUserModal({
 
     return <View >
         <Modal
-            animationType="slide"
+            animationIn="slideInUp"
             style={styles.modal}
-            transparent={true}
-            visible={visible}>
+            isVisible={visible}
+            onBackdropPress={onBackdropPress}
+        >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>Add dicer</Text>
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         lineHeight: 32,
         marginTop: -6,
-        padding: 10,
+        padding: 10
     },
     textInput: {
         fontSize: 14,
@@ -69,28 +73,19 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         paddingLeft: 10,
     },
-    circleView: {
-        width: 80,
-        height: 80,
-        backgroundColor: "#E8E8E8",
-        borderRadius: 1000, // High value
-        borderColor: '#FFC700',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
+    
     centeredView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 0,
-        padding: 20,
     },
     lowerView: {
         backgroundColor: '#F7F7F7',
         width: '100%',
-        padding: 10
+        padding: 10,
+        borderBottomEndRadius:20,
+        borderBottomStartRadius:20
     },
     modalView: {
         borderRadius: 20,

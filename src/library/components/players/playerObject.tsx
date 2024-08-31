@@ -3,4 +3,5 @@ export interface PlayerDto {
     imageUrl: string;
     playerId: number;
     plusImage: boolean;
+    currentScore: number;
   };

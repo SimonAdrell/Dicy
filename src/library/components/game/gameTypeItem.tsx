@@ -1,21 +1,26 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 type gameTypeItems = {
     gameName: string,
-    gameTag: string
+    gameTagLine: string,
+    IconName: string
     onSelected: () => void
 };
 
-export default function GameTypeItem({ onSelected, gameName, gameTag }: gameTypeItems) {
+export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag,IconName }: gameTypeItems) {
 
     return <View style={styles.container}>
         <TouchableOpacity style={styles.gameTypeActive}
             onPress={onSelected}>
             <View style={[styles.gameTypeItemWrapper]}>
-                <View>
-                    <Text style={styles.nextButtonText}>{gameName}</Text>
+                <View style={{flex:2, alignItems:'flex-start', justifyContent:'center'}}>
+                    {IconName && <Icon name={IconName} style={[{ fontSize: 32}]} ></Icon> }
                 </View>
-                <Text style={styles.gameTag}>{gameTag}</Text>
+                <View style={{flex:8}}>
+                    <Text style={styles.gameNameText}>{gameName}</Text>
+                    <Text style={styles.gameTagLineText}>{gameTag}</Text>
+                </View>
             </View>
         </TouchableOpacity>
     </View>
@@ -24,7 +29,7 @@ export default function GameTypeItem({ onSelected, gameName, gameTag }: gameType
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6db8ae',
+        backgroundColor: '#e8fefa',
         padding: 15,
         paddingBottom: 20,
         shadowColor: "#000",
@@ -34,34 +39,24 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        margin:20,
+        margin: 20,
         elevation: 5,
-        borderRadius:10,
-    },
-    text: {
-        color:'#e3f0ef',
-        fontSize: 42,
-        lineHeight: 84,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        borderRadius: 10,
     },
     gameTypeActive: {
         flex: 1,
     },
     gameTypeItemWrapper: {
+        flexDirection:'row',
         padding: 15,
         paddingBottom: 20,
     },
-    gameTypeItemInactive: {
-        flex: 1,
-        opacity: 0.5
-    },
-    nextButtonText: {
+    gameNameText: {
         fontSize: 20,
-        color:'#e3f0ef',
+        fontWeight: 'bold',
+        color: '#005b4f',
     },
-    gameTag:{
-        color:'#e3f0ef',
+    gameTagLineText: {
+        color: '#00aa98',
     }
 });
-

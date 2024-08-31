@@ -6,9 +6,12 @@ type rowProps = {
     GameHelper: gameHelperType
 }
 export default function SumRow({ backgroundColor, GameHelper }: rowProps) {
-    var game = GameHelper.getGame();
-    var playersScore = GameHelper.scoreHandler().getPlayersTotalScore(game.upper, undefined);
+    var playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
 
+    var playersTotalScore = GameHelper.getPlayers();
+    if (playersTotalScore === undefined) {
+        throw new Error('No players found');
+    }
     return <View style={[styles.row, { backgroundColor: backgroundColor }]}>
         <Text style={styles.head}>Sum</Text>
         {

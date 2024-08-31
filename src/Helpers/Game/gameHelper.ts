@@ -43,6 +43,45 @@ const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): 
     return gameStates;
 }
 
+const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined, upperGameState: GameState[] | undefined) => {
+    savedGame.players?.forEach(player => {
+        var totalScore: number = 0;
+        if (upperGameState) {
+            var upperTotalScore: number = 0;
+            upperGameState?.forEach(state => {
+                upperTotalScore = upperTotalScore + state.PlayerScore
+                    .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                    .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+            });
+            upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
+            totalScore += upperTotalScore;
+        }
+        gameState?.forEach(state => {
+            totalScore = totalScore + state.PlayerScore
+                .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+        });
+        player.currentScore = totalScore;
+    });
+}
+
+const updatePlayerScore  = (savedGame: Game, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
+
+    if (savedGame.upper?.some(g => g.score.name === scoreToBeUpdated.name)) {
+        savedGame.upper = UpdateGameState(savedGame.upper, scoreToBeUpdated, newPlayerScore);
+        return savedGame;
+    }
+    if (savedGame.middle?.some(g => g.score.name === scoreToBeUpdated.name)) {
+        savedGame.middle = UpdateGameState(savedGame.middle, scoreToBeUpdated, newPlayerScore);
+        return savedGame;
+    }
+
+    if (savedGame.lower?.some(g => g.score.name === scoreToBeUpdated.name)) {
+        savedGame.lower = UpdateGameState(savedGame.lower, scoreToBeUpdated, newPlayerScore);
+        return savedGame;
+    }
+}
+
 const UpdateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore): GameState[] => {
     var newGameState: GameState[] = [];
     gameState.forEach(element => {
@@ -56,7 +95,6 @@ const UpdateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScor
             newGameState.push(element);
             return;
         }
-
         var playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
         playerScores.push(newPlayerScore);
         newGameState.push({ score: element.score, PlayerScore: playerScores })
@@ -66,8 +104,9 @@ const UpdateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScor
 
 const gameHelper = (game: Game | undefined): gameHelperType => {
     let savedGame: Game;
-    if (game)
+    if (game) {
         savedGame = game;
+    }
     return {
         generateNewgame(typeOfGame: gameType) {
             savedGame = {
@@ -93,41 +132,34 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
         scoreHandler: (): scoreHandler => {
             return {
                 updatePlayerScore: (scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
-                    if (savedGame.upper?.some(g => g.score.name === scoreToBeUpdated.name)) {
-                        savedGame.upper = UpdateGameState(savedGame.upper,scoreToBeUpdated,newPlayerScore);
-                        return savedGame;
-                    }
-                    if (savedGame.middle?.some(g => g.score.name === scoreToBeUpdated.name)){
-                        savedGame.middle = UpdateGameState(savedGame.middle,scoreToBeUpdated,newPlayerScore);
-                        return savedGame;
-                    }
+                    if (savedGame.middle === undefined)
+                        throw new Error("Game not set up correctly");
+                    if (savedGame.lower === undefined)
+                        throw new Error("Game not set up correctly");
+                    if (savedGame.upper === undefined)
+                        throw new Error("Game not set up correctly");
                     
-                    if (savedGame.lower?.some(g => g.score.name === scoreToBeUpdated.name)){
-                        savedGame.lower = UpdateGameState(savedGame.lower,scoreToBeUpdated,newPlayerScore);
-                        return savedGame;
-                    }
+                    updatePlayerScore(savedGame,scoreToBeUpdated,newPlayerScore);
+                    var scores: GameState[] = [...savedGame.middle, ...savedGame.lower];
+                    updatePlayersScore(savedGame, scores, savedGame.upper);
                     return savedGame;
                 },
-                getPlayersTotalScore: (gameState: GameState[] | undefined, upperGameState: GameState[] | undefined): Array<playerTotalScore> => {
+                getPlayersUpperScore: (): Array<playerTotalScore> => {
+                    if (savedGame.upper === undefined)
+                        throw new Error("Game not set up correctly");
+
                     var playerSumArray: playerTotalScore[] = [];
                    
                     savedGame.players?.forEach(player => {
                         var totalScore: number = 0;
-                        if(upperGameState){
-                            var upperTotalScore: number = 0;
-                            upperGameState?.forEach(state => {
-                                upperTotalScore = upperTotalScore + state.PlayerScore
-                                    .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
-                                    .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
-                            });
-                            upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
-                            totalScore += upperTotalScore;
-                        }
-                        gameState?.forEach(state => {
-                            totalScore = totalScore + state.PlayerScore
+                        var upperTotalScore: number = 0;
+                        savedGame.upper?.forEach(state => {
+                            upperTotalScore = upperTotalScore + state.PlayerScore
                                 .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
                                 .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
                         });
+                        upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
+                        totalScore += upperTotalScore;
                         playerSumArray.push({
                             player: player,
                             score: totalScore

@@ -8,7 +8,7 @@ type rowProps = {
 
 export default function BonusRow({ backgroundColor, GameHelper }: rowProps) {
     var game = GameHelper.getGame();
-    var playersScore = GameHelper.scoreHandler().getPlayersTotalScore(game.upper, undefined);
+    var playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
 
     return <View style={[styles.row, { backgroundColor: backgroundColor }]}>
         <Text style={styles.head}>Bonus</Text>
