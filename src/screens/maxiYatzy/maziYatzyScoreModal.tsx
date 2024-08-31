@@ -1,25 +1,26 @@
 import { Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
-import { PlayerScore } from "./maxiYatzyGame";
 import { useState } from "react";
 import { Avatar } from "../../library/components/players/PlayerAvatar";
 import { PlayerDto } from "../../library/components/players/playerObject";
 import Modal from "react-native-modal";
 import React from "react";
+import { PlayerScore } from "../../Helpers/Game/PlayerScore";
+import { GameScore } from "../../Helpers/Game/GameScore";
 
 export type scoreModalProps = {
-    name: string;
+    scoreToBeUpdated: GameScore | undefined;
     playerScore: PlayerScore | undefined;
     visible: boolean;
     players: PlayerDto[],
     hideModal: () => void,
-    onExit: (playerScore: PlayerScore | undefined, name: string) => void
+    onExit: (playerScore: PlayerScore | undefined, scoreToBeUpdated: GameScore | undefined) => void
 };
 
 export function AddScoreModal(options: scoreModalProps) {
     const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
     const toggleSwitch = () => onEnabledChange(previousState => !previousState);
     const [scoreString, onChangeScore] = useState<string>('');
-    const [player, onChangePlayer] = useState<PlayerDto | undefined>(getPlayer(options.playerScore?.playerId));
+    const [player, onChangePlayer] = useState<PlayerDto | undefined>(getPlayer(options.playerScore?.player.playerId));
     const inputRef = React.useRef<TextInput | null>(null);
     const [modalShown, setModalShown] = useState(false);
 
@@ -29,8 +30,8 @@ export function AddScoreModal(options: scoreModalProps) {
         onChangeScore('');
     }
 
-    function exitModal(playerScore: PlayerScore | undefined, name: string) {
-        options.onExit(playerScore, name);
+    function exitModal(playerScore: PlayerScore | undefined, scoreToBeUpdated: GameScore | undefined) {
+        options.onExit(playerScore, scoreToBeUpdated);
         clearModal();
         options.hideModal();
         setModalShown(false);
@@ -56,19 +57,19 @@ export function AddScoreModal(options: scoreModalProps) {
     const onSave = () => {
         var scoreNumber = getValidNumber();
         if (options.playerScore === undefined) {
-            exitModal(undefined, options.name);
+            exitModal(undefined, options.scoreToBeUpdated);
             return;
         }
-        var playerScore: PlayerScore = { isRemoved: isRemoved, score: undefined, playerId: options.playerScore?.playerId };
+        var playerScore: PlayerScore = { isRemoved: isRemoved, score: undefined, player: options.playerScore?.player };
         playerScore.isRemoved = isRemoved;
         if (scoreNumber > -1) {
             playerScore.score = scoreNumber;
         }
         var isChanged: boolean = checkIfPlayerScoreIsChanged(playerScore);
         if (isChanged)
-            exitModal(playerScore, options.name);
+            exitModal(playerScore, options.scoreToBeUpdated);
 
-        exitModal(undefined,options.name);
+        exitModal(undefined,options.scoreToBeUpdated);
 
     }
 
@@ -92,7 +93,7 @@ export function AddScoreModal(options: scoreModalProps) {
 
     const onModalShow = () => {
         setModalShown(true);
-        onChangePlayer(getPlayer(options.playerScore?.playerId));
+        onChangePlayer(getPlayer(options.playerScore?.player.playerId));
         if (options.playerScore?.score)
             onChangeScore(options.playerScore?.score.toLocaleString());
         onEnabledChange(options.playerScore?.isRemoved);
@@ -100,20 +101,21 @@ export function AddScoreModal(options: scoreModalProps) {
     }
 
     const onModalWillHide = () => {
-        exitModal(undefined, options.name);
+        exitModal(undefined, options.scoreToBeUpdated);
     }
     return <View >
         <Modal
             style={styles.modal}
             isVisible={options.visible}
             onBackdropPress={() => {
-                exitModal(undefined, options.name);
+                exitModal(undefined, options.scoreToBeUpdated);
             }}
             onModalShow={onModalShow} onModalWillHide={onModalWillHide}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <View style={styles.modalText}><Avatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></Avatar><Text>{player === undefined ? undefined : player.name}</Text></View>
-                    <Text style={styles.modalText}>{options.name}</Text>
+                    <Text style={styles.modalText}>{options.scoreToBeUpdated?.name}</Text>
+                    <Text style={styles.tinyModalText}>Max: {options.scoreToBeUpdated?.topScore}</Text>
                     <View style={styles.formView}>
                         {modalShown && (
                             <TextInput autoFocus={true} ref={inputRef} value={scoreString} onChangeText={onChangeScore} keyboardType="number-pad" style={styles.textInput}></TextInput>
@@ -186,6 +188,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         fontSize: 28
+    },
+    tinyModalText: {
+        marginBottom: 15,
+        alignItems: 'center',
+        textAlign: 'center',
+        fontSize: 14
     },
     formView: {
         alignItems: 'center',

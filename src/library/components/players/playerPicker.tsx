@@ -1,20 +1,26 @@
-import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { getPlayers, storage } from "./playerHandler";
+import { Alert, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import NewPlayer from "./newPlayer";
 import { useEffect, useState } from "react";
 import { PlayerDto } from "./playerObject";
 import Player from "./player";
 import { RootStackParamList } from "../../../../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import playerStorageHandler from "../../../screens/players/playerHandler";
+import { useGame } from "../../../Helpers/Game/gameContext";
+import gameHelper from "../../../Helpers/Game/gameHelper";
+import PlayerList from "./playerList";
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
 export default function PlayerPicker({ navigation }: Props) {
-    const [players, setActivePlayers] = useState<Array<PlayerDto>>(getPlayers());
+    const playerHandler = playerStorageHandler();
+    const { setGame, game } = useGame();
+    let gamingHelper = gameHelper(game);
 
+    const [players, setActivePlayers] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
     useEffect(() => {
-        const listener = storage.addOnValueChangedListener(changedKey => {
+        let listener = playerHandler.setListener((changedKey: string) => {
             if (changedKey === 'players') {
-                setActivePlayers(getPlayers);
+                setActivePlayers(playerHandler.getPlayers());
             }
         });
         return () => {
@@ -22,29 +28,24 @@ export default function PlayerPicker({ navigation }: Props) {
         };
     }, []);
 
+    const savePlayersToGame = () => {
+        if (gamingHelper.getPlayers()?.length) {
+            setGame(gamingHelper.getGame());
+            navigation.navigate('MaxiYatzy')
+        } else {
+            Alert.alert('Välj spelare');
+        }
+    }
+
     return <SafeAreaView style={styles.container} >
         <View style={styles.wrapperContainer}>
-            <View style={styles.sectionView}>
-                <Text style={styles.sectionTitle}>
-                    DICY PEOPLE
-                </Text>
-            </View>
             <View style={styles.playersWrapper}>
-                <FlatList
-                    data={[...Array.from(players), { plusImage: true, name: '', imageUrl: '', playerId: -1 }]}
-                    contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
-                    renderItem={({ item }) => {
-                        if (!item.plusImage) {
-                            return <Player playerDto={item}></Player>;
-                        }
-                        return <NewPlayer></NewPlayer>;
-                    }}
-                    keyExtractor={item => item.playerId.toString()}
-                />
+                <PlayerList players={players} gamingHelper={gamingHelper}></PlayerList>
             </View>
+            <NewPlayer></NewPlayer>
             <View style={styles.nextWrapper}>
                 <Pressable style={styles.nextButton} onPress={() => {
-                    navigation.navigate('MaxiYatzy')
+                    savePlayersToGame();
                 }}><Text style={styles.nextButtonText}>Next</Text></Pressable>
             </View>
         </View>
@@ -54,7 +55,14 @@ export default function PlayerPicker({ navigation }: Props) {
 var styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F1F3F9'
+        backgroundColor: '#6db8ae'
+    },
+    title: {
+        fontSize: 32,
+    },
+    row: {
+        flex: 1,
+        justifyContent: "space-evenly"
     },
     wrapperContainer: {
         flex: 1,
@@ -62,27 +70,8 @@ var styles = StyleSheet.create({
         paddingTop: 90,
         width: '100%'
     },
-    sectionView: {
-        flex: 1,
-        width: '100%',
-    },
-    sectionTitle: {
-        fontSize: 40,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: '#000'
-    },
     playersWrapper: {
-        padding:20,
         flex: 6,
-    },
-    players: {
-        padding: 10,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        flex: 1,
-        backgroundColor: 'green'
     },
     nextWrapper: {
         flex: 1,
@@ -99,6 +88,6 @@ var styles = StyleSheet.create({
     },
     nextButtonText: {
         fontSize: 18,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     }
 });

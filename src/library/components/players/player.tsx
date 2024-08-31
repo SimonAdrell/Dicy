@@ -1,86 +1,164 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, TouchableOpacity, ViewProps, Alert } from "react-native";
 import { PlayerDto } from "./playerObject";
-import { getPlayers, setPlayer } from "./playerHandler";
 import { Avatar } from "./PlayerAvatar";
-type playerProps = {
-    playerDto: PlayerDto
+import playerStorageHandler from "../../../screens/players/playerHandler";
+import { gameHelperType } from "../../../Helpers/Game/gameHelperType";
+import { gameType } from "../../../Helpers/Game/gameType";
+import { useState } from "react";
+import ConfirmDialog from "react-native-simple-dialogs/dist/ConfirmDialog";
+interface playerProps extends ViewProps {
+    playerDto: PlayerDto,
+    gamingHelper: gameHelperType,
 };
 
-export default function Player({ playerDto }: playerProps) {
+export default function Player(props: playerProps) {
+    const playerHandler = playerStorageHandler();
 
-    return <SafeAreaView style={styles.wrapper} key={playerDto.playerId} >
-        <View style={styles.container} >
-            <View style={styles.wrapperContainer} >
-                <View >
-                    <Avatar src={playerDto.imageUrl} imageHeight={80}></Avatar>
-                </View>
-                <View>
+    const playerIsGaming = (): boolean => {
+        let players = props.gamingHelper.getPlayers();
+        if (players) {
+            return players.filter(e => e.playerId === props.playerDto.playerId).length > 0
+        }
+        return false;
+    }
+
+    const [playerIsActiveGaming, setPlayersIsGaming] = useState<boolean>(playerIsGaming());
+    const [confirmDialogVisible, setConfirmDialogVisible] = useState<boolean>(false);
+    const removePlayerFromGame = () => {
+        let players = props.gamingHelper.getPlayers();
+        if (players) {
+            const indexOfObject = players.findIndex((object) => {
+                return object.playerId === props.playerDto.playerId;
+            });
+            if (indexOfObject !== -1) {
+                players.splice(indexOfObject, 1);
+            }
+            updatePlayers(players);
+        }
+        setPlayersIsGaming(false);
+    }
+
+    const addPlayerToGame = () => {
+        let players = props.gamingHelper.getPlayers();
+        if (players) {
+            players?.push(props.playerDto);
+            updatePlayers(players);
+        } else {
+            players = new Array<PlayerDto>();
+            players.push(props.playerDto);
+            updatePlayers(players);
+        }
+
+        setPlayersIsGaming(true);
+    }
+
+    const updatePlayers = (players: PlayerDto[]) => {
+        if (props.gamingHelper.getGame()) {
+            props.gamingHelper.setPlayers(players)
+        } else {
+            props.gamingHelper.generateNewgame(gameType.maxiYatzy);
+            props.gamingHelper.setPlayers(players)
+        }
+    }
+
+    const togglePlayerToGame = () => {
+        if (playerIsGaming()) {
+            removePlayerFromGame();
+            return;
+        }
+        addPlayerToGame();
+        return;
+    }
+
+    const deletePlayer = () => {
+        var players = playerHandler.getPlayers();
+        const indexOfObject = players.findIndex((object) => {
+            return object.playerId === props.playerDto.playerId;
+        });
+        if (indexOfObject !== -1) {
+            players.splice(indexOfObject, 1);
+        }
+        playerHandler.savePlayers(players);
+    }
+
+    return <TouchableOpacity style={[styles.container, playerIsActiveGaming ? styles.containerShadow : { shadowColor: "#000" }]} key={props.playerDto.playerId} onPress={() => { togglePlayerToGame() }} onLongPress={() => { setConfirmDialogVisible(true) }}>
+        <View  {...props} style={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+            <View style={{ flex: 1, alignContent: 'center', marginLeft: 5 }}>
+                <Avatar src={props.playerDto.imageUrl} imageHeight={65}></Avatar>
+            </View>
+            <View style={{ flex: 1, flexDirection: 'column' }}>
+                <View style={{ flex: 1, padding: 5, marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={styles.sectionTitle}>
-                        {playerDto.name}
+                        {props.playerDto.name}
                     </Text>
                 </View>
-                <Pressable style={styles.remove} onPress={() => {
-                    var players = getPlayers();
-                    const indexOfObject = players.findIndex((object) => {
-                        return object.playerId === playerDto.playerId;
-                    });
-                    if (indexOfObject !== -1) {
-                        players.splice(indexOfObject, 1);
-                    }
-                    setPlayer(players);
-                }}>
-                    <Text style={styles.removeText}>REMOVE</Text>
-                </Pressable>
             </View>
+            <ConfirmDialog
+                title="Delete player"
+                message="Are you sure about that?"
+                visible={confirmDialogVisible}
+                onTouchOutside={() => { setConfirmDialogVisible(false) }}
+                positiveButton={{
+                    title: "YES",
+                    onPress: () => deletePlayer()
+                }}
+                negativeButton={{
+                    title: "NO",
+                    onPress: () => setConfirmDialogVisible(false)
+                }} onRequestClose={() => setConfirmDialogVisible(false)} contentInsetAdjustmentBehavior={undefined} />
+
         </View>
-    </SafeAreaView>
+    </TouchableOpacity>
 }
 
-var styles = StyleSheet.create({
-    wrapper: {
-        padding: 5
-    },
+const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
-        marginTop: 10,
-        borderRadius: 10,
-        borderStyle: 'solid',
-        borderColor: '#FFC700',
-        borderWidth: 1,
+        flex: 1,
+        backgroundColor: '#e8fefa',
         padding: 15,
         paddingBottom: 20,
-        shadowColor: "#000",
+        margin: 5,
+        borderRadius: 10,
+        height: 130,
+        opacity: 0.8
+    },
+    containerShadow: {
+        shadowColor: "#000000",
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 15,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOpacity: 0.24,
+        shadowRadius: 16.41,
+        elevation: 20,
+        opacity: 1
     },
-    wrapperContainer: {
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+    gameTypeActive: {
+        flex: 1,
     },
-    sectionTitle: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: "#000000",
-        opacity: 49,
-        marginTop: 10,
+    gameTypeItemWrapper: {
+        flexDirection: 'row',
+        padding: 15,
+        paddingBottom: 20,
+    },
+    gameNameText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#005b4f',
+    },
+    gameTagLineText: {
+        color: '#00aa98',
     },
     remove: {
-        backgroundColor: '#FF4800',
+        backgroundColor: '#ffa17a',
         borderRadius: 10,
-        padding: 6,
-        paddingLeft: 20,
-        paddingRight: 20,
-        marginTop: 10
+        padding: 2,
+        paddingLeft: 15,
+        paddingRight: 15,
     },
-    removeText: {
-        fontSize: 10,
-        color: '#FFFFFF',
-        fontFamily: 'Inter'
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#005b4f',
     }
 });
