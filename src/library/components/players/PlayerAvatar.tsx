@@ -8,6 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { sharedStyle } from '../../style/sharedStyle';
 
 type ImageProps = DefaultImageProps & {
     source?: ImageURISource;
@@ -57,7 +58,7 @@ export const Avatar = (props: AvatarProps) => {
             {...props}
             source={props.source}
         />:
-                <Icon name='emoticon-outline' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight },props.style]} ></Icon> 
+                <Icon name='emoticon-outline' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight },props.style, sharedStyle.darkFontColor]} ></Icon> 
             }
         </View>
 
@@ -73,7 +74,7 @@ export const NewPlayerAvatar = (props: AvatarProps) => {
             {...props}
             source={props.source}
         />:
-                <Icon name='plus' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight, fontWeight:'light' },props.style]} ></Icon> 
+                <Icon name='plus' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight, fontWeight:'light' },props.style, sharedStyle.darkFontColor]} ></Icon> 
             }
         </View>
 
@@ -90,7 +91,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderWidth: 2,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        color: sharedStyle.darkFontColor.color
     },
     miniAvatar: {
         width: 20,

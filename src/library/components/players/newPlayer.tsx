@@ -7,6 +7,7 @@ import playerStorageHandler from "../../../screens/players/playerHandler";
 import { useGame } from "../../../Helpers/Game/gameContext";
 import gameHelper from "../../../Helpers/Game/gameHelper";
 import { gameType } from "../../../Helpers/Game/gameType";
+import { sharedStyle } from "../../style/sharedStyle";
 export default function NewPlayer() {
     const [modalVisible, setModalVisible] = useState(false);
     const playerHandler = playerStorageHandler();
@@ -44,7 +45,7 @@ export default function NewPlayer() {
     return <TouchableOpacity onPress={onPress}>
         <View style={styles.container}>
             <View style={styles.wrapperContainer}>
-                <NewPlayerAvatar imageHeight={60} style={{borderWidth:0}} ></NewPlayerAvatar>
+                <NewPlayerAvatar imageHeight={60} style={[{borderWidth:0}]} ></NewPlayerAvatar>
             </View>
             <AddUserModal name="Add user" visible={modalVisible} onSubmit={onPlayerSubmit}
                 onBackdropPress={() => { setModalVisible(false) }}></AddUserModal>
