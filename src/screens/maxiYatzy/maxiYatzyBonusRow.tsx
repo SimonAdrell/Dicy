@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native"
 import { gameHelperType } from "../../Helpers/Game/gameHelperType";
+import { sortPlayerScores } from "../../Helpers/Player/PlayerHelper";
 
 type rowProps = {
     backgroundColor: string,
@@ -13,7 +14,7 @@ export default function BonusRow({ backgroundColor, GameHelper }: rowProps) {
     return <View style={[styles.row, { backgroundColor: backgroundColor }]}>
         <Text style={styles.head}>Bonus</Text>
         {
-            playersScore.sort(e => e.player.playerId).map((element) => {
+            playersScore.sort(sortPlayerScores).map((element) => {
                 return <View style={styles.cell} key={element.player.playerId}>
                     <Text key={element.player.playerId.toLocaleString()} style={[styles.text, element.score >= game.bonusScore ? styles.done : {}]}>
                         {element.score >= game.bonusScore ? 100 : ''}

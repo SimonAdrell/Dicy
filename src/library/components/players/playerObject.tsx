@@ -4,4 +4,5 @@ export interface PlayerDto {
     playerId: number;
     plusImage: boolean;
     currentScore: number;
+    order: number | undefined;
   };

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native"
 import { gameHelperType } from "../../Helpers/Game/gameHelperType";
+import { sortPlayerScores } from "../../Helpers/Player/PlayerHelper";
 
 type rowProps = {
     backgroundColor: string,
@@ -16,7 +17,7 @@ export default function SumRow({ backgroundColor, GameHelper }: rowProps) {
         <Text style={styles.head}>Sum</Text>
         {
 
-            playersScore.sort(e => e.player.playerId).map((element) => {
+            playersScore.sort(sortPlayerScores).map((element) => {
                 return <View style={styles.cell} key={element.player.playerId}><Text key={element.player.toLocaleString()} style={styles.text}>
                     {element.score.toLocaleString()}
                 </Text></View>

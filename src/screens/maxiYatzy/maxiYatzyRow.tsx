@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { PlayerScore } from "../../Helpers/Game/PlayerScore";
 import { GameState } from "../../Helpers/Game/GameState";
 import { GameScore } from "../../Helpers/Game/GameScore";
+import { sortPlayerScores } from "../../Helpers/Player/PlayerHelper";
 
 type rowProps = {
     GameState: GameState,
@@ -16,7 +17,7 @@ export default function Row(row: rowProps) {
     return <View style={[styles.row, { backgroundColor: row.backgroundColor }]} key={row.key}>
         <Text style={styles.head}>{row.GameState.score.name}</Text>
         {
-            row.GameState.PlayerScore.sort((a, b) => a.player.playerId - b.player.playerId).map((element) => {
+            row.GameState.PlayerScore.sort(sortPlayerScores).map((element) => {
                 const cellClick = () => {
                     row.onPress(element, row.GameState.score)
                 }
