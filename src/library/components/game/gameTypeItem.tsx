@@ -8,16 +8,16 @@ type gameTypeItems = {
     onSelected: () => void
 };
 
-export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag,IconName }: gameTypeItems) {
+export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag, IconName }: gameTypeItems) {
 
     return <View style={styles.container}>
         <TouchableOpacity style={styles.gameTypeActive}
             onPress={onSelected}>
             <View style={[styles.gameTypeItemWrapper]}>
-                <View style={{flex:2, alignItems:'flex-start', justifyContent:'center'}}>
-                    {IconName && <Icon name={IconName} style={[{ fontSize: 32}]} ></Icon> }
+                <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }}>
+                    {IconName && <Icon name={IconName} style={[{ fontSize: 32 }]} ></Icon>}
                 </View>
-                <View style={{flex:8}}>
+                <View style={{ flex: 8 }}>
                     <Text style={styles.gameNameText}>{gameName}</Text>
                     <Text style={styles.gameTagLineText}>{gameTag}</Text>
                 </View>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     gameTypeItemWrapper: {
-        flexDirection:'row',
+        flexDirection: 'row',
         padding: 15,
         paddingBottom: 20,
     },
