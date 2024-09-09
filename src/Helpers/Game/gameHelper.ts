@@ -69,21 +69,21 @@ const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined,
 const updatePlayerScore = (savedGame: Game, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
 
     if (savedGame.upper?.some(g => g.score.name === scoreToBeUpdated.name)) {
-        savedGame.upper = UpdateGameState(savedGame.upper, scoreToBeUpdated, newPlayerScore);
+        savedGame.upper = updateGameState(savedGame.upper, scoreToBeUpdated, newPlayerScore);
         return savedGame;
     }
     if (savedGame.middle?.some(g => g.score.name === scoreToBeUpdated.name)) {
-        savedGame.middle = UpdateGameState(savedGame.middle, scoreToBeUpdated, newPlayerScore);
+        savedGame.middle = updateGameState(savedGame.middle, scoreToBeUpdated, newPlayerScore);
         return savedGame;
     }
 
     if (savedGame.lower?.some(g => g.score.name === scoreToBeUpdated.name)) {
-        savedGame.lower = UpdateGameState(savedGame.lower, scoreToBeUpdated, newPlayerScore);
+        savedGame.lower = updateGameState(savedGame.lower, scoreToBeUpdated, newPlayerScore);
         return savedGame;
     }
 }
 
-const UpdateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore): GameState[] => {
+const updateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore): GameState[] => {
     var newGameState: GameState[] = [];
     gameState.forEach(element => {
         if (element.score.name != scoreToBeUpdated.name) {
