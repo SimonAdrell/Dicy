@@ -7,6 +7,7 @@ export interface Game {
     gameType: gameType;
     state: state;
     bonusScore: number;
+    bonusLimit: number;
     players?: PlayerDto[];
     upper?: Array<GameState>;
     middle?: Array<GameState>;

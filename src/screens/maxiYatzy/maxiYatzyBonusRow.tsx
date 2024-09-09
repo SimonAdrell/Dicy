@@ -17,7 +17,7 @@ export default function BonusRow({ backgroundColor, GameHelper }: rowProps) {
             playersScore.sort(sortPlayerScores).map((element) => {
                 return <View style={styles.cell} key={element.player.playerId}>
                     <Text key={element.player.playerId.toLocaleString()} style={[styles.text, element.score >= game.bonusScore ? styles.done : {}]}>
-                        {element.score >= game.bonusScore ? 100 : ''}
+                        {element.score >= game.bonusLimit ? game.bonusScore : ''}
                     </Text>
                 </View>
             })
