@@ -158,7 +158,6 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                                 .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
                                 .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
                         });
-                        upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
                         totalScore += upperTotalScore;
                         playerSumArray.push({
                             player: player,

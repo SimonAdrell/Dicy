@@ -137,7 +137,6 @@ export function AddScoreModal(options: scoreModalProps) {
                     <View style={styles.saveView}>
                         <Pressable onPress={onSave} ><Text style={styles.saveText}>Save</Text></Pressable>
                     </View>
-
                 </View>
 
             </View>
