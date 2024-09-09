@@ -4,6 +4,7 @@ import { PlayerScore } from "../../Helpers/Game/PlayerScore";
 import { GameState } from "../../Helpers/Game/GameState";
 import { GameScore } from "../../Helpers/Game/GameScore";
 import { sortPlayerScores } from "../../Helpers/Player/PlayerHelper";
+import { sharedStyle } from "../../library/style/sharedStyle";
 
 type rowProps = {
     GameState: GameState,
@@ -25,7 +26,7 @@ export default function Row(row: rowProps) {
                     {element.isRemoved ?
                         <Icon name='close' style={styles.removedIcon}></Icon>
                         :
-                        <Text style={[styles.text]} >
+                        <Text style={[styles.text, sharedStyle.darkFontColor]} >
                             {
                                 element.isRemoved ? '' : element.score?.toLocaleString()
                             }

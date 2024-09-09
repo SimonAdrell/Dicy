@@ -4,6 +4,7 @@ import React from 'react';
 import { AvatarCreation } from "./PlayerAvatar";
 import { ImageOrVideo } from "react-native-image-crop-picker";
 import Modal from "react-native-modal";
+import { sharedStyle } from "../../style/sharedStyle";
 
 export type AddUserModalProps = {
     name: string;
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         borderWidth: 2,
         paddingLeft: 10,
+        color: sharedStyle.darkFontColor.color
     },
     
     centeredView: {
@@ -106,6 +108,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 24,
         marginTop: 15,
+        color: sharedStyle.darkFontColor.color
     },
     formView: {
         alignItems: 'center',

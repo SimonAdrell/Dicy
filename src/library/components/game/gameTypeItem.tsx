@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { sharedStyle } from "../../style/sharedStyle";
 
 type gameTypeItems = {
     gameName: string,
@@ -9,17 +10,16 @@ type gameTypeItems = {
 };
 
 export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag, IconName }: gameTypeItems) {
-
     return <View style={styles.container}>
         <TouchableOpacity style={styles.gameTypeActive}
             onPress={onSelected}>
             <View style={[styles.gameTypeItemWrapper]}>
                 <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    {IconName && <Icon name={IconName} style={[{ fontSize: 32 }]} ></Icon>}
+                    {IconName && <Icon name={IconName} style={[{ fontSize: 34 }, sharedStyle.darkFontColor]} ></Icon>}
                 </View>
                 <View style={{ flex: 8 }}>
-                    <Text style={styles.gameNameText}>{gameName}</Text>
-                    <Text style={styles.gameTagLineText}>{gameTag}</Text>
+                    <Text style={[styles.gameNameText, sharedStyle.darkFontColor]}>{gameName}</Text>
+                    <Text style={[sharedStyle.lightFontColor]}>{gameTag}</Text>
                 </View>
             </View>
         </TouchableOpacity>

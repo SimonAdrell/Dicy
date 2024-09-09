@@ -6,6 +6,7 @@ import Modal from "react-native-modal";
 import React from "react";
 import { PlayerScore } from "../../Helpers/Game/PlayerScore";
 import { GameScore } from "../../Helpers/Game/GameScore";
+import { sharedStyle } from "../../library/style/sharedStyle";
 
 export type scoreModalProps = {
     scoreToBeUpdated: GameScore | undefined;
@@ -39,18 +40,18 @@ export function AddScoreModal(options: scoreModalProps) {
 
     function getValidNumber(): number {
         var scoreNumber = Number(scoreString);
-        if (scoreNumber === undefined) 
+        if (scoreNumber === undefined)
             return -1;
 
-        if (scoreNumber === null) 
+        if (scoreNumber === null)
             return -1;
 
-        if (scoreNumber === 0) 
+        if (scoreNumber === 0)
             return -1;
 
-        if (isNaN(scoreNumber)) 
+        if (isNaN(scoreNumber))
             return -1;
-            
+
         return scoreNumber;
     }
 
@@ -69,7 +70,7 @@ export function AddScoreModal(options: scoreModalProps) {
         if (isChanged)
             exitModal(playerScore, options.scoreToBeUpdated);
 
-        exitModal(undefined,options.scoreToBeUpdated);
+        exitModal(undefined, options.scoreToBeUpdated);
 
     }
 
@@ -113,7 +114,7 @@ export function AddScoreModal(options: scoreModalProps) {
             onModalShow={onModalShow} onModalWillHide={onModalWillHide}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <View style={styles.modalText}><Avatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></Avatar><Text>{player === undefined ? undefined : player.name}</Text></View>
+                    <View style={styles.modalText}><Avatar src={player === undefined ? undefined : player.imageUrl} imageHeight={100}></Avatar><Text style={[sharedStyle.darkFontColor, { fontSize: 18 }]}>{player === undefined ? undefined : player.name}</Text></View>
                     <Text style={styles.modalText}>{options.scoreToBeUpdated?.name}</Text>
                     <Text style={styles.tinyModalText}>Max: {options.scoreToBeUpdated?.topScore}</Text>
                     <View style={styles.formView}>
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         borderWidth: 2,
         paddingLeft: 10,
+        color: sharedStyle.darkFontColor.color
     },
     centeredView: {
         flex: 1,
@@ -186,13 +188,15 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: 'center',
         alignItems: 'center',
-        fontSize: 28
+        fontSize: 28,
+        color: sharedStyle.darkFontColor.color
     },
     tinyModalText: {
         marginBottom: 15,
         alignItems: 'center',
         textAlign: 'center',
-        fontSize: 14
+        fontSize: 14,
+        color: sharedStyle.darkFontColor.color
     },
     formView: {
         alignItems: 'center',

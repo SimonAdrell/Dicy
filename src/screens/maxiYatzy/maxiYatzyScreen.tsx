@@ -15,6 +15,7 @@ import { useGame } from "../../Helpers/Game/gameContext";
 import { GameScore } from "../../Helpers/Game/GameScore";
 import { PlayersScoreModal } from "../../library/components/score/scoreModal";
 import { sortPlayers } from "../../Helpers/Player/PlayerHelper";
+import { sharedStyle } from "../../library/style/sharedStyle";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MaxiYatzy'>;
 
@@ -39,7 +40,7 @@ export default function MaxiYatzy({ navigation }: Props) {
         setScoreModalVisible(!scoreModalVisible)
         if (playerScore === undefined)
             return;
-        if(scoreToBeUpdated === undefined)
+        if (scoreToBeUpdated === undefined)
             return;
 
         gamingHelper.scoreHandler().updatePlayerScore(scoreToBeUpdated, playerScore);
@@ -54,12 +55,12 @@ export default function MaxiYatzy({ navigation }: Props) {
                 game?.players?.sort(sortPlayers).map((player) => {
                     return <View key={player.playerId} style={[styles.player]}>
                         <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
-                        <Text style={styles.playerName}>{player.name.toLocaleUpperCase()} </Text>
+                        <Text style={[styles.playerName, sharedStyle.darkFontColor]}>{player.name} </Text>
                     </View>
                 })
             }
         </View>
-        <ScrollView style={styles.board}>
+        <ScrollView style={[styles.board,sharedStyle.itemBackground]}>
             {
                 game?.upper?.map((element, index) => {
                     return <Row onPress={onRowPress} GameState={element} key={index}
