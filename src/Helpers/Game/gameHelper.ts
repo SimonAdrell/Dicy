@@ -10,7 +10,23 @@ import { playerTotalScore } from "./playerTotalScore";
 import { scoreHandler } from "./scoreHandler";
 import { state } from "./state";
 
-const getBonus = (typeOfGame: gameType): number => {
+const getBonusScore = (typeOfGame: gameType): number => {
+    let bonusScore: number = 75;
+    switch (typeOfGame) {
+        case gameType.maxiYatzy:
+            bonusScore = 100;
+            break;
+        case gameType.yatzy:
+            bonusScore = 50;
+            break;
+        default:
+            bonusScore = 75;
+            break;
+    }
+    return bonusScore;
+}
+
+const getBonusLimit = (typeOfGame: gameType): number => {
     let bonusScore: number = 75;
     switch (typeOfGame) {
         case gameType.maxiYatzy:
@@ -54,7 +70,7 @@ const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined,
                     .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
                     .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
             });
-            upperTotalScore += (upperTotalScore >= savedGame.bonusScore ? 100 : 0);
+            upperTotalScore += (upperTotalScore >= savedGame.bonusLimit ? savedGame.bonusScore : 0);
             totalScore += upperTotalScore;
         }
         gameState?.forEach(state => {
@@ -113,7 +129,8 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
             savedGame = {
                 gameType: typeOfGame,
                 state: state.created,
-                bonusScore: getBonus(typeOfGame),
+                bonusScore: getBonusScore(typeOfGame),
+                bonusLimit: getBonusLimit(typeOfGame)
             }
             return savedGame;
         },
