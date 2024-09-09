@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable, TouchableOpacity, ViewProps, Alert } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, ViewProps } from "react-native";
 import { PlayerDto } from "./playerObject";
 import { Avatar } from "./PlayerAvatar";
 import playerStorageHandler from "../../../screens/players/playerHandler";
@@ -42,9 +42,19 @@ export default function Player(props: playerProps) {
         let players = props.gamingHelper.getPlayers();
         if (players) {
             players?.push(props.playerDto);
+            const playerWithHighestOrder = players.reduce(
+                (prev, current) => {
+                    const aOrder = prev.order !== undefined ? prev.order : Infinity;
+                    const bOrder = current.order !== undefined ? current.order : Infinity;
+                    return aOrder < bOrder ? prev : current
+                }
+            );
+            const currentHighestOrder = playerWithHighestOrder.order !== undefined ? playerWithHighestOrder.order : 0;
+            props.playerDto.order = currentHighestOrder + 1;
             updatePlayers(players);
         } else {
             players = new Array<PlayerDto>();
+            props.playerDto.order = 0;
             players.push(props.playerDto);
             updatePlayers(players);
         }

@@ -1,4 +1,5 @@
 import { PlayerDto } from "../../library/components/players/playerObject";
+import { sortPlayers } from "../Player/PlayerHelper";
 import { Game } from "./Game";
 import { gameHelperType } from "./gameHelperType";
 import { GameScore, lowerNames, middleNamesYatzy, middleNamesMaxiYatzy, upperNames } from "./GameScore";
@@ -27,7 +28,7 @@ const getBonus = (typeOfGame: gameType): number => {
 
 const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
     var playerScores: Array<PlayerScore> = []
-    players.forEach(element => {
+    players.sort(sortPlayers).forEach(element => {
         playerScores.push({
             player: element,
             isRemoved: false,
@@ -65,7 +66,7 @@ const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined,
     });
 }
 
-const updatePlayerScore  = (savedGame: Game, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
+const updatePlayerScore = (savedGame: Game, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore) => {
 
     if (savedGame.upper?.some(g => g.score.name === scoreToBeUpdated.name)) {
         savedGame.upper = UpdateGameState(savedGame.upper, scoreToBeUpdated, newPlayerScore);
@@ -138,8 +139,8 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                         throw new Error("Game not set up correctly");
                     if (savedGame.upper === undefined)
                         throw new Error("Game not set up correctly");
-                    
-                    updatePlayerScore(savedGame,scoreToBeUpdated,newPlayerScore);
+
+                    updatePlayerScore(savedGame, scoreToBeUpdated, newPlayerScore);
                     var scores: GameState[] = [...savedGame.middle, ...savedGame.lower];
                     updatePlayersScore(savedGame, scores, savedGame.upper);
                     return savedGame;
@@ -149,7 +150,7 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                         throw new Error("Game not set up correctly");
 
                     var playerSumArray: playerTotalScore[] = [];
-                   
+
                     savedGame.players?.forEach(player => {
                         var totalScore: number = 0;
                         var upperTotalScore: number = 0;

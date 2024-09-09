@@ -14,6 +14,7 @@ import { PlayerScore } from "../../Helpers/Game/PlayerScore";
 import { useGame } from "../../Helpers/Game/gameContext";
 import { GameScore } from "../../Helpers/Game/GameScore";
 import { PlayersScoreModal } from "../../library/components/score/scoreModal";
+import { sortPlayers } from "../../Helpers/Player/PlayerHelper";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MaxiYatzy'>;
 
@@ -50,7 +51,7 @@ export default function MaxiYatzy({ navigation }: Props) {
         <View style={styles.headerRow}>
             <View style={styles.title}></View>
             {
-                game?.players?.sort((a, b) => a.playerId - b.playerId).map((player) => {
+                game?.players?.sort(sortPlayers).map((player) => {
                     return <View key={player.playerId} style={[styles.player]}>
                         <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
                         <Text style={styles.playerName}>{player.name.toLocaleUpperCase()} </Text>

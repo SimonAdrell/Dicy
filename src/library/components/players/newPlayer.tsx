@@ -23,7 +23,6 @@ export default function NewPlayer() {
             : 0
     }
     const onPress = () => {
-        console.log('Show modal', modalVisible)
         setModalVisible(true)
     };
     const onPlayerSubmit = (playerName: string, imageUrl: string) => {
