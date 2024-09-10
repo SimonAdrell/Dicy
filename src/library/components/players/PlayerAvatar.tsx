@@ -88,10 +88,9 @@ const styles = StyleSheet.create({
         height: 80,
         fontSize: 80,
         backgroundColor: "#E8E8E8",
-        borderRadius: 1000, // High value
+        borderRadius: 1000, 
         borderColor: '#FFC700',
         borderStyle: 'solid',
-        borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center',
         color: sharedStyle.darkFontColor.color
@@ -100,10 +99,9 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         backgroundColor: "#E8E8E8",
-        borderRadius: 1000, // High value
+        borderRadius: 1000, 
         borderColor: '#FFC700',
         borderStyle: 'solid',
-        borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center'
     },
