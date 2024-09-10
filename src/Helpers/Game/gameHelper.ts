@@ -1,5 +1,5 @@
 import { PlayerDto } from "../../library/components/players/playerObject";
-import { sortPlayers } from "../Player/PlayerHelper";
+import { sortPlayersByOrder } from "../Player/PlayerHelper";
 import { Game } from "./Game";
 import { gameHelperType } from "./gameHelperType";
 import { GameScore, lowerNames, middleNamesYatzy, middleNamesMaxiYatzy, upperNames } from "./GameScore";
@@ -44,7 +44,7 @@ const getBonusLimit = (typeOfGame: gameType): number => {
 
 const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
     var playerScores: Array<PlayerScore> = []
-    players.sort(sortPlayers).forEach(element => {
+    players.sort(sortPlayersByOrder).forEach(element => {
         playerScores.push({
             player: element,
             isRemoved: false,

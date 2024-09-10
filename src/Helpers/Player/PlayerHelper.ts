@@ -7,11 +7,11 @@ const sortPlayersByOrder = (a: PlayerDto, b: PlayerDto) => {
     return aOrder - bOrder;
 }
 
-const sortPlayerScores = (a: PlayerScore, b: PlayerScore) => {
+const sortPlayerScoresByPlayersOrder = (a: PlayerScore, b: PlayerScore) => {
     const aOrder = a.player.order !== undefined ? a.player.order : Infinity;
     const bOrder = b.player.order !== undefined ? b.player.order : Infinity;
     return aOrder - bOrder;
 
 }
 
-export { sortPlayerScores, sortPlayersByOrder as sortPlayers };
+export { sortPlayerScoresByPlayersOrder, sortPlayersByOrder };
