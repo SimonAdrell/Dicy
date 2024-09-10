@@ -7,30 +7,32 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { sharedStyle } from '../../style/sharedStyle';
+import { takenImage } from '../../../Helpers/Image/takenImage';
+import takePicture from '../../../Helpers/Image/ImageTaker';
 
 type ImageProps = DefaultImageProps & {
     source?: ImageURISource;
 };
 
 interface AvatarProps extends ImageProps {
-    onChange?: (image: ImageOrVideo) => void;
+    onChange?: (image: takenImage) => void;
     imageHeight?: number;
 }
 
 export const AvatarCreation = (props: AvatarProps) => {
     const [uri, setUri] = React.useState(props.source?.uri || undefined);
 
+    const imageTaken = (image: takenImage) => {
+        setUri(image.path);
+        props.onChange?.(image);
+    }
+
+
     const pickPicture = () => {
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-        }).then(image => {
-            setUri(image.path);
-            props.onChange?.(image);
-        })
+        takePicture({
+            onImageTaken: imageTaken
+        });
     };
 
     return (
@@ -53,12 +55,12 @@ export const Avatar = (props: AvatarProps) => {
     return (
         <View>
             {props.src ?
-            <Image
-            style={[styles.miniAvatar, { height: props.imageHeight, width: props.imageHeight }]}
-            {...props}
-            source={props.source}
-        />:
-                <Icon name='emoticon-outline' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight },props.style, sharedStyle.darkFontColor]} ></Icon> 
+                <Image
+                    style={[styles.miniAvatar, { height: props.imageHeight, width: props.imageHeight }]}
+                    {...props}
+                    source={props.source}
+                /> :
+                <Icon name='emoticon-outline' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight }, props.style, sharedStyle.darkFontColor]} ></Icon>
             }
         </View>
 
@@ -69,12 +71,12 @@ export const NewPlayerAvatar = (props: AvatarProps) => {
     return (
         <View>
             {props.src ?
-            <Image
-            style={[styles.miniAvatar, { height: props.imageHeight, width: props.imageHeight }]}
-            {...props}
-            source={props.source}
-        />:
-                <Icon name='plus' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight, fontWeight:'light' },props.style, sharedStyle.darkFontColor]} ></Icon> 
+                <Image
+                    style={[styles.miniAvatar, { height: props.imageHeight, width: props.imageHeight }]}
+                    {...props}
+                    source={props.source}
+                /> :
+                <Icon name='plus' style={[styles.miniAvatar, { fontSize: props.imageHeight, height: props.imageHeight, width: props.imageHeight, fontWeight: 'light' }, props.style, sharedStyle.darkFontColor]} ></Icon>
             }
         </View>
 

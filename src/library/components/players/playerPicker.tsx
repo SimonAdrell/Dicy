@@ -1,8 +1,7 @@
-import { Alert, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import NewPlayer from "./newPlayer";
 import { useEffect, useState } from "react";
 import { PlayerDto } from "./playerObject";
-import Player from "./player";
 import { RootStackParamList } from "../../../../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import playerStorageHandler from "../../../screens/players/playerHandler";

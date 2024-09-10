@@ -2,9 +2,9 @@ import { Pressable, Text, View } from "react-native";
 import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { AvatarCreation } from "./PlayerAvatar";
-import { ImageOrVideo } from "react-native-image-crop-picker";
 import Modal from "react-native-modal";
 import { sharedStyle } from "../../style/sharedStyle";
+import { takenImage } from "../../../Helpers/Image/takenImage";
 
 export type AddUserModalProps = {
     name: string;
@@ -25,7 +25,7 @@ export function AddUserModal({
         onChangePlayerName('');
         OnChangePlayerImage('');
     };
-    const onAvatarChange = (image: ImageOrVideo) => {
+    const onAvatarChange = (image: takenImage) => {
         OnChangePlayerImage(image.path);
     };
 
@@ -50,9 +50,7 @@ export function AddUserModal({
                         </View>
                     </View>
                 </View>
-
             </View>
-
         </Modal>
     </View>;
 }
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color: sharedStyle.darkFontColor.color
     },
-    
+
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -86,8 +84,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F7F7F7',
         width: '100%',
         padding: 10,
-        borderBottomEndRadius:20,
-        borderBottomStartRadius:20
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20
     },
     modalView: {
         borderRadius: 20,

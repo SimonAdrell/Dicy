@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { AddUserModal } from "./addPlayerModal";
 import { useState } from "react";
 import { PlayerDto } from "./playerObject";
@@ -7,7 +7,6 @@ import playerStorageHandler from "../../../screens/players/playerHandler";
 import { useGame } from "../../../Helpers/Game/gameContext";
 import gameHelper from "../../../Helpers/Game/gameHelper";
 import { gameType } from "../../../Helpers/Game/gameType";
-import { sharedStyle } from "../../style/sharedStyle";
 export default function NewPlayer() {
     const [modalVisible, setModalVisible] = useState(false);
     const playerHandler = playerStorageHandler();

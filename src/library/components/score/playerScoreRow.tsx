@@ -36,5 +36,4 @@ const styles = StyleSheet.create({
     scoreText:{
         fontSize:32
     }
-
 });

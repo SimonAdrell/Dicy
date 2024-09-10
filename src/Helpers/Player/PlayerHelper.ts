@@ -1,7 +1,7 @@
 import { PlayerDto } from "../../library/components/players/playerObject";
 import { PlayerScore } from "../Game/PlayerScore";
 
-const sortPlayers = (a: PlayerDto, b: PlayerDto) => {
+const sortPlayersByOrder = (a: PlayerDto, b: PlayerDto) => {
     const aOrder = a.order !== undefined ? a.order : Infinity;
     const bOrder = b.order !== undefined ? b.order : Infinity;
     return aOrder - bOrder;
@@ -14,4 +14,4 @@ const sortPlayerScores = (a: PlayerScore, b: PlayerScore) => {
 
 }
 
-export { sortPlayerScores, sortPlayers };
+export { sortPlayerScores, sortPlayersByOrder as sortPlayers };
