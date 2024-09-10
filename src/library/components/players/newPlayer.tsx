@@ -44,7 +44,7 @@ export default function NewPlayer() {
     return <TouchableOpacity onPress={onPress}>
         <View style={styles.container}>
             <View style={styles.wrapperContainer}>
-                <NewPlayerAvatar imageHeight={60} style={[{borderWidth:0}]} ></NewPlayerAvatar>
+                <NewPlayerAvatar imageHeight={75} style={[styles.avatarStyle]} ></NewPlayerAvatar>
             </View>
             <AddUserModal name="Add user" visible={modalVisible} onSubmit={onPlayerSubmit}
                 onBackdropPress={() => { setModalVisible(false) }}></AddUserModal>
@@ -54,22 +54,24 @@ export default function NewPlayer() {
 
 var styles = StyleSheet.create({
     container: {
-        // position: 'absolute',
         bottom: 10,
-        right: 10,
     },
     wrapperContainer: {
         padding: 10,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-end',
+        right: 10
     },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#005b4f',
-        marginTop: 10,
-    },
-    touchableOpacity: {
-        zIndex: 100
-    },
+    avatarStyle: {
+        borderWidth: 0,
+        backgroundColor: '#e8fefa',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    }
 });
