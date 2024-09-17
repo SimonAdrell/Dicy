@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
 import { SafeAreaView, View, Text, StyleSheet, ScrollView } from "react-native";
-import gameHelper from "../../Helpers/Game/gameHelper";
-import { gameType } from "../../Helpers/Game/gameType";
-import { useGame } from "../../Helpers/Game/gameContext";
-import GameTypeItem from "../../library/components/game/gameTypeItem";
+import gameHelper from "@helpers/Game/gameHelper";
+import { gameType } from "@helpers/Game/gameType";
+import { useGame } from "@helpers/Game/gameContext";
+import GameTypeItem from "@components/game/gameTypeItem";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;
 
@@ -12,7 +12,7 @@ const GamePicker = ({ navigation }: Props) => {
     const { setGame } = useGame();
     const save = (gameType: gameType) => {
         const helper = gameHelper(undefined);
-        helper.generateNewgame(gameType);
+        helper.generateNewGame(gameType);
         setGame(helper.getGame())
         navigation.navigate('PlayerPicker');
     };
