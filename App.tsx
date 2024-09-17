@@ -7,13 +7,13 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import PlayerPicker from './src/screens/playerScreen/PlayerScreen';
+import PlayerScreen from './src/screens/playerScreen/PlayerScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import YatzyScreen from './src/screens/YatzyScreen/YatzyScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { GameProvider } from './src/utils/helpers/Game/gameContext';
-import GamePicker from './src/screens/game/gamePicker';
+import GameScreen from './src/screens/gameScreen/gameScreen';
 
 export type RootStackParamList = {
   GamePicker: undefined;
@@ -29,10 +29,10 @@ function App(): React.JSX.Element {
     <GameProvider>
       <NavigationContainer>
         <RootStack.Navigator initialRouteName="GamePicker" >
-          <RootStack.Screen name="GamePicker" component={GamePicker} options={{
+          <RootStack.Screen name="GamePicker" component={GameScreen} options={{
             headerShown: false,
           }} />
-          <RootStack.Screen name="PlayerPicker" component={PlayerPicker} options={{
+          <RootStack.Screen name="PlayerPicker" component={PlayerScreen} options={{
             headerShown: false,
           }} />
           <RootStack.Screen name="Yatzy" component={YatzyScreen} options={{

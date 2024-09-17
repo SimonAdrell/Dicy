@@ -66,7 +66,7 @@ export default function Player(props: playerProps) {
         if (props.gamingHelper.getGame()) {
             props.gamingHelper.setPlayers(players)
         } else {
-            props.gamingHelper.generateNewgame(gameType.maxiYatzy);
+            props.gamingHelper.generateNewGame(gameType.maxiYatzy);
             props.gamingHelper.setPlayers(players)
         }
     }

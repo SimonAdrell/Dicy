@@ -1,4 +1,4 @@
-import { PlayerDto } from "../../library/components/players/playerObject";
+import { PlayerDto } from "@components/players/playerObject";
 import { GameState } from "./GameState";
 import { gameType } from "./gameType";
 import { state } from "./state";

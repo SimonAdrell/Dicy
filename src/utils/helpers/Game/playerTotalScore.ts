@@ -1,4 +1,4 @@
-import { PlayerDto } from "../../library/components/players/playerObject";
+import { PlayerDto } from "@components/players/playerObject";
 
 export type playerTotalScore = {
     player: PlayerDto;

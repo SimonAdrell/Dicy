@@ -12,7 +12,7 @@ import styles from './PlayerScreen.styles'
 import NextButton from "@components/shared/button";
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
-export default function PlayerPicker({ navigation }: Props) {
+export default function PlayerScreen({ navigation }: Props) {
     const playerHandler = playerStorageHandler();
     const { setGame, game } = useGame();
     let gamingHelper = gameHelper(game);
