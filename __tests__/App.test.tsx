@@ -1,8 +1,8 @@
 import 'react-native';
 import React from 'react';
 import App from '../App';
-import { fireEvent, render } from '@testing-library/react-native';
-jest.mock('../src/Helpers/Image/ImageTaker');
+import { render } from '@testing-library/react-native';
+jest.mock('@helpers/Image/ImageTaker');
 
 describe("renders correctly", () => {
   it("renders Yatzy correctly", () => {
@@ -26,7 +26,7 @@ describe("renders correctly", () => {
     const {getByPlaceholderText, getByText, getAllByText} = render(<App />);
 
     // Assert
-    const maxiYatxuElements = getAllByText('Maxi Yatzy');
-    expect(maxiYatxuElements).toHaveLength(1);
+    const maxiYatzyElements = getAllByText('Maxi Yatzy');
+    expect(maxiYatzyElements).toHaveLength(1);
   })
 })
