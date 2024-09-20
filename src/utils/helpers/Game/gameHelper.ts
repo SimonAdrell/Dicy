@@ -42,13 +42,23 @@ const getBonusLimit = (typeOfGame: gameType): number => {
     return bonusScore;
 }
 
+const getNumberOfDices = (typeOfGame: gameType): number | undefined => {
+    switch(typeOfGame){
+        case gameType.digitalDicesMaxiYatzy:
+            return 6
+        case gameType.digitalDicesYatzy:
+            return 5
+    }
+    return undefined;
+}
+
 const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
     var playerScores: Array<PlayerScore> = []
     players.sort(sortPlayersByOrder).forEach(element => {
         playerScores.push({
             player: element,
             isRemoved: false,
-            score: undefined
+            score: undefined,
         })
     });
 
@@ -130,7 +140,8 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                 gameType: typeOfGame,
                 state: state.created,
                 bonusScore: getBonusScore(typeOfGame),
-                bonusLimit: getBonusLimit(typeOfGame)
+                bonusLimit: getBonusLimit(typeOfGame),
+                numberOfDices: getNumberOfDices(typeOfGame)
             }
             return savedGame;
         },

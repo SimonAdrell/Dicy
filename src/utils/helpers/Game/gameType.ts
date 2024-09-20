@@ -1,5 +1,7 @@
 export enum gameType {
     maxiYatzy,
     maxiYatzyTypDown,
-    yatzy
+    yatzy,
+    digitalDicesMaxiYatzy,
+    digitalDicesYatzy,
 }

@@ -1,4 +1,33 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+
+# Dicy
+
+A brief description of what this project does and who it's for
+
+A react native project create for having an simpler yatzy experience. Skip the pad and only bring the dices and your phone. 
+
+
+
+## Authors
+
+- [@SimonAdrell](https://github.com/SimonAdrell)
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm test
+```
+
+
+## Features
+
+- Six dices yatzy 
+- Five dices yatzy
+- Cross platform
+
+
 
 # Getting Started
 

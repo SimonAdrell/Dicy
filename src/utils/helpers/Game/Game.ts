@@ -8,6 +8,7 @@ export interface Game {
     state: state;
     bonusScore: number;
     bonusLimit: number;
+    numberOfDices?: number 
     players?: PlayerDto[];
     upper?: Array<GameState>;
     middle?: Array<GameState>;
