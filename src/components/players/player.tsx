@@ -33,6 +33,7 @@ export default function Player(props: playerProps) {
             if (indexOfObject !== -1) {
                 players.splice(indexOfObject, 1);
             }
+            props.playerDto.order = undefined;
             updatePlayers(players);
         }
         setPlayersIsGaming(false);
@@ -58,7 +59,6 @@ export default function Player(props: playerProps) {
             players.push(props.playerDto);
             updatePlayers(players);
         }
-
         setPlayersIsGaming(true);
     }
 
