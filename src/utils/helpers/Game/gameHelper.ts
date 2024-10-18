@@ -9,6 +9,7 @@ import { PlayerScore } from "./PlayerScore";
 import { playerTotalScore } from "./playerTotalScore";
 import { scoreHandler } from "./scoreHandler";
 import { state } from "./state";
+import { TFunction } from "i18next";
 
 const getBonusScore = (typeOfGame: gameType): number => {
     let bonusScore: number = 75;
@@ -134,10 +135,10 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
             }
             return savedGame;
         },
-        setPlayers(players: PlayerDto[]) {
-            savedGame.upper = generateGameState(upperNames, players);
-            savedGame.middle = generateGameState(savedGame.gameType === gameType.yatzy ? middleNamesYatzy : middleNamesMaxiYatzy, players);
-            savedGame.lower = generateGameState(lowerNames, players);
+        setPlayers(players: PlayerDto[], t: TFunction<"translation", undefined>) {
+            savedGame.upper = generateGameState(upperNames(t), players);
+            savedGame.middle = generateGameState(savedGame.gameType === gameType.yatzy ? middleNamesYatzy(t) : middleNamesMaxiYatzy(t), players);
+            savedGame.lower = generateGameState(lowerNames(t), players);
             savedGame.players = players;
             savedGame.state = state.readyForGame;
         },

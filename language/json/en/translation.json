@@ -1,0 +1,53 @@
+{
+  "gameType": {
+    "maxiYatzy": {
+      "name": "Maxi Yatzy",
+      "tagLine": "Played with 6 six-sided dice"
+    },
+    "yatzy": {
+      "name": "Yatzy",
+      "tagLine": "Played with 5 six-sided dice"
+    }
+  },
+  "navigation": {
+    "next": "Next"
+  },
+  "player": {
+    "missingPlayer": "Choose at least one player",
+    "deletePlayerHeader": "Delete player",
+    "message": "Are you sure about that?",
+    "positive": "Delete player",
+    "cancel": "Cancel",
+    "addPlayerHeader": "Add a new player",
+    "addNewPlayerPlaceHolder": "Name of player",
+    "addNewPlayerSaveButton": "Add new player"
+  },
+  "yatzyScreen": {
+    "showWinner": "Show winner",
+    "close": "Close",
+    "crossOut": "Cross out",
+    "savePoints": "Save points",
+    "yatzy": {
+      "ones": "Ones",
+      "twos": "Twos",
+      "threes": "Threes",
+      "fours": "Fours",
+      "fives": "Fives",
+      "sixes": "Sixes",
+      "pair": "Pair",
+      "twoPair": "2 Pair",
+      "threePair": "3 Pair",
+      "threeOfAKind": "Three of a kind",
+      "fourOfAKind": "Four of a kind",
+      "fiveOfAKind": "Five of a kind",
+      "smStraight": "Small straight",
+      "bgStraight": "Big straight",
+      "flStraight": "Full straight",
+      "fullHouse": "Full house",
+      "castle": "Castle",
+      "tower": "Tower",
+      "chance": "Chance",
+      "yatzy": "Yatzy"
+    }
+  }
+}

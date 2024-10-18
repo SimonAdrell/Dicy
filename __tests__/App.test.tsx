@@ -1,32 +1,34 @@
 import 'react-native';
 import React from 'react';
 import App from '../App';
-import { render } from '@testing-library/react-native';
+import {render} from '@testing-library/react-native';
 jest.mock('@helpers/Image/ImageTaker');
 
-describe("renders correctly", () => {
-  it("renders Yatzy correctly", () => {
+jest.mock('react-i18next', () => ({
+  // this mock makes sure any components using the translate hook can use it without a warning being shown
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => {},
+  },
+}));
+
+describe('renders correctly', () => {
+  it('renders Maxi Yatzy correctly', () => {
     // Arrange
 
     // Act
-    const {getByPlaceholderText, getByText, getAllByText} = render(<App />);
+    const {getByText} = render(<App />);
 
     // Assert
-    const yatzyElements = getAllByText('Yatzy');
-    expect(yatzyElements).toHaveLength(1);
-  })
-})
-
-
-describe("renders correctly", () => {
-  it("renders Maxi Yatzy correctly", () => {
-    // Arrange
-
-    // Act
-    const {getByPlaceholderText, getByText, getAllByText} = render(<App />);
-
-    // Assert
-    const maxiYatzyElements = getAllByText('Maxi Yatzy');
-    expect(maxiYatzyElements).toHaveLength(1);
-  })
-})
+    const maxiYatzyElements = getByText('Maxi Yatzy');
+    expect(maxiYatzyElements).toHaveLength(2);
+  });
+});

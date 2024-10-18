@@ -1,0 +1,53 @@
+{
+  "gameType": {
+    "maxiYatzy": {
+      "name": "Maxi Yatzy",
+      "tagLine": "Spelas med 6 sexsidiga tärningar"
+    },
+    "yatzy": {
+      "name": "Yatzy",
+      "tagLine": "Spelas med 5 sexsidiga tärningar"
+    }
+  },
+  "navigation": {
+    "next": "Nästa"
+  },
+  "player": {
+    "missingPlayer": "Välj minst en spelare",
+    "deletePlayerHeader": "Ta bort spelare",
+    "message": "Är du säker på att du vill ta bort spelaren?",
+    "positive": "Ta bort spelare",
+    "cancel": "Avbryt",
+    "addPlayerHeader": "Lägg till ny spelare",
+    "addNewPlayerPlaceHolder": "Namn",
+    "addNewPlayerSaveButton": "Lägg till"
+  },
+  "yatzyScreen": {
+    "showWinner": "Visa vinnare",
+    "close": "Stäng",
+    "savePoints": "Spara poäng",
+    "crossOut": "Stryk",
+    "yatzy": {
+      "ones": "Ettor",
+      "twos": "Tvåor",
+      "threes": "Treor",
+      "fours": "Fyror",
+      "fives": "Femmor",
+      "sixes": "Sexor",
+      "pair": "1 par",
+      "twoPair": "2 par",
+      "threePair": "3 par",
+      "threeOfAKind": "Tretal",
+      "fourOfAKind": "Fyrtal",
+      "fiveOfAKind": "Femtal",
+      "smStraight": "Liten stege",
+      "bgStraight": "Stor stege",
+      "flStraight": "Full stege",
+      "fullHouse": "Kåk",
+      "castle": "Hus",
+      "tower": "Torn",
+      "chance": "Chans",
+      "yatzy": "Yatzy"
+    }
+  }
+}
