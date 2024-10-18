@@ -1,43 +1,59 @@
-import { render } from "@testing-library/react-native";
-import { gameType } from "../../../utils/helpers/Game/gameType";
-import { PlayerDto } from "../../players/playerObject";
-import BonusRow from "../bonusRow";
-import gameHelper from "../../../utils/helpers/Game/gameHelper";
+import {render} from '@testing-library/react-native';
+import {gameType} from '../../../utils/helpers/Game/gameType';
+import {PlayerDto} from '../../players/playerObject';
+import BonusRow from '../bonusRow';
+import gameHelper from '../../../utils/helpers/Game/gameHelper';
+import {useTranslation} from 'react-i18next';
 
-describe("bonusRow", () => {
-    it("renders BonsRow Yatzy correctly", () => {
+jest.mock('react-i18next', () => ({
+  // this mock makes sure any components using the translate hook can use it without a warning being shown
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+        // You can include here any property your component may use
+      },
+    };
+  },
+}));
 
-        // Arrange
-        var gamingHelper = gameHelper(undefined);
-        gamingHelper.generateNewGame(gameType.maxiYatzy);
+describe('bonusRow', () => {
+  it('renders BonsRow Yatzy correctly', () => {
+    // Arrange
+    const {t, i18n} = useTranslation();
 
-        var testPlayers = new Array<PlayerDto>();
+    var gamingHelper = gameHelper(undefined);
+    gamingHelper.generateNewGame(gameType.maxiYatzy);
 
-        testPlayers.push({
-            name: "TestPlayer 1",
-            imageUrl: "",
-            playerId: 0,
-            plusImage: false,
-            currentScore: 0,
-            order: 1
-        })
+    var testPlayers = new Array<PlayerDto>();
+    testPlayers.push({
+      name: 'TestPlayer 1',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: false,
+      currentScore: 0,
+      order: 1,
+    });
 
-        testPlayers.push({
-            name: "TestPlayer 2",
-            imageUrl: "",
-            playerId: 1,
-            plusImage: false,
-            currentScore: 0,
-            order: 2
-        })
+    testPlayers.push({
+      name: 'TestPlayer 2',
+      imageUrl: '',
+      playerId: 1,
+      plusImage: false,
+      currentScore: 0,
+      order: 2,
+    });
 
-        gamingHelper.setPlayers(testPlayers)
-        
-        // Act
-        const { getByPlaceholderText, getByText, getAllByText } = render(<BonusRow backgroundColor={""} GameHelper={gamingHelper} />);
+    gamingHelper.setPlayers(testPlayers, t);
 
-        // Assert
-        const maxiYatzyElements = getAllByText('Bonus');
-        expect(maxiYatzyElements).toHaveLength(1);
-    })
-})
+    // Act
+    const {getAllByText} = render(
+      <BonusRow backgroundColor={''} GameHelper={gamingHelper} />,
+    );
+
+    // Assert
+    const maxiYatzyElements = getAllByText('Bonus');
+    expect(maxiYatzyElements).toHaveLength(1);
+  });
+});
