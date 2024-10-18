@@ -28,7 +28,7 @@ describe('renders correctly', () => {
     const {getByText} = render(<App />);
 
     // Assert
-    const maxiYatzyElements = getByText('Maxi Yatzy');
-    expect(maxiYatzyElements).toHaveLength(2);
+    const maxiYatzyElements = getByText('gameType.maxiYatzy.name');
+    expect(maxiYatzyElements).toHaveLength(1);
   });
 });

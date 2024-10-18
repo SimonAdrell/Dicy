@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -9,6 +9,8 @@ import YatzyScreen from './src/screens/YatzyScreen/YatzyScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GameProvider} from './src/utils/helpers/Game/gameContext';
 import GameScreen from './src/screens/gameScreen/gameScreen';
+import {languageStorage} from '@helpers/Storage/language/languageStorage';
+import {useTranslation} from 'react-i18next';
 
 export type RootStackParamList = {
   GamePicker: undefined;
@@ -19,6 +21,21 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
+  const storage: itemStorage<string> = languageStorage('lang');
+  const {t, i18n} = useTranslation();
+
+  useEffect(() => {
+    const loadLanguage = async () => {
+      try {
+        const storedLanguage = storage.get();
+        if (storedLanguage) i18n.changeLanguage(storedLanguage);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    loadLanguage();
+  }, []);
+
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <GameProvider>
