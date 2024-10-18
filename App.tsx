@@ -5,7 +5,6 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import PlayerScreen from './src/screens/playerScreen/PlayerScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import YatzyScreen from './src/screens/YatzyScreen/YatzyScreen';
-
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GameProvider} from './src/utils/helpers/Game/gameContext';
 import GameScreen from './src/screens/gameScreen/gameScreen';

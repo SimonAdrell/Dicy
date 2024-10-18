@@ -20,8 +20,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;
 
 const GameScreen = ({navigation}: Props) => {
   const {t, i18n} = useTranslation();
-
   const {setGame} = useGame();
+
   const save = (gameType: gameType) => {
     const helper = gameHelper(undefined);
     helper.generateNewGame(gameType);
