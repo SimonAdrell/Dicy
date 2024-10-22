@@ -1,3 +1,5 @@
+import {useTranslation} from 'react-i18next';
+import {Text, View} from 'react-native';
 import Svg, {Circle, G, Mask, Path, SvgProps} from 'react-native-svg';
 
 type CountryProps = SvgProps & {
@@ -31,7 +33,7 @@ const UkFlag: React.FC<CountryProps> = (props: CountryProps) => {
 
 const SeFlag: React.FC<CountryProps> = (props: CountryProps) => {
   return (
-    <Svg {...props} viewBox="0 0 600 500">
+    <Svg viewBox="0 0 600 500">
       <Mask id="a">
         <Circle cx={256} cy={256} r={256} fill="#fff" />
       </Mask>

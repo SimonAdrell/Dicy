@@ -49,5 +49,12 @@
       "chance": "Chance",
       "yatzy": "Yatzy"
     }
+  },
+  "settings": {
+    "languageSettings": {
+      "header": "Choose language",
+      "se": "Svenska",
+      "en": "English"
+    }
   }
 }

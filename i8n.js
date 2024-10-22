@@ -12,7 +12,7 @@ i18n
   .use(initReactI18next)
   .init({
     compatibilityJSON: 'v3',
-    debug: true,
+    debug: false,
     fallbackLng: 'en',
     supportedLngs: ['en', 'se'],
     resources: {
