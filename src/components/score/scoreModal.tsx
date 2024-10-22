@@ -66,7 +66,6 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                       place={(index += 1)}
                       player={element}
                       style={styles.playerRow}
-                      columnStyle={styles.playerRowColumn}
                     />
                   );
                 })}
@@ -154,12 +153,6 @@ const styles = StyleSheet.create({
   playerRow: {
     width: 300,
     flexDirection: 'row',
-  },
-  playerRowColumn: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center',
-    verticalAlign: 'middle',
   },
   lottie: {
     zIndex: 1,
