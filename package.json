@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@babel/plugin-transform-nullish-coalescing-operator": "^7.25.8",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.25.9",
     "@babel/plugin-transform-optional-chaining": "^7.25.8",
     "@os-team/i18next-react-native-language-detector": "^1.0.34",
     "@react-navigation/native": "^6.1.18",
