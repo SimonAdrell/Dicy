@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next';
 export type AddUserModalProps = {
   name: string;
   visible: boolean;
-  onSubmit: Function;
+  onSubmit: (playerName: string, imageUrl: string) => void;
   onBackdropPress: () => void;
 };
 
@@ -20,8 +20,8 @@ export function AddUserModal({
   onBackdropPress,
 }: AddUserModalProps) {
   const {t} = useTranslation();
-  const [playerName, onChangePlayerName] = React.useState('');
-  const [playerImage, OnChangePlayerImage] = React.useState<string>();
+  const [playerName, onChangePlayerName] = React.useState<string>('');
+  const [playerImage, OnChangePlayerImage] = React.useState<string>('');
   const onSavePress = () => {
     onSubmit(playerName, playerImage);
     onChangePlayerName('');
@@ -48,11 +48,12 @@ export function AddUserModal({
                 value={playerName}
                 autoFocus={true}
                 onChangeText={onChangePlayerName}
+                testID="App.username"
                 style={styles.textInput}></TextInput>
             </View>
             <View style={styles.lowerView}>
               <View style={styles.saveView}>
-                <Pressable onPress={onSavePress}>
+                <Pressable role="button" onPress={onSavePress}>
                   <Text style={styles.saveText}>
                     {t('player.addNewPlayerSaveButton')}
                   </Text>

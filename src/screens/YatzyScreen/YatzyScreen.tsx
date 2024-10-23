@@ -79,7 +79,7 @@ export default function YatzyScreen({navigation}: Props) {
             <Row
               onPress={onRowPress}
               GameState={element}
-              key={index}
+              key={300 + index}
               backgroundColor={index % 2 == 0 ? color1 : color2}
               doneCellStyle={
                 index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
@@ -99,7 +99,7 @@ export default function YatzyScreen({navigation}: Props) {
             <Row
               onPress={onRowPress}
               GameState={element}
-              key={index}
+              key={100 + index}
               backgroundColor={index % 2 == 0 ? color1 : color2}
               doneCellStyle={
                 index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
@@ -115,7 +115,7 @@ export default function YatzyScreen({navigation}: Props) {
             <Row
               onPress={onRowPress}
               GameState={element}
-              key={index}
+              key={200 + index}
               backgroundColor={index % 2 == 0 ? color2 : color1}
               doneCellStyle={
                 index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
