@@ -52,7 +52,7 @@
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/preset-typescript": "^7.24.7",
-    "@babel/runtime": "^7.20.0",
+    "@babel/runtime": "^7.25.9",
     "@jest/globals": "^29.7.0",
     "@react-native-community/cli": "^14.0.0",
     "@react-native-community/cli-platform-android": "^14.0.0",
