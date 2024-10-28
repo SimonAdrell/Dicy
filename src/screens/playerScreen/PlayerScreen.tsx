@@ -1,5 +1,5 @@
 import {Alert, SafeAreaView, View} from 'react-native';
-import NewPlayer from '@components/players/newPlayer';
+import NewPlayerIcon from '@components/players/newPlayer';
 import {useEffect, useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';
 import {RootStackParamList} from '../../../App';
@@ -11,6 +11,7 @@ import PlayerList from '@components/players/playerList';
 import styles from './PlayerScreen.styles';
 import NextButton from '@components/shared/button';
 import {useTranslation} from 'react-i18next';
+import NewPlayer from '@components/players/newPlayer';
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
 export default function PlayerScreen({navigation}: Props) {

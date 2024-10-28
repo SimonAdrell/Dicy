@@ -1,175 +1,216 @@
-import {  fireEvent, render, waitFor } from "@testing-library/react-native";
-import gameHelper from "@helpers/Game/gameHelper";
-import { gameType } from "@helpers/Game/gameType";
-import { PlayerDto } from "../playerObject";
-import PlayerList from "../playerList";
-import { sortPlayersByOrder } from "@helpers/Player/PlayerHelper";
-import { act } from "react-test-renderer";
+import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import gameHelper from '@helpers/Game/gameHelper';
+import {gameType} from '@helpers/Game/gameType';
+import {PlayerDto} from '../playerObject';
+import PlayerList from '../playerList';
+import {sortPlayersByOrder} from '@helpers/Player/PlayerHelper';
+import {GameProvider} from '@helpers/Game/gameContext';
 jest.mock('@helpers/Image/ImageTaker');
+jest.mock('react-i18next', () => ({
+  // this mock makes sure any components using the translate hook can use it without a warning being shown
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => {},
+  },
+}));
+describe('playerList', () => {
+  it('Adds player to player list', async () => {
+    // Arrange
+    var gamingHelper = gameHelper(undefined);
+    gamingHelper.generateNewGame(gameType.maxiYatzy);
 
-describe("playerList", () => {
-    it("Adds player to player list", async () => {
-        // Arrange
-        var gamingHelper = gameHelper(undefined);
-        gamingHelper.generateNewGame(gameType.maxiYatzy);
+    const testPlayer: PlayerDto = {
+      name: 'TestPlayer 1',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-        const testPlayer: PlayerDto = {
-            name: "TestPlayer 1",
-            imageUrl: "",
-            playerId: 0,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    const testPlayer2: PlayerDto = {
+      name: 'TestPlayer 2',
+      imageUrl: '',
+      playerId: 1,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-        const testPlayer2: PlayerDto = {
-            name: "TestPlayer 2",
-            imageUrl: "",
-            playerId: 1,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    const {getByText} = render(
+      <GameProvider>
+        <PlayerList
+          gamingHelper={gamingHelper}
+          players={[testPlayer, testPlayer2]}
+        />
+      </GameProvider>,
+    );
 
-        const { getByText } = render(<PlayerList gamingHelper={gamingHelper} players={[testPlayer, testPlayer2]} />);
+    // Act
+    await waitFor(() => {
+      const item = getByText(testPlayer.name);
+      const item2 = getByText(testPlayer2.name);
 
- 
-        // Act
-        await waitFor(() => {
-            const item = getByText(testPlayer.name);
-            const item2 = getByText(testPlayer2.name);
-    
-            fireEvent(item, "click");
-            fireEvent(item2, "click");
-        })
+      fireEvent(item, 'click');
+      fireEvent(item2, 'click');
+    });
 
-        // Assert
-        expect(gamingHelper.getPlayers()).toContain(testPlayer);
-        expect(gamingHelper.getPlayers()).toContain(testPlayer2);
-    })
+    // Assert
+    expect(gamingHelper.getPlayers()).toContain(testPlayer);
+    expect(gamingHelper.getPlayers()).toContain(testPlayer2);
+  });
 
-    it("Removes player from player list after added", async () => {
-        // Arrange
-        var gamingHelper = gameHelper(undefined);
-        gamingHelper.generateNewGame(gameType.maxiYatzy);
+  it('Removes player from player list after added', async () => {
+    // Arrange
+    var gamingHelper = gameHelper(undefined);
+    gamingHelper.generateNewGame(gameType.maxiYatzy);
 
-        const testPlayer: PlayerDto = {
-            name: "TestPlayer 1",
-            imageUrl: "",
-            playerId: 0,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    const testPlayer: PlayerDto = {
+      name: 'TestPlayer 1',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-        const testPlayer2: PlayerDto = {
-            name: "TestPlayer 2",
-            imageUrl: "",
-            playerId: 1,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    const testPlayer2: PlayerDto = {
+      name: 'TestPlayer 2',
+      imageUrl: '',
+      playerId: 1,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-        const { getByText } = render(<PlayerList gamingHelper={gamingHelper} players={[testPlayer, testPlayer2]} />);
+    const {getByText} = render(
+      <GameProvider>
+        <PlayerList
+          gamingHelper={gamingHelper}
+          players={[testPlayer, testPlayer2]}
+        />
+      </GameProvider>,
+    );
 
-      
-        // Act
-        await waitFor(() => {
-            const item = getByText(testPlayer.name);
-            const item2 = getByText(testPlayer2.name);
-    
-            // Add player One
-            fireEvent(item, "click");
+    // Act
+    await waitFor(() => {
+      const item = getByText(testPlayer.name);
+      const item2 = getByText(testPlayer2.name);
 
-            // Add player Two
-            fireEvent(item2, "click");
+      // Add player One
+      fireEvent(item, 'click');
 
-            // Remove player Two
-            fireEvent(item2, "click");
-        })
+      // Add player Two
+      fireEvent(item2, 'click');
 
-        // Assert
+      // Remove player Two
+      fireEvent(item2, 'click');
+    });
 
-        let players = gamingHelper.getPlayers();
+    // Assert
 
-        expect(players).toContain(testPlayer);
-        expect(players?.some(player => player == testPlayer2)).toBe(false);
-    })
+    let players = gamingHelper.getPlayers();
 
-    it("When players is removed then added, order is changed", async () => {
-        // Arrange
+    expect(players).toContain(testPlayer);
+    expect(players?.some(player => player == testPlayer2)).toBe(false);
+  });
 
-        var gamingHelper = gameHelper(undefined);
-        gamingHelper.generateNewGame(gameType.maxiYatzy);
+  it('When players is removed then added, order is changed', async () => {
+    // Arrange
 
-        const testPlayer: PlayerDto = {
-            name: "TestPlayer 1",
-            imageUrl: "",
-            playerId: 0,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    var gamingHelper = gameHelper(undefined);
+    gamingHelper.generateNewGame(gameType.maxiYatzy);
 
-        const testPlayer2: PlayerDto = {
-            name: "TestPlayer 2",
-            imageUrl: "",
-            playerId: 1,
-            plusImage: false,
-            currentScore: 0,
-            order: undefined
-        };
+    const testPlayer: PlayerDto = {
+      name: 'TestPlayer 1',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-        const { getByText } = render(<PlayerList gamingHelper={gamingHelper} players={[testPlayer, testPlayer2]} />);
+    const testPlayer2: PlayerDto = {
+      name: 'TestPlayer 2',
+      imageUrl: '',
+      playerId: 1,
+      plusImage: false,
+      currentScore: 0,
+      order: undefined,
+    };
 
-      
-        // Act
-        await waitFor(() => {
-            const item = getByText(testPlayer.name);
-            const item2 = getByText(testPlayer2.name);
-    
-            // Add player One
-            fireEvent(item, "click");
+    const {getByText} = render(
+      <GameProvider>
+        <PlayerList
+          gamingHelper={gamingHelper}
+          players={[testPlayer, testPlayer2]}
+        />
+      </GameProvider>,
+    );
 
-            // Add player Two
-            fireEvent(item2, "click");
-        })
+    // Act
+    await waitFor(() => {
+      const item = getByText(testPlayer.name);
+      const item2 = getByText(testPlayer2.name);
 
-        expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[0]).toEqual(testPlayer);
-        expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[1]).toEqual(testPlayer2);
+      // Add player One
+      fireEvent(item, 'click');
 
-        await waitFor(() => {
-            const item = getByText(testPlayer.name);
-            const item2 = getByText(testPlayer2.name);
-    
-            // Removes player One
-            fireEvent(item, "click");
+      // Add player Two
+      fireEvent(item2, 'click');
+    });
 
-            // Removes player Two
-            fireEvent(item2, "click");
-        })
+    expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[0]).toEqual(
+      testPlayer,
+    );
+    expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[1]).toEqual(
+      testPlayer2,
+    );
 
-        expect(gamingHelper.getPlayers()?.some(player => player == testPlayer)).toBe(false);
-        expect(gamingHelper.getPlayers()?.some(player => player == testPlayer2)).toBe(false);
+    await waitFor(() => {
+      const item = getByText(testPlayer.name);
+      const item2 = getByText(testPlayer2.name);
 
-        await waitFor(() => {
-            const item = getByText(testPlayer.name);
-            const item2 = getByText(testPlayer2.name);
-    
-            // Adds player Two
-            fireEvent(item2, "click");
+      // Removes player One
+      fireEvent(item, 'click');
 
-            // Adds player One
-            fireEvent(item, "click");
-        })
+      // Removes player Two
+      fireEvent(item2, 'click');
+    });
 
-        gamingHelper.getPlayers()?.sort(sortPlayersByOrder)
+    expect(
+      gamingHelper.getPlayers()?.some(player => player == testPlayer),
+    ).toBe(false);
+    expect(
+      gamingHelper.getPlayers()?.some(player => player == testPlayer2),
+    ).toBe(false);
 
-        expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[0]).toEqual(testPlayer2);
-        expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[1]).toEqual(testPlayer);
-        
-    })
+    await waitFor(() => {
+      const item = getByText(testPlayer.name);
+      const item2 = getByText(testPlayer2.name);
 
+      // Adds player Two
+      fireEvent(item2, 'click');
 
-})
+      // Adds player One
+      fireEvent(item, 'click');
+    });
+
+    gamingHelper.getPlayers()?.sort(sortPlayersByOrder);
+
+    expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[0]).toEqual(
+      testPlayer2,
+    );
+    expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[1]).toEqual(
+      testPlayer,
+    );
+  });
+});

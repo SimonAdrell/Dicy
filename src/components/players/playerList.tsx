@@ -1,30 +1,8 @@
-import {useState, useEffect} from 'react';
-import {FlatList, StyleSheet, useWindowDimensions} from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
 import {PlayerDto} from './playerObject';
 import Player from './player';
 import {gameHelperType} from '@helpers/Game/gameHelperType';
-
-const minCols = 2;
-
-const calcNumColumns = (width: number) => {
-  const cols = width / styles.item.width;
-  const colsFloor = Math.floor(cols) > minCols ? Math.floor(cols) : minCols;
-  const colsMinusMargin = cols - 2 * colsFloor * styles.item.margin;
-  if (colsMinusMargin < colsFloor && colsFloor > minCols) {
-    return colsFloor - 1;
-  } else return colsFloor;
-};
-
-const formatData = (data: PlayerDto[], numColumns: number) => {
-  const amountFullRows = Math.floor(data.length / numColumns);
-  let amountItemsLastRow = data.length - amountFullRows * numColumns;
-
-  //   while (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
-  //     data.push({key: `empty-${amountItemsLastRow}`, empty: true});
-  //     amountItemsLastRow++;
-  //   }
-  return data;
-};
+import AddNewPlayer from './addPlayer';
 
 type playerListProps = {
   players: PlayerDto[];
@@ -32,25 +10,31 @@ type playerListProps = {
 };
 
 const PlayerList = ({players, gamingHelper}: playerListProps) => {
-  const {width} = useWindowDimensions();
-  const [numColumns, setNumColumns] = useState(calcNumColumns(width));
-
-  useEffect(() => {
-    setNumColumns(calcNumColumns(width));
-  }, [width]);
-
+  if (players.length == 0) {
+    players.push({
+      name: '',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: true,
+      currentScore: 0,
+      order: undefined,
+    });
+  }
   return (
     <FlatList
       key={2}
-      data={formatData(players, numColumns)}
+      data={players}
       style={styles.container}
       numColumns={2}
       renderItem={item => {
-        return (
+        return item.item.plusImage ? (
+          <AddNewPlayer />
+        ) : (
           <Player
             playerDto={item.item}
             gamingHelper={gamingHelper}
-            style={styles.item}></Player>
+            style={styles.item}
+          />
         );
       }}
     />

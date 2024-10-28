@@ -1,49 +1,23 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {AddUserModal} from './addPlayerModal';
 import {useState} from 'react';
-import {PlayerDto} from './playerObject';
 import {NewPlayerAvatar} from './PlayerAvatar';
-import playerStorageHandler from '@helpers/Storage/player/playerHandler';
-import {useGame} from '@helpers/Game/gameContext';
-import {gameType} from '@helpers/Game/gameType';
-import gameHelper from '@helpers/Game/gameHelper';
 import {useTranslation} from 'react-i18next';
-export default function NewPlayer() {
-  const {t, i18n} = useTranslation();
-  const [modalVisible, setModalVisible] = useState(false);
-  const playerHandler = playerStorageHandler();
+import {submitNewPlayer} from '@helpers/Player/PlayerHelper';
+import {useGame} from '@helpers/Game/gameContext';
+
+export default function NewPlayerIcon() {
+  const {t} = useTranslation();
   const {setGame, game} = useGame();
-  let players: PlayerDto[] = [];
-  if (Array.isArray(playerHandler.getPlayers())) {
-    players = playerHandler.getPlayers();
-  }
-  let gamingHelper = gameHelper(game);
-  function GetPlayerId(): number {
-    return players.length > 0
-      ? players.reduce(function (prev, current) {
-          return prev && prev.playerId > current.playerId ? prev : current;
-        }).playerId + 1
-      : 0;
-  }
+  const [modalVisible, setModalVisible] = useState(false);
   const onPress = () => {
     setModalVisible(true);
   };
   const onPlayerSubmit = (playerName: string, imageUrl: string) => {
     setModalVisible(false);
-    let player = {} as PlayerDto;
-    player.name = playerName;
-    player.playerId = GetPlayerId();
-    player.imageUrl = imageUrl;
-    players.push(player);
-    playerHandler.savePlayers(players);
-    if (game) {
-      gamingHelper.setPlayers(players);
-    } else {
-      gamingHelper.generateNewGame(gameType.maxiYatzy);
-      gamingHelper.setPlayers(players);
-    }
-    setGame(gamingHelper.getGame());
+    submitNewPlayer(playerName, imageUrl, t, game, setGame);
   };
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
