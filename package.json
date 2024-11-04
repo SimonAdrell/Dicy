@@ -62,7 +62,7 @@
     "@react-native/eslint-config": "^0.76.0",
     "@react-native/metro-config": "^0.75.4",
     "@react-native/typescript-config": "^0.76.0",
-    "@rnx-kit/align-deps": "^3.0.1",
+    "@rnx-kit/align-deps": "^3.0.2",
     "@testing-library/react-native": "^12.8.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
