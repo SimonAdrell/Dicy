@@ -4,15 +4,16 @@ import {
   Text,
   TouchableOpacity,
   ViewProps,
+  useColorScheme,
 } from 'react-native';
-import {PlayerDto} from './playerObject';
-import {Avatar} from './PlayerAvatar';
+import { PlayerDto } from './playerObject';
+import { Avatar } from './PlayerAvatar';
 import playerStorageHandler from '@helpers/Storage/player/playerHandler';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
-import {gameType} from '@helpers/Game/gameType';
-import {useState} from 'react';
+import { gameHelperType } from '@helpers/Game/gameHelperType';
+import { gameType } from '@helpers/Game/gameType';
+import { useState } from 'react';
 import ConfirmDialog from 'react-native-simple-dialogs/dist/ConfirmDialog';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 interface playerProps extends ViewProps {
   playerDto: PlayerDto;
   gamingHelper: gameHelperType;
@@ -20,7 +21,9 @@ interface playerProps extends ViewProps {
 
 export default function Player(props: playerProps) {
   const playerHandler = playerStorageHandler();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const playerIsGaming = (): boolean => {
     let players = props.gamingHelper.getPlayers();
@@ -108,7 +111,7 @@ export default function Player(props: playerProps) {
     <TouchableOpacity
       style={[
         styles.container,
-        playerIsActiveGaming ? styles.containerShadow : {shadowColor: '#000'},
+        playerIsActiveGaming ? styles.containerShadow : { shadowColor: '#000' },
       ]}
       key={props.playerDto.playerId}
       onPress={() => {
@@ -119,11 +122,11 @@ export default function Player(props: playerProps) {
       }}>
       <View
         {...props}
-        style={{flexDirection: 'column', alignItems: 'center', height: '100%'}}>
-        <View style={{flex: 1, alignContent: 'center', marginLeft: 5}}>
+        style={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+        <View style={{ flex: 1, alignContent: 'center', marginLeft: 5 }}>
           <Avatar src={props.playerDto.imageUrl} imageHeight={65}></Avatar>
         </View>
-        <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
           <View
             style={{
               flex: 1,
@@ -132,7 +135,7 @@ export default function Player(props: playerProps) {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={styles.sectionTitle}>{props.playerDto.name}</Text>
+            <Text style={[styles.sectionTitle,isDarkMode ? styles.sectionTitleDark : styles.sectionTitleLight]}>{props.playerDto.name}</Text>
           </View>
         </View>
         <ConfirmDialog
@@ -207,5 +210,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#005b4f',
+  },
+  sectionTitleDark: {
+      color: '#00806f'
+  },
+  sectionTitleLight:{
+      color: '#005b4f'
   },
 });

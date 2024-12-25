@@ -4,17 +4,19 @@ import {
   Switch,
   Text,
   TextInput,
+  useColorScheme,
   View,
 } from 'react-native';
-import {useState} from 'react';
-import {Avatar} from '../players/PlayerAvatar';
-import {PlayerDto} from '../players/playerObject';
+import { useState } from 'react';
+import { Avatar } from '../players/PlayerAvatar';
+import { PlayerDto } from '../players/playerObject';
 import Modal from 'react-native-modal';
 import React from 'react';
-import {PlayerScore} from '@helpers/Game/PlayerScore';
-import {GameScore} from '@helpers/Game/GameScore';
-import {sharedStyle} from '@styles/sharedStyle';
-import {useTranslation} from 'react-i18next';
+import { PlayerScore } from '@helpers/Game/PlayerScore';
+import { GameScore } from '@helpers/Game/GameScore';
+import { modalStyle, SharedStyle } from '@styles/sharedStyle';
+import { useTranslation } from 'react-i18next';
+import NextButton from 'components/shared/button';
 
 export type scoreModalProps = {
   scoreToBeUpdated: GameScore | undefined;
@@ -29,7 +31,7 @@ export type scoreModalProps = {
 };
 
 export function AddScoreModal(options: scoreModalProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
   const toggleSwitch = () => onEnabledChange(previousState => !previousState);
   const [scoreString, onChangeScore] = useState<string>('');
@@ -121,33 +123,38 @@ export function AddScoreModal(options: scoreModalProps) {
   const onModalWillHide = () => {
     exitModal(undefined, options.scoreToBeUpdated);
   };
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const mstyle = modalStyle(isDarkMode);
+  const sStyle = SharedStyle(isDarkMode);
   return (
     <View>
       <Modal
-        style={styles.modal}
+        style={mstyle.modal}
         isVisible={options.visible}
         onBackdropPress={() => {
           exitModal(undefined, options.scoreToBeUpdated);
         }}
         onModalShow={onModalShow}
         onModalWillHide={onModalWillHide}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalText}>
+        <View style={mstyle.centeredView}>
+          <View style={mstyle.modalView}>
+            <View style={mstyle.modalText}>
               <Avatar
                 src={player === undefined ? undefined : player.imageUrl}
                 imageHeight={100}></Avatar>
-              <Text style={[sharedStyle.darkFontColor, {fontSize: 18}]}>
+              <Text style={[sStyle.fontColor, { fontSize: 18 }]}>
                 {player === undefined ? undefined : player.name}
               </Text>
             </View>
-            <Text style={styles.modalText}>
+            <Text style={mstyle.modalText}>
               {options.scoreToBeUpdated?.name}
             </Text>
-            <Text style={styles.tinyModalText}>
+            <Text style={mstyle.tinyModalText}>
               Max: {options.scoreToBeUpdated?.topScore}
             </Text>
-            <View style={styles.formView}>
+            <View style={mstyle.formView}>
               {modalShown && (
                 <TextInput
                   autoFocus={true}
@@ -155,16 +162,16 @@ export function AddScoreModal(options: scoreModalProps) {
                   value={scoreString}
                   onChangeText={onChangeScore}
                   keyboardType="number-pad"
-                  style={styles.textInput}></TextInput>
+                  style={mstyle.textInput}></TextInput>
               )}
               {!modalShown && (
                 <TextInput
-                  style={styles.textInput}
+                  style={mstyle.textInput}
                   onChangeText={onChangeScore}
                 />
               )}
             </View>
-            <View style={styles.formView}>
+            <View style={mstyle.formView}>
               <Switch
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
@@ -172,12 +179,8 @@ export function AddScoreModal(options: scoreModalProps) {
               />
               <Text>{t('yatzyScreen.crossOut')}</Text>
             </View>
-            <View style={styles.saveView}>
-              <Pressable onPress={onSave}>
-                <Text style={styles.saveText}>
-                  {t('yatzyScreen.savePoints')}
-                </Text>
-              </Pressable>
+            <View style={mstyle.saveView}>
+              <NextButton onPress={onSave} text={t('yatzyScreen.savePoints')}></NextButton>
             </View>
           </View>
         </View>
@@ -185,71 +188,3 @@ export function AddScoreModal(options: scoreModalProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    fontSize: 28,
-    lineHeight: 32,
-    marginTop: -6,
-    padding: 10,
-  },
-  textInput: {
-    fontSize: 14,
-    lineHeight: 32,
-    width: 300,
-    borderColor: '#6750A4',
-    marginTop: 40,
-    borderRadius: 6,
-    borderWidth: 2,
-    paddingLeft: 10,
-    color: sharedStyle.darkFontColor.color,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 0,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: '#F7F7F7',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    alignItems: 'center',
-    fontSize: 28,
-    color: sharedStyle.darkFontColor.color,
-  },
-  tinyModalText: {
-    marginBottom: 15,
-    alignItems: 'center',
-    textAlign: 'center',
-    fontSize: 14,
-    color: sharedStyle.darkFontColor.color,
-  },
-  formView: {
-    alignItems: 'center',
-  },
-  saveView: {
-    alignItems: 'center',
-  },
-  saveText: {
-    marginTop: 40,
-    fontSize: 18,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFC700',
-  },
-});

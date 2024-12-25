@@ -4,6 +4,7 @@ import {
   Text,
   TextStyle,
   TouchableOpacity,
+  useColorScheme,
   View,
   ViewProps,
 } from 'react-native';
@@ -12,8 +13,8 @@ import {PlayerScore} from '@helpers/Game/PlayerScore';
 import {GameState} from '@helpers/Game/GameState';
 import {GameScore} from '@helpers/Game/GameScore';
 import {sortPlayerScoresByPlayersOrder} from '@helpers/Player/PlayerHelper';
-import {sharedStyle} from '@styles/sharedStyle';
 import {yatzyStyle} from '@styles/yatzyStyle/yatzyStyle';
+import { SharedStyle } from 'styles/sharedStyle';
 
 interface rowProps extends ViewProps {
   GameState: GameState;
@@ -23,6 +24,9 @@ interface rowProps extends ViewProps {
   onPress: (playerScore: PlayerScore, scoreToBeUpdated: GameScore) => void;
 }
 export default function Row(row: rowProps) {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const sStyle = SharedStyle(isDarkMode);
   return (
     <View
       {...row}
@@ -54,7 +58,7 @@ export default function Row(row: rowProps) {
                 <Text
                   style={[
                     yatzyStyle.text,
-                    sharedStyle.darkFontColor,
+                    sStyle.fontColor,
                     {fontWeight: 'bold'},
                   ]}>
                   {element.isRemoved ? '' : element.score?.toLocaleString()}

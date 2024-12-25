@@ -1,5 +1,4 @@
-import {SeFlag, UkFlag} from '@components/shared/Flag';
-import {Image, Pressable, Text, View, ViewProps} from 'react-native';
+import {Image, Pressable, Text, useColorScheme, View, ViewProps} from 'react-native';
 import {languageStorage} from '@helpers/Storage/language/languageStorage';
 import styles from './languageSettings.styles';
 import {useTranslation} from 'react-i18next';
@@ -8,14 +7,18 @@ interface languageSettingsProps extends ViewProps {}
 
 export function LanguageSettings(options: languageSettingsProps) {
   const {t, i18n} = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     const storage: itemStorage<string> = languageStorage('lang');
     storage.save(lng);
   };
+  const mStyle = modalStyle(isDarkMode);
   return (
     <View {...options}>
-      <View style={modalStyle.playerRow}>
+      <View style={mStyle.playerRow}>
         <Text style={[styles.gameNameText, {fontSize: 32, padding: 20}]}>
           {t('settings.languageSettings.header')}
         </Text>
@@ -24,7 +27,7 @@ export function LanguageSettings(options: languageSettingsProps) {
         <Pressable
           onPress={() => changeLanguage('en')}
           style={[
-            modalStyle.playerRow,
+            mStyle.playerRow,
             {
               backgroundColor:
                 i18n.resolvedLanguage === 'en' ? '#dedede' : '#F7F7F7',
@@ -51,7 +54,7 @@ export function LanguageSettings(options: languageSettingsProps) {
         <Pressable
           onPress={() => changeLanguage('se')}
           style={[
-            modalStyle.playerRow,
+            mStyle.playerRow,
             {
               backgroundColor:
                 i18n.resolvedLanguage === 'se' ? '#dedede' : '#F7F7F7',

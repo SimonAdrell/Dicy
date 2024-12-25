@@ -1,10 +1,12 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import Modal from 'react-native-modal';
-import React, {useRef, useState} from 'react';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
-import {ScoreModalPlayer} from './playerScoreRow';
+import React, { useRef, useState } from 'react';
+import { gameHelperType } from '@helpers/Game/gameHelperType';
+import { ScoreModalPlayer } from './playerScoreRow';
 import LottieView from 'lottie-react-native';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { modalStyle } from 'styles/sharedStyle';
+import NextButton from 'components/shared/button';
 export type playersScoreModalProps = {
   GameHelper: gameHelperType;
   visible: boolean;
@@ -12,7 +14,7 @@ export type playersScoreModalProps = {
 };
 
 export function PlayersScoreModal(options: playersScoreModalProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   function exitModal() {
     options.onExit();
     setAnimationVisibility(true);
@@ -23,15 +25,18 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
   function triggerConfetti() {
     confettiRef.current?.play(0);
   }
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const mStyle = modalStyle(isDarkMode);
   return (
     <View>
       <Modal
-        style={styles.modal}
+        style={mStyle.modal}
         isVisible={options.visible}
         onBackdropPress={exitModal}
         onModalWillHide={exitModal}
         onShow={triggerConfetti}>
-        <View style={styles.centeredView}>
+        <View style={mStyle.centeredView}>
           {animate && (
             <View
               style={{
@@ -46,7 +51,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                 source={require('../../../assets/confetti.json')}
                 autoPlay={false}
                 loop={false}
-                style={styles.lottie}
+                style={mStyle.lottie}
                 resizeMode="cover"
                 onAnimationFinish={() => {
                   setAnimationVisibility(false);
@@ -55,8 +60,8 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
             </View>
           )}
 
-          <View style={styles.modalView}>
-            <View style={styles.modalText}>
+          <View style={mStyle.modalView}>
+            <View style={mStyle.modalText}>
               {playersTotalScore
                 ?.sort((a, b) => b.currentScore - a.currentScore)
                 .map((element, index) => {
@@ -65,101 +70,15 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                       key={index + ''}
                       place={(index += 1)}
                       player={element}
-                      style={styles.playerRow}
+                      style={mStyle.playerRow}
                     />
                   );
                 })}
             </View>
-            <View style={styles.saveView}>
-              <Pressable onPress={exitModal}>
-                <Text style={styles.saveText}>{t('yatzyScreen.close')}</Text>
-              </Pressable>
-            </View>
+            <NextButton text={t('yatzyScreen.close')} onPress={exitModal}></NextButton>
           </View>
         </View>
       </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    fontSize: 28,
-    alignItems: 'center',
-    flex: 1,
-    lineHeight: 32,
-    marginTop: -6,
-    padding: 10,
-  },
-  textInput: {
-    fontSize: 14,
-    lineHeight: 32,
-    width: 300,
-    borderColor: '#6750A4',
-    marginTop: 40,
-    borderRadius: 6,
-    borderWidth: 2,
-    paddingLeft: 10,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 0,
-    width: 300,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: '#F7F7F7',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    alignItems: 'center',
-    fontSize: 28,
-    width: 300,
-  },
-  tinyModalText: {
-    marginBottom: 15,
-    alignItems: 'center',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  formView: {
-    alignItems: 'center',
-  },
-  saveView: {
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  saveText: {
-    marginTop: 40,
-    fontSize: 18,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFC700',
-  },
-  playerRow: {
-    width: 300,
-    flexDirection: 'row',
-  },
-  lottie: {
-    zIndex: 1,
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    // pointerEvents: 'auto',
-    // elevation: 6,
-  },
-});

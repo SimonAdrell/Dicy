@@ -8,12 +8,16 @@ import GameTypeItem from '@components/game/gameTypeItem';
 import styles from './gameScreen.styles';
 import {useTranslation} from 'react-i18next';
 import SettingsIcon from '@components/settings/settingsIcon';
+import {useColorScheme} from 'react-native';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;
 
 const GameScreen = ({navigation}: Props) => {
   const {t} = useTranslation();
   const {setGame} = useGame();
-
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  
   const save = (gameType: gameType) => {
     const helper = gameHelper(undefined);
     helper.generateNewGame(gameType);
@@ -21,7 +25,7 @@ const GameScreen = ({navigation}: Props) => {
     navigation.navigate('PlayerPicker');
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,isDarkMode ? styles.containerDark : styles.containerLight]}>
       <View style={styles.wrapperContainer}>
         <View style={styles.languageContainer}>
           <SettingsIcon />
