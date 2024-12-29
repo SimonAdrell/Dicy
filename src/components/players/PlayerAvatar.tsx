@@ -9,10 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { takenImage } from '../../utils/helpers/Image/takenImage';
 import takePicture from '../../utils/helpers/Image/ImageTaker';
-import { SharedStyle } from 'styles/sharedStyle';
-const colorScheme = useColorScheme();
-const isDarkMode = colorScheme === 'dark';
-const sStyle = SharedStyle(isDarkMode);
+import { SharedStyle } from '@styles/sharedStyle';
 
 type ImageProps = DefaultImageProps & {
     source?: ImageURISource;
@@ -25,6 +22,8 @@ interface AvatarProps extends ImageProps {
 
 export const AvatarCreation = (props: AvatarProps) => {
     const [uri, setUri] = React.useState(props.source?.uri || undefined);
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
 
     const imageTaken = (image: takenImage) => {
         setUri(image.path);
@@ -55,6 +54,10 @@ export const AvatarCreation = (props: AvatarProps) => {
 };
 
 export const Avatar = (props: AvatarProps) => {
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+    const sStyle = SharedStyle(isDarkMode);
+
     return (
         <View>
             {props.src ?
@@ -71,6 +74,10 @@ export const Avatar = (props: AvatarProps) => {
 };
 
 export const NewPlayerAvatar = (props: AvatarProps) => {
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+    const sStyle = SharedStyle(isDarkMode);
+
     return (
         <View>
             {props.src ?

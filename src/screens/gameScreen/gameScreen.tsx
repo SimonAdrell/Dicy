@@ -1,23 +1,25 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../App';
-import {SafeAreaView, View, ScrollView, TouchableOpacity} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../App';
+import { SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
 import gameHelper from '@helpers/Game/gameHelper';
-import {gameType} from '@helpers/Game/gameType';
-import {useGame} from '@helpers/Game/gameContext';
+import { gameType } from '@helpers/Game/gameType';
+import { useGame } from '@helpers/Game/gameContext';
 import GameTypeItem from '@components/game/gameTypeItem';
 import styles from './gameScreen.styles';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import SettingsIcon from '@components/settings/settingsIcon';
-import {useColorScheme} from 'react-native';
+import { useColorScheme } from 'react-native';
+import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;
 
-const GameScreen = ({navigation}: Props) => {
-  const {t} = useTranslation();
-  const {setGame} = useGame();
+const GameScreen = ({ navigation }: Props) => {
+  const { t } = useTranslation();
+  const { setGame } = useGame();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  
+  const sStyle = SharedStyle(isDarkMode);
+
   const save = (gameType: gameType) => {
     const helper = gameHelper(undefined);
     helper.generateNewGame(gameType);
@@ -25,7 +27,7 @@ const GameScreen = ({navigation}: Props) => {
     navigation.navigate('PlayerPicker');
   };
   return (
-    <SafeAreaView style={[styles.container,isDarkMode ? styles.containerDark : styles.containerLight]}>
+    <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
       <View style={styles.wrapperContainer}>
         <View style={styles.languageContainer}>
           <SettingsIcon />

@@ -15,7 +15,6 @@ export default StyleSheet.create({
     gameNameText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#005b4f',
     }, gameTagLineText: {
         color: '#00aa98',
     },

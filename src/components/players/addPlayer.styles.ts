@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { SharedStyle } from "styles/sharedStyle";
+import { SharedStyle } from "@styles/sharedStyle";
 
 export default (isDarkMode: boolean) => {
     return StyleSheet.create({

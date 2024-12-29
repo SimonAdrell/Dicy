@@ -18,7 +18,7 @@ import { sortPlayersByOrder } from '@helpers/Player/PlayerHelper';
 import styles from './YatzyScreen.styles';
 import NextButton from '@components/shared/button';
 import { useTranslation } from 'react-i18next';
-import { SharedStyle } from 'styles/sharedStyle';
+import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 

@@ -1,12 +1,12 @@
-import {Text, useColorScheme, View} from 'react-native';
-import {TextInput} from 'react-native';
+import { Text, useColorScheme, View } from 'react-native';
+import { TextInput } from 'react-native';
 import React from 'react';
-import {AvatarCreation} from './PlayerAvatar';
+import { AvatarCreation } from './PlayerAvatar';
 import Modal from 'react-native-modal';
-import {takenImage} from '@helpers/Image/takenImage';
-import {useTranslation} from 'react-i18next';
-import NextButton from 'components/shared/button';
-import { modalStyle } from 'styles/sharedStyle';
+import { takenImage } from '@helpers/Image/takenImage';
+import { useTranslation } from 'react-i18next';
+import NextButton from '@components/shared/button';
+import { modalStyle } from '@styles/sharedStyle';
 
 export type AddUserModalProps = {
   name: string;
@@ -20,7 +20,7 @@ export function AddUserModal({
   onSubmit,
   onBackdropPress,
 }: AddUserModalProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [playerName, onChangePlayerName] = React.useState<string>('');
   const [playerImage, OnChangePlayerImage] = React.useState<string>('');
   const onSavePress = () => {
@@ -44,8 +44,11 @@ export function AddUserModal({
         <View style={mstyle.centeredView}>
           <View style={mstyle.modalView}>
             <Text style={mstyle.modalText}>{t('player.addPlayerHeader')}</Text>
-            <View style={mstyle.formView}>
+            <View style={mstyle.modalText}>
               <AvatarCreation onChange={onAvatarChange}></AvatarCreation>
+
+            </View>
+            <View style={mstyle.formView}>
               <TextInput
                 placeholder={t('player.addNewPlayerPlaceHolder')}
                 value={playerName}
@@ -54,10 +57,8 @@ export function AddUserModal({
                 testID="App.username"
                 style={mstyle.textInput}></TextInput>
             </View>
-            <View style={mstyle.lowerView}>
-              <View style={mstyle.saveView}>
-                <NextButton onPress={onSavePress} text={t('player.addNewPlayerSaveButton')}></NextButton>
-              </View>
+            <View style={mstyle.saveView}>
+              <NextButton onPress={onSavePress} text={t('player.addNewPlayerSaveButton')}></NextButton>
             </View>
           </View>
         </View>

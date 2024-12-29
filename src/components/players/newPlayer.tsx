@@ -1,14 +1,15 @@
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import {AddUserModal} from './addPlayerModal';
-import {useState} from 'react';
-import {NewPlayerAvatar} from './PlayerAvatar';
-import {useTranslation} from 'react-i18next';
-import {submitNewPlayer} from '@helpers/Player/PlayerHelper';
-import {useGame} from '@helpers/Game/gameContext';
+import { StyleSheet, View, TouchableOpacity, useColorScheme } from 'react-native';
+import { AddUserModal } from './addPlayerModal';
+import { useState } from 'react';
+import { NewPlayerAvatar } from './PlayerAvatar';
+import { useTranslation } from 'react-i18next';
+import { submitNewPlayer } from '@helpers/Player/PlayerHelper';
+import { useGame } from '@helpers/Game/gameContext';
+import { SharedStyle } from '@styles/sharedStyle';
 
 export default function NewPlayerIcon() {
-  const {t} = useTranslation();
-  const {setGame, game} = useGame();
+  const { t } = useTranslation();
+  const { setGame, game } = useGame();
   const [modalVisible, setModalVisible] = useState(false);
   const onPress = () => {
     setModalVisible(true);
@@ -18,13 +19,17 @@ export default function NewPlayerIcon() {
     submitNewPlayer(playerName, imageUrl, t, game, setGame);
   };
 
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const sStyle = SharedStyle(isDarkMode);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <View style={styles.wrapperContainer}>
           <NewPlayerAvatar
             imageHeight={75}
-            style={[styles.avatarStyle]}></NewPlayerAvatar>
+            style={[styles.avatarStyle, sStyle.itemBackground]}></NewPlayerAvatar>
         </View>
         <AddUserModal
           name={t('player.addPlayerHeader')}
@@ -50,7 +55,6 @@ var styles = StyleSheet.create({
   },
   avatarStyle: {
     borderWidth: 0,
-    backgroundColor: '#e8fefa',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

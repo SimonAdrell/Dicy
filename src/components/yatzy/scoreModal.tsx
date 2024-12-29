@@ -16,7 +16,7 @@ import { PlayerScore } from '@helpers/Game/PlayerScore';
 import { GameScore } from '@helpers/Game/GameScore';
 import { modalStyle, SharedStyle } from '@styles/sharedStyle';
 import { useTranslation } from 'react-i18next';
-import NextButton from 'components/shared/button';
+import NextButton from '@components/shared/button';
 
 export type scoreModalProps = {
   scoreToBeUpdated: GameScore | undefined;
@@ -120,9 +120,7 @@ export function AddScoreModal(options: scoreModalProps) {
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
-  const onModalWillHide = () => {
-    exitModal(undefined, options.scoreToBeUpdated);
-  };
+  const onModalWillHide = () => exitModal(undefined, options.scoreToBeUpdated);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -148,7 +146,7 @@ export function AddScoreModal(options: scoreModalProps) {
                 {player === undefined ? undefined : player.name}
               </Text>
             </View>
-            <Text style={mstyle.modalText}>
+            <Text style={[mstyle.modalText, isRemoved ? { textDecorationLine: 'line-through' } : {}]}>
               {options.scoreToBeUpdated?.name}
             </Text>
             <Text style={mstyle.tinyModalText}>
@@ -176,8 +174,9 @@ export function AddScoreModal(options: scoreModalProps) {
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isRemoved}
+                style={{ transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }] }}
               />
-              <Text>{t('yatzyScreen.crossOut')}</Text>
+              <Text style={[mstyle.tinyModalText, { margin: 6 }]}>{t('yatzyScreen.crossOut')}</Text>
             </View>
             <View style={mstyle.saveView}>
               <NextButton onPress={onSave} text={t('yatzyScreen.savePoints')}></NextButton>

@@ -14,6 +14,7 @@ import { gameType } from '@helpers/Game/gameType';
 import { useState } from 'react';
 import ConfirmDialog from 'react-native-simple-dialogs/dist/ConfirmDialog';
 import { useTranslation } from 'react-i18next';
+import { SharedStyle } from '@styles/sharedStyle';
 interface playerProps extends ViewProps {
   playerDto: PlayerDto;
   gamingHelper: gameHelperType;
@@ -107,10 +108,14 @@ export default function Player(props: playerProps) {
     playerHandler.savePlayers(players);
   };
 
+
+  const sStyle = SharedStyle(isDarkMode);
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
+        sStyle.itemBackground,
         playerIsActiveGaming ? styles.containerShadow : { shadowColor: '#000' },
       ]}
       key={props.playerDto.playerId}
@@ -131,11 +136,11 @@ export default function Player(props: playerProps) {
             style={{
               flex: 1,
               padding: 5,
-              marginTop: 10,
+              marginTop: 13,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={[styles.sectionTitle,isDarkMode ? styles.sectionTitleDark : styles.sectionTitleLight]}>{props.playerDto.name}</Text>
+            <Text style={[styles.sectionTitle, sStyle.fontColor]}>{props.playerDto.name}</Text>
           </View>
         </View>
         <ConfirmDialog
@@ -164,7 +169,6 @@ export default function Player(props: playerProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e8fefa',
     padding: 15,
     paddingBottom: 20,
     margin: 5,
@@ -212,9 +216,9 @@ const styles = StyleSheet.create({
     color: '#005b4f',
   },
   sectionTitleDark: {
-      color: '#00806f'
+    color: '#00806f'
   },
-  sectionTitleLight:{
-      color: '#005b4f'
+  sectionTitleLight: {
+    color: '#005b4f'
   },
 });

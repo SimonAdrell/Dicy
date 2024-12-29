@@ -2,7 +2,7 @@ import { Text, useColorScheme, View } from "react-native"
 import { gameHelperType } from "@helpers/Game/gameHelperType";
 import { sortPlayerScoresByPlayersOrder } from "@helpers/Player/PlayerHelper";
 import { yatzyStyle } from "@styles/yatzyStyle/yatzyStyle";
-import { SharedStyle } from "styles/sharedStyle";
+import { SharedStyle } from "@styles/sharedStyle";
 
 type rowProps = {
     backgroundColor: string,
@@ -21,7 +21,8 @@ export default function BonusRow({ backgroundColor, GameHelper }: rowProps) {
         {
             playersScore.sort(sortPlayerScoresByPlayersOrder).map((element) => {
                 return <View style={yatzyStyle.cell} key={element.player.playerId}>
-                    <Text key={element.player.playerId.toLocaleString()} style={[yatzyStyle.text, element.score >= game.bonusScore ? { fontWeight: 'bold', backgroundColor: '#CCD5AE' } : {}, sStyle.fontColor]}>
+                    <Text key={element.player.playerId.toLocaleString()} style={[yatzyStyle.text, element.score >= game.bonusScore ? { fontWeight: 'bold', backgroundColor: '#CCD5AE' } : {}, { fontWeight: 'bold', color: '#000' },
+                    ]}>
                         {element.score >= game.bonusLimit ? game.bonusScore : ''}
                     </Text>
                 </View>

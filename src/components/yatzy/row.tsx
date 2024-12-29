@@ -9,12 +9,12 @@ import {
   ViewProps,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {PlayerScore} from '@helpers/Game/PlayerScore';
-import {GameState} from '@helpers/Game/GameState';
-import {GameScore} from '@helpers/Game/GameScore';
-import {sortPlayerScoresByPlayersOrder} from '@helpers/Player/PlayerHelper';
-import {yatzyStyle} from '@styles/yatzyStyle/yatzyStyle';
-import { SharedStyle } from 'styles/sharedStyle';
+import { PlayerScore } from '@helpers/Game/PlayerScore';
+import { GameState } from '@helpers/Game/GameState';
+import { GameScore } from '@helpers/Game/GameScore';
+import { sortPlayerScoresByPlayersOrder } from '@helpers/Player/PlayerHelper';
+import { yatzyStyle } from '@styles/yatzyStyle/yatzyStyle';
+import { SharedStyle } from '@styles/sharedStyle';
 
 interface rowProps extends ViewProps {
   GameState: GameState;
@@ -30,8 +30,8 @@ export default function Row(row: rowProps) {
   return (
     <View
       {...row}
-      style={[yatzyStyle.row, {backgroundColor: row.backgroundColor}]}>
-      <Text style={[yatzyStyle.head, {fontWeight: 'light'}]}>
+      style={[yatzyStyle.row, { backgroundColor: row.backgroundColor }]}>
+      <Text style={[yatzyStyle.head, { fontWeight: 'light' }]}>
         {row.GameState.score.name}
       </Text>
       {row.GameState.PlayerScore.sort(sortPlayerScoresByPlayersOrder).map(
@@ -43,7 +43,7 @@ export default function Row(row: rowProps) {
             <TouchableOpacity
               key={element.player.playerId}
               style={[
-                {alignItems: 'center', paddingTop: 5},
+                { alignItems: 'center', paddingTop: 5 },
                 yatzyStyle.cell,
                 element.isRemoved
                   ? row.removedCellStyle
@@ -58,8 +58,7 @@ export default function Row(row: rowProps) {
                 <Text
                   style={[
                     yatzyStyle.text,
-                    sStyle.fontColor,
-                    {fontWeight: 'bold'},
+                    { fontWeight: 'bold', color: '#000' },
                   ]}>
                   {element.isRemoved ? '' : element.score?.toLocaleString()}
                 </Text>
@@ -73,5 +72,5 @@ export default function Row(row: rowProps) {
 }
 
 var styles = StyleSheet.create({
-  removedIcon: {height: 80, fontSize: 18},
+  removedIcon: { height: 80, fontSize: 18 },
 });

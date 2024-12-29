@@ -5,8 +5,8 @@ import { gameHelperType } from '@helpers/Game/gameHelperType';
 import { ScoreModalPlayer } from './playerScoreRow';
 import LottieView from 'lottie-react-native';
 import { useTranslation } from 'react-i18next';
-import { modalStyle } from 'styles/sharedStyle';
-import NextButton from 'components/shared/button';
+import { modalStyle } from '@styles/sharedStyle';
+import NextButton from '@components/shared/button';
 export type playersScoreModalProps = {
   GameHelper: gameHelperType;
   visible: boolean;

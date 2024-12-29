@@ -7,7 +7,7 @@ export default (isDarkMode: boolean) => StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        backgroundColor: isDarkMode ? '#997800' : '#FFC700',
+        backgroundColor: isDarkMode ? '#c4a32b' : '#FFC700',
         fontWeight: 'bold'
     },
 })
