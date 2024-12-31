@@ -4,15 +4,17 @@ import {
   Text,
   TouchableOpacity,
   ViewProps,
+  useColorScheme,
 } from 'react-native';
-import {PlayerDto} from './playerObject';
-import {Avatar} from './PlayerAvatar';
+import { PlayerDto } from './playerObject';
+import { Avatar } from './PlayerAvatar';
 import playerStorageHandler from '@helpers/Storage/player/playerHandler';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
-import {gameType} from '@helpers/Game/gameType';
-import {useState} from 'react';
+import { gameHelperType } from '@helpers/Game/gameHelperType';
+import { gameType } from '@helpers/Game/gameType';
+import { useState } from 'react';
 import ConfirmDialog from 'react-native-simple-dialogs/dist/ConfirmDialog';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { SharedStyle } from '@styles/sharedStyle';
 interface playerProps extends ViewProps {
   playerDto: PlayerDto;
   gamingHelper: gameHelperType;
@@ -20,7 +22,9 @@ interface playerProps extends ViewProps {
 
 export default function Player(props: playerProps) {
   const playerHandler = playerStorageHandler();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const playerIsGaming = (): boolean => {
     let players = props.gamingHelper.getPlayers();
@@ -104,11 +108,15 @@ export default function Player(props: playerProps) {
     playerHandler.savePlayers(players);
   };
 
+
+  const sStyle = SharedStyle(isDarkMode);
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
-        playerIsActiveGaming ? styles.containerShadow : {shadowColor: '#000'},
+        sStyle.itemBackground,
+        playerIsActiveGaming ? sStyle.itemSelected : { shadowColor: '#000' },
       ]}
       key={props.playerDto.playerId}
       onPress={() => {
@@ -119,20 +127,20 @@ export default function Player(props: playerProps) {
       }}>
       <View
         {...props}
-        style={{flexDirection: 'column', alignItems: 'center', height: '100%'}}>
-        <View style={{flex: 1, alignContent: 'center', marginLeft: 5}}>
+        style={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+        <View style={{ flex: 1, alignContent: 'center', marginLeft: 5 }}>
           <Avatar src={props.playerDto.imageUrl} imageHeight={65}></Avatar>
         </View>
-        <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
           <View
             style={{
               flex: 1,
               padding: 5,
-              marginTop: 10,
+              marginTop: 13,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={styles.sectionTitle}>{props.playerDto.name}</Text>
+            <Text style={[styles.sectionTitle, sStyle.fontColor]}>{props.playerDto.name}</Text>
           </View>
         </View>
         <ConfirmDialog
@@ -161,51 +169,16 @@ export default function Player(props: playerProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e8fefa',
     padding: 15,
     paddingBottom: 20,
     margin: 5,
     borderRadius: 10,
     height: 130,
-    opacity: 0.8,
-  },
-  containerShadow: {
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 15,
-    },
-    shadowOpacity: 0.24,
-    shadowRadius: 16.41,
-    elevation: 20,
-    opacity: 1,
-  },
-  gameTypeActive: {
-    flex: 1,
-  },
-  gameTypeItemWrapper: {
-    flexDirection: 'row',
-    padding: 15,
-    paddingBottom: 20,
-  },
-  gameNameText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#005b4f',
-  },
-  gameTagLineText: {
-    color: '#00aa98',
-  },
-  remove: {
-    backgroundColor: '#ffa17a',
-    borderRadius: 10,
-    padding: 2,
-    paddingLeft: 15,
-    paddingRight: 15,
+    opacity: 0.7,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#005b4f',
-  },
+  }
 });

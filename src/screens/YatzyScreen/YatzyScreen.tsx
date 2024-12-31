@@ -1,32 +1,32 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView, Text, View} from 'react-native';
-import {RootStackParamList} from '../../../App';
-import {useState} from 'react';
-import {PlayerDto} from '@components/players/playerObject';
-import {Avatar} from '@components/players/PlayerAvatar';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ScrollView, Text, useColorScheme, View } from 'react-native';
+import { RootStackParamList } from '../../../App';
+import { useState } from 'react';
+import { PlayerDto } from '@components/players/playerObject';
+import { Avatar } from '@components/players/PlayerAvatar';
 import Row from '@components/yatzy/row';
 import SumRow from '@components/yatzy/maxiYatzySumRow';
-import {AddScoreModal} from '@components/yatzy/scoreModal';
+import { AddScoreModal } from '@components/yatzy/scoreModal';
 import BonusRow from '@components/yatzy/bonusRow';
 import playerStorageHandler from '@helpers/Storage/player/playerHandler';
 import gameHelper from '@helpers/Game/gameHelper';
-import {PlayerScore} from '@helpers/Game/PlayerScore';
-import {useGame} from '@helpers/Game/gameContext';
-import {GameScore} from '@helpers/Game/GameScore';
-import {PlayersScoreModal} from '@components/score/scoreModal';
-import {sortPlayersByOrder} from '@helpers/Player/PlayerHelper';
-import {sharedStyle} from '@styles/sharedStyle';
+import { PlayerScore } from '@helpers/Game/PlayerScore';
+import { useGame } from '@helpers/Game/gameContext';
+import { GameScore } from '@helpers/Game/GameScore';
+import { PlayersScoreModal } from '@components/score/scoreModal';
+import { sortPlayersByOrder } from '@helpers/Player/PlayerHelper';
 import styles from './YatzyScreen.styles';
 import NextButton from '@components/shared/button';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
-export default function YatzyScreen({navigation}: Props) {
-  const {t} = useTranslation();
+export default function YatzyScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const playerHandler = playerStorageHandler();
   const [players] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
-  const {game} = useGame();
+  const { game } = useGame();
 
   const [scoreModalVisible, setScoreModalVisible] = useState(false);
   const [totalVisibility, setTotalVisibility] = useState(false);
@@ -58,6 +58,10 @@ export default function YatzyScreen({navigation}: Props) {
   const color1: string = '#FFF';
   const color2: string = '#F1F3F9';
 
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const sStyle = SharedStyle(isDarkMode)
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -66,7 +70,7 @@ export default function YatzyScreen({navigation}: Props) {
           return (
             <View key={player.playerId} style={[styles.player]}>
               <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
-              <Text style={[styles.playerName, sharedStyle.darkFontColor]}>
+              <Text style={[styles.playerName, sStyle.fontColor]}>
                 {player.name}{' '}
               </Text>
             </View>

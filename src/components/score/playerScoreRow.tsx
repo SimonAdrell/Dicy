@@ -1,6 +1,7 @@
-import {StyleSheet, Text, View, ViewProps} from 'react-native';
-import {PlayerDto} from '../players/playerObject';
-import {Avatar} from '../players/PlayerAvatar';
+import { StyleSheet, Text, useColorScheme, View, ViewProps } from 'react-native';
+import { PlayerDto } from '../players/playerObject';
+import { Avatar } from '../players/PlayerAvatar';
+import { SharedStyle } from '@styles/sharedStyle';
 
 interface scoreModalPlayerProps extends ViewProps {
   player: PlayerDto;
@@ -8,6 +9,9 @@ interface scoreModalPlayerProps extends ViewProps {
 }
 
 export function ScoreModalPlayer(options: scoreModalPlayerProps) {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const sStyle = SharedStyle(isDarkMode);
   return (
     <View {...options}>
       <View
@@ -17,7 +21,7 @@ export function ScoreModalPlayer(options: scoreModalPlayerProps) {
           justifyContent: 'center',
           padding: 10,
         }}>
-        <Text style={styles.scoreText}>{options.place}.</Text>
+        <Text style={[styles.scoreText, sStyle.fontColor]}>{options.place}.</Text>
       </View>
       <View
         style={{
@@ -28,9 +32,9 @@ export function ScoreModalPlayer(options: scoreModalPlayerProps) {
         }}>
         <Avatar src={options.player.imageUrl} imageHeight={65}></Avatar>
       </View>
-      <View style={{flex: 5, padding: 20}}>
-        <Text style={styles.gameNameText}>{options.player.currentScore}</Text>
-        <Text style={styles.gameTagLineText}>{options.player.name}</Text>
+      <View style={{ flex: 5, padding: 20 }}>
+        <Text style={[styles.gameNameText, sStyle.fontColor]}>{options.player.currentScore}</Text>
+        <Text style={[sStyle.secondaryFontColor]}>{options.player.name}</Text>
       </View>
     </View>
   );
@@ -40,10 +44,6 @@ const styles = StyleSheet.create({
   gameNameText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#005b4f',
-  },
-  gameTagLineText: {
-    color: '#00aa98',
   },
   scoreText: {
     fontSize: 32,

@@ -1,15 +1,16 @@
-import {FlatList, StyleSheet} from 'react-native';
-import {PlayerDto} from './playerObject';
+import { FlatList, StyleSheet, useColorScheme } from 'react-native';
+import { PlayerDto } from './playerObject';
 import Player from './player';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
+import { gameHelperType } from '@helpers/Game/gameHelperType';
 import AddNewPlayer from './addPlayer';
+import { SharedStyle } from '@styles/sharedStyle';
 
 type playerListProps = {
   players: PlayerDto[];
   gamingHelper: gameHelperType;
 };
 
-const PlayerList = ({players, gamingHelper}: playerListProps) => {
+const PlayerList = ({ players, gamingHelper }: playerListProps) => {
   if (players.length == 0) {
     players.push({
       name: '',
@@ -20,6 +21,9 @@ const PlayerList = ({players, gamingHelper}: playerListProps) => {
       order: undefined,
     });
   }
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const sStyle = SharedStyle(isDarkMode);
   return (
     <FlatList
       key={2}
@@ -33,7 +37,7 @@ const PlayerList = ({players, gamingHelper}: playerListProps) => {
           <Player
             playerDto={item.item}
             gamingHelper={gamingHelper}
-            style={styles.item}
+            style={[styles.item, sStyle.itemBackground]}
           />
         );
       }}
@@ -48,7 +52,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: 120,
     width: 90,
-    backgroundColor: '#e8fefa',
     borderStyle: 'solid',
     padding: 15,
     paddingBottom: 20,

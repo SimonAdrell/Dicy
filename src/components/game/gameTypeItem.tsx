@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { sharedStyle } from "@styles/sharedStyle";
+import { SharedStyle } from "@styles/sharedStyle";
 
 type gameTypeItems = {
     gameName: string,
@@ -10,16 +10,19 @@ type gameTypeItems = {
 };
 
 export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag, IconName }: gameTypeItems) {
-    return <View style={styles.container}>
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+    const sStyle = SharedStyle(isDarkMode);
+    return <View style={[styles.container, sStyle.itemBackground]}>
         <TouchableOpacity style={styles.gameTypeActive}
             onPress={onSelected}>
             <View style={[styles.gameTypeItemWrapper]}>
                 <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    {IconName && <Icon name={IconName} style={[{ fontSize: 34 }, sharedStyle.darkFontColor]} ></Icon>}
+                    {IconName && <Icon name={IconName} style={[{ fontSize: 34 }, sStyle.fontColor]} ></Icon>}
                 </View>
                 <View style={{ flex: 8 }}>
-                    <Text style={[styles.gameNameText, sharedStyle.darkFontColor]}>{gameName}</Text>
-                    <Text style={[sharedStyle.lightFontColor]}>{gameTag}</Text>
+                    <Text style={[styles.gameNameText, sStyle.fontColor]}>{gameName}</Text>
+                    <Text style={[styles.gameTagText, sStyle.secondaryFontColor]}>{gameTag}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -29,7 +32,6 @@ export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTa
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#e8fefa',
         padding: 15,
         paddingBottom: 20,
         shadowColor: "#000",
@@ -54,9 +56,8 @@ const styles = StyleSheet.create({
     gameNameText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#005b4f',
     },
-    gameTagLineText: {
-        color: '#00aa98',
+    gameTagText: {
+        fontSize: 16,
     }
 });

@@ -7,7 +7,7 @@ export default StyleSheet.create({
     playerName: { fontSize: 18, fontWeight: 'thin' },
     row: { height: 28, flex: 1 },
     headerRow: { flexDirection: 'row' },
-    board: { width: '100%',  },
+    board: { width: '100%', },
     doneCell1: { backgroundColor: '#CCD5AE' },
     doneCell2: { backgroundColor: '#E9EDC9' },
     removedCell1: { backgroundColor: '#ededed' },
