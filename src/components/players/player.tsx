@@ -116,7 +116,7 @@ export default function Player(props: playerProps) {
       style={[
         styles.container,
         sStyle.itemBackground,
-        playerIsActiveGaming ? styles.containerShadow : { shadowColor: '#000' },
+        playerIsActiveGaming ? sStyle.itemSelected : { shadowColor: '#000' },
       ]}
       key={props.playerDto.playerId}
       onPress={() => {
@@ -174,51 +174,11 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     height: 130,
-    opacity: 0.8,
-  },
-  containerShadow: {
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 15,
-    },
-    shadowOpacity: 0.24,
-    shadowRadius: 16.41,
-    elevation: 20,
-    opacity: 1,
-  },
-  gameTypeActive: {
-    flex: 1,
-  },
-  gameTypeItemWrapper: {
-    flexDirection: 'row',
-    padding: 15,
-    paddingBottom: 20,
-  },
-  gameNameText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#005b4f',
-  },
-  gameTagLineText: {
-    color: '#00aa98',
-  },
-  remove: {
-    backgroundColor: '#ffa17a',
-    borderRadius: 10,
-    padding: 2,
-    paddingLeft: 15,
-    paddingRight: 15,
+    opacity: 0.7,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#005b4f',
-  },
-  sectionTitleDark: {
-    color: '#00806f'
-  },
-  sectionTitleLight: {
-    color: '#005b4f'
-  },
+  }
 });

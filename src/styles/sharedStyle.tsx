@@ -27,7 +27,8 @@ const modalStyle = (isDarkMode: boolean) =>
       width: 300,
     },
     modalView: {
-      backgroundColor: isDarkMode ? '#5f5f5f' : '#F7F7F7',
+      // backgroundColor: isDarkMode ? '#5f5f5f' : '#F7F7F7',
+      backgroundColor: isDarkMode ? '#214540' : '#6db8ae',
       margin: 20,
       borderRadius: 20,
       padding: 20,
@@ -57,6 +58,8 @@ const modalStyle = (isDarkMode: boolean) =>
     playerRow: {
       width: 300,
       flexDirection: 'row',
+      borderRadius: 10,
+      marginBottom: 10,
     },
     lottie: {
       zIndex: 1,
@@ -69,7 +72,7 @@ const modalStyle = (isDarkMode: boolean) =>
       textAlign: 'center',
       alignItems: 'center',
       fontSize: 28,
-      color: SharedStyle(isDarkMode).fontColor.color,
+      color: isDarkMode ? '#7dc1b7' : SharedStyle(isDarkMode).fontColor.color,
     },
     lowerView: {
       marginTop: 30,
@@ -81,17 +84,29 @@ const modalStyle = (isDarkMode: boolean) =>
 
 const SharedStyle = (isDarkMode: boolean) => StyleSheet.create({
   fontColor: {
-    color: isDarkMode ? '#e8fefa' : '#005b4f',
+    color: isDarkMode ? '#005b4f' : '#005b4f',
   },
   secondaryFontColor: {
-    color: isDarkMode ? '#84afaa' : '#005b4f',
+    color: isDarkMode ? '#005b4f' : '#005b4f',
   },
   containerBackground: {
     backgroundColor: isDarkMode ? '#214540' : '#6db8ae',
   },
   itemBackground: {
-    backgroundColor: isDarkMode ? '#005b4f' : '#e8fefa',
+    backgroundColor: isDarkMode ? '#7dc1b7' : '#e8fefa',
   },
+  itemSelected: {
+    backgroundColor: isDarkMode ? '#a5d4cd' : '#e8fefa',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 15,
+    },
+    shadowOpacity: 0.28,
+    shadowRadius: 16.41,
+    elevation: 70,
+    opacity: 1,
+  }
 });
 
 

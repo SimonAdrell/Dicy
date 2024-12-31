@@ -31,7 +31,9 @@ export function LanguageSettings(options: languageSettingsProps) {
             mStyle.playerRow,
             {
               borderRadius: 10,
+              opacity: 0.7,
             },
+            i18n.resolvedLanguage === 'en' ? sStyle.itemSelected : sStyle.itemBackground
           ]}>
           <View
             style={{
@@ -56,7 +58,10 @@ export function LanguageSettings(options: languageSettingsProps) {
             mStyle.playerRow,
             {
               borderRadius: 10,
+              marginTop: 20,
+              opacity: 0.7,
             },
+            i18n.resolvedLanguage === 'se' ? sStyle.itemSelected : sStyle.itemBackground
           ]}>
           <View
             style={{

@@ -21,7 +21,7 @@ export function ScoreModalPlayer(options: scoreModalPlayerProps) {
           justifyContent: 'center',
           padding: 10,
         }}>
-        <Text style={styles.scoreText}>{options.place}.</Text>
+        <Text style={[styles.scoreText, sStyle.fontColor]}>{options.place}.</Text>
       </View>
       <View
         style={{
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
   gameNameText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#005b4f',
   },
   scoreText: {
     fontSize: 32,

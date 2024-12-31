@@ -5,7 +5,7 @@ import { gameHelperType } from '@helpers/Game/gameHelperType';
 import { ScoreModalPlayer } from './playerScoreRow';
 import LottieView from 'lottie-react-native';
 import { useTranslation } from 'react-i18next';
-import { modalStyle } from '@styles/sharedStyle';
+import { modalStyle, SharedStyle } from '@styles/sharedStyle';
 import NextButton from '@components/shared/button';
 export type playersScoreModalProps = {
   GameHelper: gameHelperType;
@@ -28,6 +28,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const mStyle = modalStyle(isDarkMode);
+  const sStyle = SharedStyle(isDarkMode);
   return (
     <View>
       <Modal
@@ -70,7 +71,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                       key={index + ''}
                       place={(index += 1)}
                       player={element}
-                      style={mStyle.playerRow}
+                      style={[mStyle.playerRow, sStyle.itemBackground]}
                     />
                   );
                 })}
