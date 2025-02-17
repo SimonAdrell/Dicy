@@ -60,7 +60,7 @@
     "@react-native-community/cli-platform-ios": "^15.0.1",
     "@react-native/babel-preset": "^0.75.4",
     "@react-native/eslint-config": "^0.76.0",
-    "@react-native/metro-config": "^0.75.4",
+    "@react-native/metro-config": "^0.77.1",
     "@react-native/typescript-config": "^0.76.0",
     "@rnx-kit/align-deps": "^3.0.2",
     "@testing-library/react-native": "^12.8.0",
