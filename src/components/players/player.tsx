@@ -98,14 +98,21 @@ export default function Player(props: playerProps) {
   };
 
   const deletePlayer = () => {
-    var players = playerHandler.getPlayers();
-    const indexOfObject = players.findIndex(object => {
-      return object.playerId === props.playerDto.playerId;
+    playerHandler.getPlayers().then(players => {
+      const indexOfObject = players.findIndex(object => {
+        return object.playerId === props.playerDto.playerId;
+      });
+      if (indexOfObject !== -1) {
+        players.splice(indexOfObject, 1);
+      }
+      playerHandler.savePlayers(players)
+        .then(() => {
+          console.log('Player deleted');
+        })
+        .catch(error => {
+          console.error('Error deleting player:', error);
+        });
     });
-    if (indexOfObject !== -1) {
-      players.splice(indexOfObject, 1);
-    }
-    playerHandler.savePlayers(players);
   };
 
 

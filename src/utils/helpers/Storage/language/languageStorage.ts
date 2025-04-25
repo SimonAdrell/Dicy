@@ -1,17 +1,13 @@
-import { MMKV } from "react-native-mmkv"
+import { MMKVLoader } from "react-native-mmkv-storage";
 
-const languageStorage = (key: string): itemStorage<string> => {
-    const storage = new MMKV()
+const languageStorage = (key: string): storage<string> => {
+    const MMKV = new MMKVLoader().initialize();
     return {
-        save: (languageCode: string) => storage.set(key, languageCode),
-        get: () => storage.getString(key),
-        addListener: (onValueChanged: (key: string) => void): storageListener => {
-            let addedListener = storage.addOnValueChangedListener(onValueChanged)
-            return {
-                remove: () => {
-                    addedListener.remove()
-                }
-            }
+        save: async (languageCode: string) => {
+            await MMKV.setStringAsync(key, languageCode);
+        },
+        get: async () => {
+            return await MMKV.getStringAsync(key) as string;
         }
     }
 }

@@ -159,6 +159,7 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                         throw new Error("Game not set up correctly");
 
                     updatePlayerScore(savedGame, scoreToBeUpdated, newPlayerScore);
+                    
                     var scores: GameState[] = [...savedGame.middle, ...savedGame.lower];
                     updatePlayersScore(savedGame, scores, savedGame.upper);
                     return savedGame;

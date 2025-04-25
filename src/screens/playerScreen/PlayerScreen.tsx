@@ -14,7 +14,7 @@ import NewPlayer from '@components/players/newPlayer';
 import { SharedStyle } from '@styles/sharedStyle';
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
-export default function PlayerScreen({ navigation }: Props) {
+export default async function PlayerScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const playerHandler = playerStorageHandler();
   const { setGame, game } = useGame();
@@ -24,17 +24,17 @@ export default function PlayerScreen({ navigation }: Props) {
   const sStyle = SharedStyle(isDarkMode);
 
   const [players, setActivePlayers] = useState<Array<PlayerDto>>(
-    playerHandler.getPlayers(),
+    await playerHandler.getPlayers(),
   );
-  useEffect(() => {
-    let listener = playerHandler.setListener((changedKey: string) => {
-      if (changedKey === 'players')
-        setActivePlayers(playerHandler.getPlayers());
-    });
-    return () => {
-      listener.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   let listener = playerHandler.setListener((changedKey: string) => {
+  //     if (changedKey === 'players')
+  //       setActivePlayers(playerHandler.getPlayers());
+  //   });
+  //   return () => {
+  //     listener.remove();
+  //   };
+  // }, []);
 
   const savePlayersToGame = () => {
     if (gamingHelper.getPlayers()?.length) {

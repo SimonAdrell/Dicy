@@ -22,10 +22,10 @@ import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
-export default function YatzyScreen({ navigation }: Props) {
+export default async function YatzyScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const playerHandler = playerStorageHandler();
-  const [players] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
+  const [players] = useState<Array<PlayerDto>>(await playerHandler.getPlayers());
   const { game } = useGame();
 
   const [scoreModalVisible, setScoreModalVisible] = useState(false);

@@ -1,7 +1,8 @@
 import 'react-native';
 import React from 'react';
 import App from '../App';
-import {render} from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
+import ReactTestRenderer from 'react-test-renderer';
 jest.mock('@helpers/Image/ImageTaker');
 
 jest.mock('react-i18next', () => ({
@@ -10,13 +11,13 @@ jest.mock('react-i18next', () => ({
     return {
       t: (str: string) => str,
       i18n: {
-        changeLanguage: () => new Promise(() => {}),
+        changeLanguage: () => new Promise(() => { }),
       },
     };
   },
   initReactI18next: {
     type: '3rdParty',
-    init: () => {},
+    init: () => { },
   },
 }));
 
@@ -30,5 +31,11 @@ jest.mock('@react-navigation/native', () => {
 describe('renders correctly', () => {
   it('App renders correctly', () => {
     expect(render(<App />)).toBeTruthy();
+  });
+});
+
+test('renders correctly', async () => {
+  await ReactTestRenderer.act(() => {
+    ReactTestRenderer.create(<App />);
   });
 });

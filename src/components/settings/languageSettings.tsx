@@ -12,7 +12,7 @@ export function LanguageSettings(options: languageSettingsProps) {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    const storage: itemStorage<string> = languageStorage('lang');
+    const storage: storage<string> = languageStorage('lang');
     storage.save(lng);
   };
   const mStyle = modalStyle(isDarkMode);

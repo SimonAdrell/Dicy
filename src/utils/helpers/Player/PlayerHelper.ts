@@ -30,12 +30,12 @@ const getPlayerId = (players: PlayerDto[]): number => {
         : 0;
 };
 
-const submitNewPlayer = (playerName: string, imageUrl: string, t: TFunction<"translation", undefined>, game: Game | undefined, setGame: Dispatch<SetStateAction<Game | undefined>>) => {
+const submitNewPlayer = async (playerName: string, imageUrl: string, t: TFunction<"translation", undefined>, game: Game | undefined, setGame: Dispatch<SetStateAction<Game | undefined>>) => {
     const playerHandler = playerStorageHandler();
 
     let players: PlayerDto[] = [];
     if (Array.isArray(playerHandler.getPlayers())) {
-        players = playerHandler.getPlayers();
+        players = await playerHandler.getPlayers();
     }
     let gamingHelper = gameHelper(game);
     let player = {} as PlayerDto;

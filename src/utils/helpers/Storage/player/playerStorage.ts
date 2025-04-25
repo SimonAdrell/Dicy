@@ -1,27 +1,14 @@
-import { MMKV } from 'react-native-mmkv'
 import { PlayerDto } from '@components/players/playerObject';
+import { MMKVLoader } from 'react-native-mmkv-storage';
 
-const playerDtoStorage = (key: string):storage<PlayerDto> => {
-    const storage = new MMKV()
+const playerDtoStorage = (key: string): storage<Array<PlayerDto>> => {
+    const MMKV = new MMKVLoader().initialize();
     return {
-        save: (players: Array<PlayerDto>) => {
-            storage.set(key, JSON.stringify(players));
+        save: async (players: Array<PlayerDto>) => {
+            await MMKV.setArrayAsync(key, players);
         },
-        get: () => {
-            const playersString = storage.getString(key);
-            if (playersString != undefined) {
-                const players: Array<PlayerDto> = JSON.parse(playersString);
-                return players;
-            }
-            return {} as Array<PlayerDto>;
-        },
-        addListener: (onValueChanged: (key: string) => void) : storageListener => {
-            let addedListener = storage.addOnValueChangedListener(onValueChanged)
-            return {
-                remove: () => {
-                    addedListener.remove()
-                }
-            }
+        get: async () => {
+            return await MMKV.getArrayAsync(key) as Array<PlayerDto>;
         }
     }
 };

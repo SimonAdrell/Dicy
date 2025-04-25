@@ -1,19 +1,16 @@
 import playerDtoStorage from './playerStorage';
-import {PlayerDto} from '@components/players/playerObject';
+import { PlayerDto } from '@components/players/playerObject';
 
 export interface IPlayerHandler {
-  getPlayers: () => Array<PlayerDto>;
-  savePlayers: (players: Array<PlayerDto>) => void;
-  setListener: (listener: (key: string) => void) => storageListener;
+  getPlayers: () => Promise<Array<PlayerDto>>;
+  savePlayers: (players: Array<PlayerDto>) => Promise<void>;
 }
 
 const playerStorageHandler = (): IPlayerHandler => {
-  const playerStorage: storage<PlayerDto> = playerDtoStorage('players');
+  const playerStorage: storage<Array<PlayerDto>> = playerDtoStorage('players');
   return {
-    getPlayers: () => playerStorage.get(),
-    savePlayers: (players: Array<PlayerDto>) => playerStorage.save(players),
-    setListener: (listener: (key: string) => void) =>
-      playerStorage.addListener(listener),
+    getPlayers: async () => playerStorage.get(),
+    savePlayers: async (players: Array<PlayerDto>) => playerStorage.save(players),
   };
 };
 
