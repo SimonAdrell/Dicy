@@ -25,17 +25,13 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     const loadLanguage = async () => {
-      try {
-        storage.get().then((lang) => {
-          if (lang) {
-            i18n.changeLanguage(lang);
-          }
-        }).catch((e) => {
-          console.log(e);
-        })
-      } catch (e) {
+      storage.get().then((lang) => {
+        if (lang) {
+          i18n.changeLanguage(lang);
+        }
+      }).catch((e) => {
         console.log(e);
-      }
+      })
     };
     loadLanguage();
   }, []);

@@ -9,13 +9,13 @@ import gameHelper from '@helpers/Game/gameHelper';
 import PlayerList from '@components/players/playerList';
 import styles from './PlayerScreen.styles';
 import NextButton from '@components/shared/button';
-import { useTranslation } from 'react-i18next';
+
 import NewPlayer from '@components/players/newPlayer';
 import { SharedStyle } from '@styles/sharedStyle';
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
 
 export default async function PlayerScreen({ navigation }: Props) {
-  const { t } = useTranslation();
+  const { t } = ();
   const playerHandler = playerStorageHandler();
   const { setGame, game } = useGame();
   let gamingHelper = gameHelper(game);
@@ -26,15 +26,6 @@ export default async function PlayerScreen({ navigation }: Props) {
   const [players, setActivePlayers] = useState<Array<PlayerDto>>(
     await playerHandler.getPlayers(),
   );
-  // useEffect(() => {
-  //   let listener = playerHandler.setListener((changedKey: string) => {
-  //     if (changedKey === 'players')
-  //       setActivePlayers(playerHandler.getPlayers());
-  //   });
-  //   return () => {
-  //     listener.remove();
-  //   };
-  // }, []);
 
   const savePlayersToGame = () => {
     if (gamingHelper.getPlayers()?.length) {
@@ -44,7 +35,6 @@ export default async function PlayerScreen({ navigation }: Props) {
       Alert.alert(t('player.missingPlayer'));
     }
   };
-
 
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
