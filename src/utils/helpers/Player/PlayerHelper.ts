@@ -2,7 +2,6 @@ import { PlayerDto } from "@components/players/playerObject";
 import { PlayerScore } from "../Game/PlayerScore";
 import playerStorageHandler from "@helpers/Storage/player/playerHandler";
 import gameHelper from '@helpers/Game/gameHelper';
-import { useGame } from '@helpers/Game/gameContext';
 import { gameType } from "../Game/gameType";
 import { TFunction } from "i18next";
 import { Game } from "../Game/Game";

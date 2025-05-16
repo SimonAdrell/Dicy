@@ -117,6 +117,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    implementation 'com.tencent:mmkv-static:1.2.13'
 }
 
 project.ext.vectoricons = [

@@ -19,14 +19,20 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
-  const storage: itemStorage<string> = languageStorage('lang');
+  const storage: storage<string> = languageStorage('lang');
   const { t, i18n } = useTranslation();
+  console.log("App language: ", i18n.language);
 
   useEffect(() => {
     const loadLanguage = async () => {
       try {
-        const storedLanguage = storage.get();
-        if (storedLanguage) i18n.changeLanguage(storedLanguage);
+        storage.get().then((lang) => {
+          if (lang) {
+            i18n.changeLanguage(lang);
+          }
+        }).catch((e) => {
+          console.log(e);
+        })
       } catch (e) {
         console.log(e);
       }

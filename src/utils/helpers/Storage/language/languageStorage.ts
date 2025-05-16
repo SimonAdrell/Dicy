@@ -1,7 +1,9 @@
 import { MMKVLoader } from "react-native-mmkv-storage";
 
 const languageStorage = (key: string): storage<string> => {
-    const MMKV = new MMKVLoader().initialize();
+    const MMKV = new MMKVLoader()
+        .withInstanceID("languageStorage")
+        .initialize();
     return {
         save: async (languageCode: string) => {
             await MMKV.setStringAsync(key, languageCode);

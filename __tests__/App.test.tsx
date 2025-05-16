@@ -1,7 +1,6 @@
 import 'react-native';
 import React from 'react';
 import App from '../App';
-import { render } from '@testing-library/react-native';
 import ReactTestRenderer from 'react-test-renderer';
 jest.mock('@helpers/Image/ImageTaker');
 
@@ -20,6 +19,40 @@ jest.mock('react-i18next', () => ({
     init: () => { },
   },
 }));
+jest.mock('react-native-mmkv-storage', () => ({
+  MMKVLoader: jest.fn().mockImplementation(() => {
+    return {
+      setAccessibleIOS: jest.fn().mockReturnThis(),
+      withEncryption: () => ({
+        initialize: () => ({
+          getItem: async () => jest.fn(),
+          setItem: async () => jest.fn(),
+        }),
+      }),
+      initialize: () => ({
+        getItem: async () => jest.fn(),
+        setItem: async () => jest.fn(),
+      }),
+      withInstanceID: () => ({
+        initialize: () => ({
+          getItem: async () => jest.fn(),
+          setItem: async () => jest.fn(),
+        }),
+      }),
+    };
+  }),
+  IOSAccessibleStates: {
+    WHEN_UNLOCKED: 'AccessibleWhenUnlocked',
+    AFTER_FIRST_UNLOCK: 'AccessibleAfterFirstUnlock',
+    ALWAYS: 'AccessibleAlways',
+    WHEN_PASSCODE_SET_THIS_DEVICE_ONLY:
+      'AccessibleWhenPasscodeSetThisDeviceOnly',
+    WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'AccessibleWhenUnlockedThisDeviceOnly',
+    AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY:
+      'AccessibleAfterFirstUnlockThisDeviceOnly',
+    ALWAYS_THIS_DEVICE_ONLY: 'AccessibleAlwaysThisDeviceOnly',
+  },
+}));
 
 jest.mock('@react-navigation/native', () => {
   return {
@@ -28,11 +61,6 @@ jest.mock('@react-navigation/native', () => {
   };
 });
 
-describe('renders correctly', () => {
-  it('App renders correctly', () => {
-    expect(render(<App />)).toBeTruthy();
-  });
-});
 
 test('renders correctly', async () => {
   await ReactTestRenderer.act(() => {
