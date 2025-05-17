@@ -27,7 +27,6 @@ const modalStyle = (isDarkMode: boolean) =>
       width: 300,
     },
     modalView: {
-      // backgroundColor: isDarkMode ? '#5f5f5f' : '#F7F7F7',
       backgroundColor: isDarkMode ? '#214540' : '#6db8ae',
       margin: 20,
       borderRadius: 20,

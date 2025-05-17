@@ -1,5 +1,5 @@
 import { PlayerDto } from "@components/players/playerObject";
-import { sortPlayersByOrder } from "../Player/PlayerHelper";
+import { toSortedPlayers } from "../Player/PlayerHelper";
 import { Game } from "./Game";
 import { gameHelperType } from "./gameHelperType";
 import { GameScore, lowerNames, middleNamesYatzy, middleNamesMaxiYatzy, upperNames } from "./GameScore";
@@ -12,7 +12,7 @@ import { state } from "./state";
 import { TFunction } from "i18next";
 
 const getBonusScore = (typeOfGame: gameType): number => {
-    let bonusScore: number = 75;
+    let bonusScore: number;
     switch (typeOfGame) {
         case gameType.maxiYatzy:
             bonusScore = 100;
@@ -28,7 +28,7 @@ const getBonusScore = (typeOfGame: gameType): number => {
 }
 
 const getBonusLimit = (typeOfGame: gameType): number => {
-    let bonusScore: number = 75;
+    let bonusScore: number;
     switch (typeOfGame) {
         case gameType.maxiYatzy:
             bonusScore = 75;
@@ -44,8 +44,9 @@ const getBonusLimit = (typeOfGame: gameType): number => {
 }
 
 const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
-    var playerScores: Array<PlayerScore> = []
-    players.sort(sortPlayersByOrder).forEach(element => {
+    let playerScores: Array<PlayerScore> = []
+    players = toSortedPlayers(players);
+    players.forEach(element => {
         playerScores.push({
             player: element,
             isRemoved: false,
@@ -53,7 +54,7 @@ const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): 
         })
     });
 
-    var gameStates: Array<GameState> = [];
+    let gameStates: Array<GameState> = [];
     names.forEach(element => {
         gameStates.push({ score: element, PlayerScore: playerScores })
     });
@@ -63,12 +64,12 @@ const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): 
 
 const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined, upperGameState: GameState[] | undefined) => {
     savedGame.players?.forEach(player => {
-        var totalScore: number = 0;
+        let totalScore: number = 0;
         if (upperGameState) {
-            var upperTotalScore: number = 0;
+            let upperTotalScore: number = 0;
             upperGameState?.forEach(state => {
                 upperTotalScore = upperTotalScore + state.PlayerScore
-                    .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                    .filter(e => e.player.playerId == player.playerId && !e.isRemoved)
                     .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
             });
             upperTotalScore += (upperTotalScore >= savedGame.bonusLimit ? savedGame.bonusScore : 0);
@@ -76,7 +77,7 @@ const updatePlayersScore = (savedGame: Game, gameState: GameState[] | undefined,
         }
         gameState?.forEach(state => {
             totalScore = totalScore + state.PlayerScore
-                .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
+                .filter(e => e.player.playerId == player.playerId && !e.isRemoved)
                 .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
         });
         player.currentScore = totalScore;
@@ -101,19 +102,19 @@ const updatePlayerScore = (savedGame: Game, scoreToBeUpdated: GameScore, newPlay
 }
 
 const updateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScore, newPlayerScore: PlayerScore): GameState[] => {
-    var newGameState: GameState[] = [];
+    let newGameState: GameState[] = [];
     gameState.forEach(element => {
         if (element.score.name != scoreToBeUpdated.name) {
             newGameState.push(element);
             return;
         }
         const matchesPlayerId = (playerScore: PlayerScore) => playerScore.player.playerId == newPlayerScore.player.playerId
-        var indexOfMatchingScore = element.PlayerScore.findIndex(matchesPlayerId)
+        let indexOfMatchingScore = element.PlayerScore.findIndex(matchesPlayerId)
         if (indexOfMatchingScore == -1) {
             newGameState.push(element);
             return;
         }
-        var playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
+        let playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
         playerScores.push(newPlayerScore);
         newGameState.push({ score: element.score, PlayerScore: playerScores })
     });
@@ -159,8 +160,8 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                         throw new Error("Game not set up correctly");
 
                     updatePlayerScore(savedGame, scoreToBeUpdated, newPlayerScore);
-                    
-                    var scores: GameState[] = [...savedGame.middle, ...savedGame.lower];
+
+                    let scores: GameState[] = [...savedGame.middle, ...savedGame.lower];
                     updatePlayersScore(savedGame, scores, savedGame.upper);
                     return savedGame;
                 },
@@ -168,28 +169,32 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
                     if (savedGame.upper === undefined)
                         throw new Error("Game not set up correctly");
 
-                    var playerSumArray: playerTotalScore[] = [];
-
-                    savedGame.players?.forEach(player => {
-                        var totalScore: number = 0;
-                        var upperTotalScore: number = 0;
-                        savedGame.upper?.forEach(state => {
-                            upperTotalScore = upperTotalScore + state.PlayerScore
-                                .filter(e => e.player.playerId == player.playerId && e.isRemoved == false)
-                                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
-                        });
-                        totalScore += upperTotalScore;
-                        playerSumArray.push({
-                            player: player,
-                            score: totalScore
-                        })
-                    });
-                    return playerSumArray;
+                    return calculatePlayersUpperScore(savedGame);
                 }
             }
         },
 
     }
+}
+
+function calculatePlayersUpperScore(savedGame: Game): playerTotalScore[] {
+    let playerSumArray: playerTotalScore[] = [];
+
+    savedGame.players?.forEach(player => {
+        let totalScore: number = 0;
+        let upperTotalScore: number = 0;
+        savedGame.upper?.forEach(state => {
+            upperTotalScore = upperTotalScore + state.PlayerScore
+                .filter(e => e.player.playerId == player.playerId && e.isRemoved)
+                .reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+        });
+        totalScore += upperTotalScore;
+        playerSumArray.push({
+            player: player,
+            score: totalScore
+        })
+    });
+    return playerSumArray;
 }
 
 export default gameHelper;

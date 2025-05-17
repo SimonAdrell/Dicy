@@ -1,17 +1,14 @@
 import {
-  Pressable,
-  StyleSheet,
   Switch,
   Text,
   TextInput,
   useColorScheme,
   View,
 } from 'react-native';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Avatar } from '../players/PlayerAvatar';
 import { PlayerDto } from '../players/playerObject';
 import Modal from 'react-native-modal';
-import React from 'react';
 import { PlayerScore } from '@helpers/Game/PlayerScore';
 import { GameScore } from '@helpers/Game/GameScore';
 import { modalStyle, SharedStyle } from '@styles/sharedStyle';
@@ -19,12 +16,12 @@ import { useTranslation } from 'react-i18next';
 import NextButton from '@components/shared/button';
 
 export type scoreModalProps = {
-  scoreToBeUpdated: GameScore | undefined;
-  playerScore: PlayerScore | undefined;
-  visible: boolean;
-  players: PlayerDto[];
-  hideModal: () => void;
-  onExit: (
+  readonly scoreToBeUpdated: GameScore | undefined;
+  readonly playerScore: PlayerScore | undefined;
+  readonly visible: boolean;
+  readonly players: PlayerDto[];
+  readonly hideModal: () => void;
+  readonly onExit: (
     playerScore: PlayerScore | undefined,
     scoreToBeUpdated: GameScore | undefined,
   ) => void;
@@ -32,19 +29,19 @@ export type scoreModalProps = {
 
 export function AddScoreModal(options: scoreModalProps) {
   const { t } = useTranslation();
-  const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
-  const toggleSwitch = () => onEnabledChange(previousState => !previousState);
-  const [scoreString, onChangeScore] = useState<string>('');
-  const [player, onChangePlayer] = useState<PlayerDto | undefined>(
+  const [isRemoved, setIsRemoved] = useState(options.playerScore?.isRemoved);
+  const toggleSwitch = () => setIsRemoved(previousState => !previousState);
+  const [scoreString, setScoreString] = useState<string>('');
+  const [player, setPlayer] = useState<PlayerDto | undefined>(
     getPlayer(options.playerScore?.player.playerId),
   );
-  const inputRef = React.useRef<TextInput | null>(null);
+  const inputRef = useRef<TextInput | null>(null);
   const [modalShown, setModalShown] = useState(false);
 
   function clearModal() {
-    onEnabledChange(false);
-    onChangePlayer(undefined);
-    onChangeScore('');
+    setIsRemoved(false);
+    setPlayer(undefined);
+    setScoreString('');
   }
 
   function exitModal(
@@ -58,7 +55,7 @@ export function AddScoreModal(options: scoreModalProps) {
   }
 
   function getValidNumber(): number {
-    var scoreNumber = Number(scoreString);
+    let scoreNumber = Number(scoreString);
     if (scoreNumber === undefined) return -1;
 
     if (scoreNumber === null) return -1;
@@ -71,12 +68,12 @@ export function AddScoreModal(options: scoreModalProps) {
   }
 
   const onSave = () => {
-    var scoreNumber = getValidNumber();
+    let scoreNumber = getValidNumber();
     if (options.playerScore === undefined) {
       exitModal(undefined, options.scoreToBeUpdated);
       return;
     }
-    var playerScore: PlayerScore = {
+    let playerScore: PlayerScore = {
       isRemoved: isRemoved,
       score: undefined,
       player: options.playerScore?.player,
@@ -85,14 +82,14 @@ export function AddScoreModal(options: scoreModalProps) {
     if (scoreNumber > -1) {
       playerScore.score = scoreNumber;
     }
-    var isChanged: boolean = checkIfPlayerScoreIsChanged(playerScore);
+    let isChanged: boolean = checkIfPlayerScoreIsChanged(playerScore);
     if (isChanged) exitModal(playerScore, options.scoreToBeUpdated);
 
     exitModal(undefined, options.scoreToBeUpdated);
   };
 
   function checkIfPlayerScoreIsChanged(playerScore: PlayerScore) {
-    var isChanged: boolean = false;
+    let isChanged: boolean = false;
     if (options.playerScore?.isRemoved != playerScore.isRemoved) {
       isChanged = true;
     }
@@ -113,10 +110,10 @@ export function AddScoreModal(options: scoreModalProps) {
 
   const onModalShow = () => {
     setModalShown(true);
-    onChangePlayer(getPlayer(options.playerScore?.player.playerId));
+    setPlayer(getPlayer(options.playerScore?.player.playerId));
     if (options.playerScore?.score)
-      onChangeScore(options.playerScore?.score.toLocaleString());
-    onEnabledChange(options.playerScore?.isRemoved);
+      setScoreString(options.playerScore?.score.toLocaleString());
+    setIsRemoved(options.playerScore?.isRemoved);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
@@ -158,14 +155,14 @@ export function AddScoreModal(options: scoreModalProps) {
                   autoFocus={true}
                   ref={inputRef}
                   value={scoreString}
-                  onChangeText={onChangeScore}
+                  onChangeText={setScoreString}
                   keyboardType="number-pad"
                   style={mstyle.textInput}></TextInput>
               )}
               {!modalShown && (
                 <TextInput
                   style={mstyle.textInput}
-                  onChangeText={onChangeScore}
+                  onChangeText={setScoreString}
                 />
               )}
             </View>

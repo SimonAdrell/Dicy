@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, Text, useColorScheme, View } from 'react-native';
 import { RootStackParamList } from '../../../App';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PlayerDto } from '@components/players/playerObject';
 import { Avatar } from '@components/players/PlayerAvatar';
 import Row from '@components/yatzy/row';
@@ -22,16 +22,22 @@ import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
-export default async function YatzyScreen({ navigation }: Props) {
+export default function YatzyScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const playerHandler = playerStorageHandler();
-  const [players] = useState<Array<PlayerDto>>(await playerHandler.getPlayers());
+  const [players, setPlayers] = useState<Array<PlayerDto>>([]);
   const { game } = useGame();
 
   const [scoreModalVisible, setScoreModalVisible] = useState(false);
   const [totalVisibility, setTotalVisibility] = useState(false);
   const [currentPlayerScore, setCurrentPlayerScore] = useState<PlayerScore>();
   const [currentGameScore, setCurrentGameScore] = useState<GameScore>();
+
+  useEffect(() => {
+    playerHandler.getPlayers().then((players) => {
+      setPlayers(players);
+    })
+  });
 
   const onRowPress = (
     playerScore: PlayerScore,

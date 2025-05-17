@@ -3,16 +3,16 @@ import { languageStorage } from '@helpers/Storage/language/languageStorage';
 import styles from './languageSettings.styles';
 import { useTranslation } from 'react-i18next';
 import { modalStyle, SharedStyle } from '@styles/sharedStyle';
-interface languageSettingsProps extends ViewProps { }
+interface LanguageSettingsProps extends ViewProps { }
 
-export function LanguageSettings(options: languageSettingsProps) {
+export function LanguageSettings(options: LanguageSettingsProps) {
   const { t, i18n } = useTranslation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    const storage: storage<string> = languageStorage('lang');
+    const storage: StorageMmkv<string> = languageStorage('lang');
     storage.save(lng);
   };
   const mStyle = modalStyle(isDarkMode);

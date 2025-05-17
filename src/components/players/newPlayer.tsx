@@ -32,7 +32,6 @@ export default function NewPlayerIcon() {
             style={[styles.avatarStyle, sStyle.itemBackground]}></NewPlayerAvatar>
         </View>
         <AddUserModal
-          name={t('player.addPlayerHeader')}
           visible={modalVisible}
           onSubmit={onPlayerSubmit}
           onBackdropPress={() => {
@@ -43,7 +42,7 @@ export default function NewPlayerIcon() {
   );
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     bottom: 10,
   },

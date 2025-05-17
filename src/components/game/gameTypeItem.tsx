@@ -3,10 +3,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { SharedStyle } from "@styles/sharedStyle";
 
 type gameTypeItems = {
-    gameName: string,
-    gameTagLine: string,
-    IconName: string
-    onSelected: () => void
+    readonly gameName: string,
+    readonly gameTagLine: string,
+    readonly IconName: string
+    readonly onSelected: () => void
 };
 
 export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTag, IconName }: gameTypeItems) {
@@ -18,7 +18,7 @@ export default function GameTypeItem({ onSelected, gameName, gameTagLine: gameTa
             onPress={onSelected}>
             <View style={[styles.gameTypeItemWrapper]}>
                 <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    {IconName && <Icon name={IconName} style={[{ fontSize: 34 }, sStyle.fontColor]} ></Icon>}
+                    {IconName.length == 0 && <Icon name={IconName} style={[{ fontSize: 34 }, sStyle.fontColor]} ></Icon>}
                 </View>
                 <View style={{ flex: 8 }}>
                     <Text style={[styles.gameNameText, sStyle.fontColor]}>{gameName}</Text>

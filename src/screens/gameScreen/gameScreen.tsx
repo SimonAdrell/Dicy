@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../App';
-import { SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, ScrollView, useColorScheme } from 'react-native';
 import gameHelper from '@helpers/Game/gameHelper';
 import { gameType } from '@helpers/Game/gameType';
 import { useGame } from '@helpers/Game/gameContext';
@@ -8,7 +8,6 @@ import GameTypeItem from '@components/game/gameTypeItem';
 import styles from './gameScreen.styles';
 import { useTranslation } from 'react-i18next';
 import SettingsIcon from '@components/settings/settingsIcon';
-import { useColorScheme } from 'react-native';
 import { SharedStyle } from '@styles/sharedStyle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;

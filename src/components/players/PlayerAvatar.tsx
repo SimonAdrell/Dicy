@@ -21,7 +21,7 @@ interface AvatarProps extends ImageProps {
 }
 
 export const AvatarCreation = (props: AvatarProps) => {
-    const [uri, setUri] = React.useState(props.source?.uri || undefined);
+    const [uri, setUri] = React.useState(props.source?.uri ?? undefined);
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
 
@@ -29,8 +29,6 @@ export const AvatarCreation = (props: AvatarProps) => {
         setUri(image.path);
         props.onChange?.(image);
     }
-
-
     const pickPicture = () => {
         takePicture({
             onImageTaken: imageTaken

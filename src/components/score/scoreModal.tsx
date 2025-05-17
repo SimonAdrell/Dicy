@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import Modal from 'react-native-modal';
 import React, { useRef, useState } from 'react';
 import { gameHelperType } from '@helpers/Game/gameHelperType';
@@ -8,9 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { modalStyle, SharedStyle } from '@styles/sharedStyle';
 import NextButton from '@components/shared/button';
 export type playersScoreModalProps = {
-  GameHelper: gameHelperType;
-  visible: boolean;
-  onExit: () => void;
+  readonly GameHelper: gameHelperType;
+  readonly visible: boolean;
+  readonly onExit: () => void;
 };
 
 export function PlayersScoreModal(options: playersScoreModalProps) {
@@ -19,8 +19,8 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     options.onExit();
     setAnimationVisibility(true);
   }
-  var [animate, setAnimationVisibility] = useState<boolean>(true);
-  var playersTotalScore = options.GameHelper.getPlayers()?.slice();
+  const [animationVisibility, setAnimationVisibility] = useState<boolean>(true);
+  const playersTotalScore = options.GameHelper.getPlayers()?.slice();
   const confettiRef = useRef<LottieView>(null);
   function triggerConfetti() {
     confettiRef.current?.play(0);
@@ -38,7 +38,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
         onModalWillHide={exitModal}
         onShow={triggerConfetti}>
         <View style={mStyle.centeredView}>
-          {animate && (
+          {animationVisibility && (
             <View
               style={{
                 pointerEvents: 'none',

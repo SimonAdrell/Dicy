@@ -23,9 +23,13 @@ export default async function PlayerScreen({ navigation }: Props) {
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
 
-  const [players, setActivePlayers] = useState<Array<PlayerDto>>(
-    await playerHandler.getPlayers(),
-  );
+  const [players, setActivePlayers] = useState<Array<PlayerDto>>([]);
+
+  useEffect(() => {
+    playerHandler.getPlayers().then(players => {
+      setActivePlayers(players);
+    });
+  }, []);
 
   const savePlayersToGame = () => {
     if (gamingHelper.getPlayers()?.length) {

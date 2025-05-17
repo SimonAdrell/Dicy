@@ -1,27 +1,23 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { gameHelperType } from '@helpers/Game/gameHelperType';
 import { sortPlayerScoresByPlayersOrder } from '@helpers/Player/PlayerHelper';
-import { SharedStyle } from '@styles/sharedStyle';
 type rowProps = {
-  backgroundColor: string;
-  GameHelper: gameHelperType;
+  readonly backgroundColor: string;
+  readonly GameHelper: gameHelperType;
 };
 export default function SumRow({ backgroundColor, GameHelper }: rowProps) {
-  var playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
-  const sStyle = SharedStyle(isDarkMode);
-  var playersTotalScore = GameHelper.getPlayers();
+  let playersScore = GameHelper.scoreHandler().getPlayersUpperScore().sort(sortPlayerScoresByPlayersOrder);
+  let playersTotalScore = GameHelper.getPlayers();
   if (playersTotalScore === undefined) {
     throw new Error('No players found');
   }
   return (
     <View style={[styles.row, { backgroundColor: backgroundColor }]}>
       <Text style={styles.head}>Sum</Text>
-      {playersScore.sort(sortPlayerScoresByPlayersOrder).map(element => {
+      {playersScore.map(element => {
         return (
           <View style={styles.cell} key={element.player.playerId}>
-            <Text key={element.player.toLocaleString()} style={[styles.text, { fontWeight: 'bold', color: '#000' },
+            <Text key={element.player.playerId} style={[styles.text, { fontWeight: 'bold', color: '#000' },
             ]}>
               {element.score.toLocaleString()}
             </Text>

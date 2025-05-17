@@ -4,8 +4,8 @@ import { modalStyle } from '@styles/sharedStyle';
 import { LanguageSettings } from '@components/settings/languageSettings';
 
 type settingsModalOptions = {
-  visible: boolean;
-  onExit: () => void;
+  readonly visible: boolean;
+  readonly onExit: () => void;
 };
 
 export function SettingsModal(options: settingsModalOptions) {

@@ -9,14 +9,18 @@ import { Dispatch, SetStateAction } from "react";
 
 
 const sortPlayersByOrder = (a: PlayerDto, b: PlayerDto) => {
-    const aOrder = a.order !== undefined ? a.order : Infinity;
-    const bOrder = b.order !== undefined ? b.order : Infinity;
+    const aOrder = a.order ?? Infinity;
+    const bOrder = b.order ?? Infinity;
     return aOrder - bOrder;
 }
 
+const toSortedPlayers = (players: PlayerDto[]): Array<PlayerDto> => {
+    return players.sort(sortPlayersByOrder);
+};
+
 const sortPlayerScoresByPlayersOrder = (a: PlayerScore, b: PlayerScore) => {
-    const aOrder = a.player.order !== undefined ? a.player.order : Infinity;
-    const bOrder = b.player.order !== undefined ? b.player.order : Infinity;
+    const aOrder = a.player.order ?? Infinity;
+    const bOrder = b.player.order ?? Infinity;
     return aOrder - bOrder;
 
 }
@@ -25,7 +29,7 @@ const getPlayerId = (players: PlayerDto[]): number => {
     return players.length > 0
         ? players.reduce(function (prev, current) {
             return prev && prev.playerId > current.playerId ? prev : current;
-        }).playerId + 1
+        }, { playerId: 0 }).playerId + 1
         : 0;
 };
 
@@ -52,4 +56,4 @@ const submitNewPlayer = async (playerName: string, imageUrl: string, t: TFunctio
     setGame(gamingHelper.getGame());
 };
 
-export { sortPlayerScoresByPlayersOrder, sortPlayersByOrder, getPlayerId, submitNewPlayer };
+export { sortPlayerScoresByPlayersOrder, sortPlayersByOrder, getPlayerId, submitNewPlayer, toSortedPlayers };

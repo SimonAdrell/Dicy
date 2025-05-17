@@ -19,7 +19,7 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
-  const storage: storage<string> = languageStorage('lang');
+  const storage: StorageMmkv<string> = languageStorage('lang');
   const { t, i18n } = useTranslation();
   console.log("App language: ", i18n.language);
 

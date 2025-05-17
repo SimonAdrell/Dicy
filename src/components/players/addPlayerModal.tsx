@@ -1,6 +1,6 @@
 import { Text, useColorScheme, View } from 'react-native';
 import { TextInput } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { AvatarCreation } from './PlayerAvatar';
 import Modal from 'react-native-modal';
 import { takenImage } from '@helpers/Image/takenImage';
@@ -9,10 +9,9 @@ import NextButton from '@components/shared/button';
 import { modalStyle } from '@styles/sharedStyle';
 
 export type AddUserModalProps = {
-  name: string;
-  visible: boolean;
-  onSubmit: (playerName: string, imageUrl: string) => void;
-  onBackdropPress: () => void;
+  readonly visible: boolean;
+  readonly onSubmit: (playerName: string, imageUrl: string) => void;
+  readonly onBackdropPress: () => void;
 };
 
 export function AddUserModal({
@@ -21,15 +20,15 @@ export function AddUserModal({
   onBackdropPress,
 }: AddUserModalProps) {
   const { t } = useTranslation();
-  const [playerName, onChangePlayerName] = React.useState<string>('');
-  const [playerImage, OnChangePlayerImage] = React.useState<string>('');
+  const [playerName, setPlayerName] = useState<string>('');
+  const [playerImage, setPlayerImage] = useState<string>('');
   const onSavePress = () => {
     onSubmit(playerName, playerImage);
-    onChangePlayerName('');
-    OnChangePlayerImage('');
+    setPlayerName('');
+    setPlayerImage('');
   };
   const onAvatarChange = (image: takenImage) => {
-    OnChangePlayerImage(image.path);
+    setPlayerImage(image.path);
   };
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -53,7 +52,7 @@ export function AddUserModal({
                 placeholder={t('player.addNewPlayerPlaceHolder')}
                 value={playerName}
                 autoFocus={true}
-                onChangeText={onChangePlayerName}
+                onChangeText={setPlayerName}
                 testID="App.username"
                 style={mstyle.textInput}></TextInput>
             </View>

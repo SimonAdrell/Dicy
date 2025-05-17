@@ -1,7 +1,7 @@
 import { MMKVLoader } from "react-native-mmkv-storage";
 import { Game } from "../Game/Game";
 
-const gameStorage = (key: string): storage<Array<Game>> => {
+const gameStorage = (key: string): StorageMmkv<Array<Game>> => {
     const MMKV = new MMKVLoader().initialize();
     return {
         save: async (games: Array<Game>) => {
