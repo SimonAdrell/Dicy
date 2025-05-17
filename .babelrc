@@ -1,0 +1,28 @@
+{
+    "presets": [
+        "module:@react-native/babel-preset",
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "./"
+                ],
+                "alias": {
+                    "tests": "./tests/",
+                    "@components": "./src/components",
+                    "@helpers": "./src/utils/helpers",
+                    "@styles": "./src/styles"
+                },
+                "extensions": [
+                    ".js",
+                    ".jsx",
+                    ".ts",
+                    ".tsx"
+                ]
+            }
+        ]
+    ]
+}
