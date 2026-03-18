@@ -55,7 +55,7 @@ const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): 
 
     var gameStates: Array<GameState> = [];
     names.forEach(element => {
-        gameStates.push({ score: element, PlayerScore: playerScores })
+        gameStates.push({ score: element, PlayerScore: [...playerScores] })
     });
 
     return gameStates;

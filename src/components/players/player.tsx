@@ -60,9 +60,9 @@ export default function Player(props: playerProps) {
     if (players) {
       players?.push(props.playerDto);
       const playerWithHighestOrder = players.reduce((prev, current) => {
-        const aOrder = prev.order !== undefined ? prev.order : Infinity;
-        const bOrder = current.order !== undefined ? current.order : Infinity;
-        return aOrder < bOrder ? prev : current;
+        const aOrder = prev.order !== undefined ? prev.order : -Infinity;
+        const bOrder = current.order !== undefined ? current.order : -Infinity;
+        return aOrder > bOrder ? prev : current;
       });
       const currentHighestOrder =
         playerWithHighestOrder.order !== undefined
