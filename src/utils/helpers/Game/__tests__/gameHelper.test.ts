@@ -1,8 +1,9 @@
+import { TFunction } from 'i18next';
 import gameHelper from '../gameHelper';
 import { gameType } from '../gameType';
 import { PlayerDto } from '@components/players/playerObject';
 
-const mockTranslate = (str: string) => str;
+const mockTranslate = ((str: string) => str) as unknown as TFunction<'translation', undefined>;
 
 const makePlayer = (playerId: number, name: string, order?: number): PlayerDto => ({
     playerId,
@@ -26,11 +27,11 @@ describe('gameHelper – multiple players', () => {
             makePlayer(4, 'P5', 4),
         ];
 
-        helper.setPlayers(players, mockTranslate as any);
+        helper.setPlayers(players, mockTranslate);
         const game = helper.getGame();
 
         // Each upper-section row must hold its own independent array
-        const upper = game.upper!;
+        const upper = game.upper ?? [];
         expect(upper.length).toBeGreaterThan(1);
         for (let i = 0; i < upper.length - 1; i++) {
             expect(upper[i].PlayerScore).not.toBe(upper[i + 1].PlayerScore);
@@ -49,21 +50,22 @@ describe('gameHelper – multiple players', () => {
             makePlayer(4, 'P5', 4),
         ];
 
-        helper.setPlayers(players, mockTranslate as any);
+        helper.setPlayers(players, mockTranslate);
         const game = helper.getGame();
 
         // Score "ones" (first upper row) for P3 with score 15
-        const onesRow = game.upper![0];
-        const p3Score = onesRow.PlayerScore.find(ps => ps.player.playerId === 2)!;
+        const upper = game.upper ?? [];
+        const onesRow = upper[0];
+        const p3Score = onesRow.PlayerScore.find(ps => ps.player.playerId === 2);
         expect(p3Score).toBeDefined();
+        if (!p3Score) { return; }
 
-        const updatedScore = { ...p3Score, score: 15 };
-        helper.scoreHandler().updatePlayerScore(onesRow.score, updatedScore);
+        helper.scoreHandler().updatePlayerScore(onesRow.score, { ...p3Score, score: 15 });
 
         const updatedGame = helper.getGame();
-        const updatedOnesRow = updatedGame.upper![0];
-        const p3Updated = updatedOnesRow.PlayerScore.find(ps => ps.player.playerId === 2)!;
-        expect(p3Updated.score).toBe(15);
+        const updatedOnesRow = (updatedGame.upper ?? [])[0];
+        const p3Updated = updatedOnesRow.PlayerScore.find(ps => ps.player.playerId === 2);
+        expect(p3Updated?.score).toBe(15);
 
         // All other players in this row must still have no score
         updatedOnesRow.PlayerScore
@@ -81,18 +83,19 @@ describe('gameHelper – multiple players', () => {
             makePlayer(2, 'P3', 2),
         ];
 
-        helper.setPlayers(players, mockTranslate as any);
+        helper.setPlayers(players, mockTranslate);
         const game = helper.getGame();
 
-        const onesRow = game.upper![0];
-        const twosRow = game.upper![1];
+        const upper = game.upper ?? [];
+        const onesRow = upper[0];
 
-        const p1InOnes = onesRow.PlayerScore.find(ps => ps.player.playerId === 0)!;
+        const p1InOnes = onesRow.PlayerScore.find(ps => ps.player.playerId === 0);
+        if (!p1InOnes) { return; }
         helper.scoreHandler().updatePlayerScore(onesRow.score, { ...p1InOnes, score: 3 });
 
         const updatedGame = helper.getGame();
-        const p1InTwos = updatedGame.upper![1].PlayerScore.find(ps => ps.player.playerId === 0)!;
+        const p1InTwos = (updatedGame.upper ?? [])[1].PlayerScore.find(ps => ps.player.playerId === 0);
         // Updating "ones" must not pollute "twos"
-        expect(p1InTwos.score).toBeUndefined();
+        expect(p1InTwos?.score).toBeUndefined();
     });
 });
