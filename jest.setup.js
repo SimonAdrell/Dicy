@@ -12,4 +12,9 @@ jest.mock('react-native-image-crop-picker', () => {
       openCamera: jest.fn().mockImplementation(() => Promise.resolve()),
     };
   });
+
+jest.mock('react-native-splash-screen', () => ({
+  show: jest.fn(),
+  hide: jest.fn(),
+}));
   
