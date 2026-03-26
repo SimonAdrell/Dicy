@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PlayerScreen from './src/screens/playerScreen/PlayerScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import YatzyScreen from './src/screens/YatzyScreen/YatzyScreen';
@@ -9,6 +8,7 @@ import { GameProvider } from './src/utils/helpers/Game/gameContext';
 import GameScreen from './src/screens/gameScreen/gameScreen';
 import { languageStorage } from '@helpers/Storage/language/languageStorage';
 import { useTranslation } from 'react-i18next';
+import SplashScreen from 'react-native-splash-screen';
 
 export type RootStackParamList = {
   GamePicker: undefined;
@@ -32,6 +32,7 @@ function App(): React.JSX.Element {
       }
     };
     loadLanguage();
+    SplashScreen.hide();
   }, []);
 
   return (
