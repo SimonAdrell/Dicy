@@ -80,3 +80,26 @@ To learn more about React Native, take a look at the following resources:
 
 # Dicy
 Don't have the yatzy paper? Use Dicy and all you need is the dices
+
+## Splash Screen
+
+The app uses a native static splash screen that appears instantly at launch before React Native loads.
+
+### Android
+
+The Android splash screen is implemented via an Activity theme:
+
+- **Drawable**: `android/app/src/main/res/drawable/launch_screen.xml`
+  A `layer-list` that sets the background color and centers the app icon. Update this file to change the splash layout or logo.
+- **Background color**: `android/app/src/main/res/values/colors.xml` — `splashBackground` (`#6db8ae`). Change this value to update the splash background color.
+- **Theme**: `android/app/src/main/res/values/styles.xml` — `AppTheme.Splash` references `launch_screen` as the window background and is applied to `MainActivity` in `AndroidManifest.xml`.
+
+To replace the logo, swap the `android:src` reference in `launch_screen.xml` from `@mipmap/ic_launcher` to your desired drawable/mipmap resource.
+
+### iOS
+
+The iOS splash screen uses a native `LaunchScreen.storyboard`:
+
+- **File**: `ios/dicy/LaunchScreen.storyboard`
+  Update the background color and/or replace the label/image view to match your branding.
+- The storyboard is referenced via `UILaunchStoryboardName` in `ios/dicy/Info.plist`.
