@@ -24,7 +24,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Node dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
