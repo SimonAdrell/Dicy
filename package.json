@@ -46,6 +46,7 @@
     "react-native-image-crop-picker": "^0.42.0",
     "react-native-image-picker": "^7.2.3",
     "react-native-mmkv": "^2.12.2",
+    "react-native-localize": "^3.7.0",
     "react-native-modal": "^13.0.0",
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": ">=4.5 <4.14.0",
