@@ -8,7 +8,6 @@ import { GameProvider } from './src/utils/helpers/Game/gameContext';
 import GameScreen from './src/screens/gameScreen/gameScreen';
 import { languageStorage } from '@helpers/Storage/language/languageStorage';
 import { useTranslation } from 'react-i18next';
-import SplashScreen from 'react-native-splash-screen';
 
 export type RootStackParamList = {
   GamePicker: undefined;
@@ -32,7 +31,6 @@ function App(): React.JSX.Element {
       }
     };
     loadLanguage();
-    SplashScreen.hide();
   }, []);
 
   return (

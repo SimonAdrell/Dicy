@@ -20,7 +20,7 @@
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
-      "/node_modules/(?!(react-native|@react-native|react-native-modal|react-native-animatable|react-native-vector-icons|@react-navigation|react-native-splash-screen)/)"
+      "/node_modules/(?!(react-native|@react-native|react-native-modal|react-native-animatable|react-native-vector-icons|@react-navigation)/)"
     ],
     "transform": {
       "^.+\\.(js|jsx|ts|tsx|mjs)$": "babel-jest"
@@ -46,11 +46,11 @@
     "react-native-image-crop-picker": "^0.42.0",
     "react-native-image-picker": "^7.2.3",
     "react-native-mmkv": "^2.12.2",
+    "react-native-localize": "^3.7.0",
     "react-native-modal": "^13.0.0",
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": ">=4.5 <4.14.0",
     "react-native-simple-dialogs": "^2.1.0",
-    "react-native-splash-screen": "^3.3.0",
     "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
