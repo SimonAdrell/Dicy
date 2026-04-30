@@ -86,25 +86,38 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          profile: pixel_5
-          ram-size: 4096M
-          disk-size: 6G
-          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
+          force-avd-creation: false
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -camera-back none
           disable-animations: true
           script: |
-            set -e
+            set -x
+            echo "::group::Device info"
+            adb devices
+            adb shell getprop ro.build.version.sdk || true
+            adb shell getprop ro.product.cpu.abi || true
+            echo "::endgroup::"
+
+            echo "::group::Start logcat buffer"
+            adb logcat -c || true
+            adb logcat -v time > logcat.txt &
+            LOGCAT_PID=$!
+            echo "::endgroup::"
+
             echo "::group::Install APK"
-            adb install -r apk/app-release.apk
+            ls -la apk/
+            adb install -r -d apk/app-release.apk
             echo "::endgroup::"
 
             echo "::group::Launch MainActivity"
-            adb shell am start -W -n com.dicy/.MainActivity
+            adb shell am start -W -n com.dicy/.MainActivity || true
             echo "::endgroup::"
 
-            echo "::group::Wait for process"
-            for i in $(seq 1 15); do
-              if adb shell pidof com.dicy >/dev/null 2>&1; then
-                echo "App pid=$(adb shell pidof com.dicy | tr -d '\r') after ${i}s"
+            echo "::group::Wait for process up to 30s"
+            APP_PID=""
+            for i in $(seq 1 30); do
+              APP_PID=$(adb shell pidof com.dicy 2>/dev/null | tr -d '\r' || true)
+              if [ -n "$APP_PID" ]; then
+                echo "App pid=$APP_PID after ${i}s"
                 break
               fi
               sleep 1
@@ -112,30 +125,43 @@ jobs:
             echo "::endgroup::"
 
             # let JS bundle evaluate and first screen render
-            sleep 12
+            sleep 15
 
-            echo "::group::Capture screenshot + logcat"
-            adb shell screencap -p /sdcard/screen.png
-            adb pull /sdcard/screen.png ./screen.png
-            adb logcat -d > logcat.txt
+            echo "::group::Capture screenshot"
+            adb shell screencap -p /sdcard/screen.png || true
+            adb pull /sdcard/screen.png ./screen.png || true
+            ls -la screen.png || echo "no screenshot"
             echo "::endgroup::"
+
+            echo "::group::Stop logcat collection"
+            kill $LOGCAT_PID 2>/dev/null || true
+            sleep 1
+            wc -l logcat.txt || true
+            echo "::endgroup::"
+
+            FAIL=0
 
             echo "::group::Check for fatal crashes"
             if grep -E "FATAL EXCEPTION|AndroidRuntime: FATAL|libc.*Fatal signal|tombstoned" logcat.txt; then
               echo "::error::App crashed during smoke test"
-              grep -B2 -A30 -E "FATAL EXCEPTION|AndroidRuntime: FATAL|Fatal signal" logcat.txt | head -200
-              exit 1
+              grep -B2 -A40 -E "FATAL EXCEPTION|AndroidRuntime: FATAL|Fatal signal" logcat.txt | head -300
+              FAIL=1
             fi
             echo "::endgroup::"
 
-            echo "::group::Confirm process still alive"
-            if ! adb shell pidof com.dicy >/dev/null 2>&1; then
-              echo "::error::App process died after launch"
+            echo "::group::Check process still alive"
+            FINAL_PID=$(adb shell pidof com.dicy 2>/dev/null | tr -d '\r' || true)
+            if [ -z "$FINAL_PID" ]; then
+              echo "::error::App process not running at end of smoke test"
+              echo "Last 200 logcat lines:"
               tail -200 logcat.txt
-              exit 1
+              FAIL=1
+            else
+              echo "App still running, pid=$FINAL_PID"
             fi
-            echo "App is running cleanly"
             echo "::endgroup::"
+
+            exit $FAIL
 
       - name: Upload smoke-test artifacts
         if: always()
@@ -146,4 +172,4 @@ jobs:
             screen.png
             logcat.txt
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: ignore
