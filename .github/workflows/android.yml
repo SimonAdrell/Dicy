@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build
     permissions:
-      contents: read
+      contents: write
     timeout-minutes: 35
 
     steps:
@@ -190,3 +190,39 @@ jobs:
             logcat.txt
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Publish smoke-test output to release (for unauth access)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="ci-smoke-latest"
+          REPO="${{ github.repository }}"
+          # delete any existing release with this tag (and its tag)
+          curl -fsSL -X GET -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/releases/tags/$TAG" | \
+            python3 -c "import sys,json;d=json.load(sys.stdin);print(d.get('id',''))" > /tmp/relid.txt || true
+          REL_ID=$(cat /tmp/relid.txt)
+          if [ -n "$REL_ID" ]; then
+            curl -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/releases/$REL_ID" || true
+          fi
+          curl -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/git/refs/tags/$TAG" || true
+          # create a fresh release pointing at the current commit
+          REL=$(curl -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/releases" \
+            -d "{\"tag_name\":\"$TAG\",\"target_commitish\":\"${{ github.sha }}\",\"name\":\"CI smoke-test latest (${{ github.sha }})\",\"body\":\"Auto-published smoke-test output for run ${{ github.run_id }}\",\"draft\":false,\"prerelease\":true}")
+          UPLOAD_URL=$(echo "$REL" | python3 -c "import sys,json;print(json.load(sys.stdin)['upload_url'].split('{')[0])")
+          for f in logcat.txt screen.png; do
+            if [ -f "$f" ]; then
+              CT=$([ "$f" = "screen.png" ] && echo "image/png" || echo "text/plain")
+              curl -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Content-Type: $CT" \
+                --data-binary "@$f" \
+                "$UPLOAD_URL?name=$f" >/dev/null
+              echo "uploaded $f"
+            fi
+          done
