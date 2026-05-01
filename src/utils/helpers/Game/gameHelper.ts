@@ -113,8 +113,11 @@ const updateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScor
             newGameState.push(element);
             return;
         }
-        var playerScores = element.PlayerScore.filter(e => e.player.playerId != newPlayerScore.player.playerId);
-        playerScores.push(newPlayerScore);
+        // Replace the matching player's score in place so the column order
+        // (and therefore which player each rendered cell belongs to) is preserved.
+        var playerScores = element.PlayerScore.map(ps =>
+            matchesPlayerId(ps) ? newPlayerScore : ps,
+        );
         newGameState.push({ score: element.score, PlayerScore: playerScores })
     });
     return newGameState;
