@@ -78,7 +78,8 @@ describe('Row component – column to player mapping', () => {
     helper.setPlayers([playerA, playerB], t);
 
     const before = (helper.getGame().upper ?? [])[0];
-    const aCell = before.PlayerScore.find(ps => ps.player.playerId === playerA.playerId)!;
+    const aCell = before.PlayerScore.find(ps => ps.player.playerId === playerA.playerId);
+    if (!aCell) { throw new Error('A cell missing'); }
     helper.scoreHandler().updatePlayerScore(before.score, { ...aCell, score: 5 });
     const after = (helper.getGame().upper ?? [])[0];
 

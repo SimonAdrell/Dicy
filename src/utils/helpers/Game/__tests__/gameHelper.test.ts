@@ -78,12 +78,14 @@ describe('gameHelper – multiple players', () => {
 
         const setUpper = (helper: gameHelperType, playerId: number, rowIndex: number, score: number) => {
             const row = (helper.getGame().upper ?? [])[rowIndex];
-            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId)!;
+            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId);
+            if (!cell) { throw new Error(`No cell for player ${playerId}`); }
             helper.scoreHandler().updatePlayerScore(row.score, { ...cell, score });
         };
         const setMiddle = (helper: gameHelperType, playerId: number, rowIndex: number, score: number) => {
             const row = (helper.getGame().middle ?? [])[rowIndex];
-            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId)!;
+            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId);
+            if (!cell) { throw new Error(`No cell for player ${playerId}`); }
             helper.scoreHandler().updatePlayerScore(row.score, { ...cell, score });
         };
 
@@ -165,7 +167,8 @@ describe('gameHelper – multiple players', () => {
 
             // Step 1: Player A gets a score in the ones row.
             const onesRow = (helper.getGame().upper ?? [])[0];
-            const aOnesCell = onesRow.PlayerScore.find(ps => ps.player.playerId === playerA.playerId)!;
+            const aOnesCell = onesRow.PlayerScore.find(ps => ps.player.playerId === playerA.playerId);
+            if (!aOnesCell) { throw new Error('A cell missing'); }
             helper.scoreHandler().updatePlayerScore(onesRow.score, { ...aOnesCell, score: 5 });
 
             // Player A receives the score, Player B does not.
@@ -175,7 +178,8 @@ describe('gameHelper – multiple players', () => {
 
             // Step 2: Player B gets a score in the twos row.
             const twosRow = (helper.getGame().upper ?? [])[1];
-            const bTwosCell = twosRow.PlayerScore.find(ps => ps.player.playerId === playerB.playerId)!;
+            const bTwosCell = twosRow.PlayerScore.find(ps => ps.player.playerId === playerB.playerId);
+            if (!bTwosCell) { throw new Error('B cell missing'); }
             helper.scoreHandler().updatePlayerScore(twosRow.score, { ...bTwosCell, score: 6 });
 
             const twosAfterB = (helper.getGame().upper ?? [])[1];

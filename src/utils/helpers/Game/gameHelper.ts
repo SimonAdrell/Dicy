@@ -115,7 +115,7 @@ const updateGameState = (gameState: Array<GameState>, scoreToBeUpdated: GameScor
         }
         // Replace the matching player's score in place so the column order
         // (and therefore which player each rendered cell belongs to) is preserved.
-        var playerScores = element.PlayerScore.map(ps =>
+        const playerScores = element.PlayerScore.map(ps =>
             matchesPlayerId(ps) ? newPlayerScore : ps,
         );
         newGameState.push({ score: element.score, PlayerScore: playerScores })
