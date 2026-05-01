@@ -93,7 +93,7 @@
     "node": ">=18"
   },
   "overrides": {
-    "fast-xml-parser": "^5.5.9"
+    "fast-xml-parser": "^5.7.2"
   },
   "rnx-kit": {
     "kitType": "app",
