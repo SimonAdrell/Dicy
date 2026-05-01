@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react-native';
-import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import Row from '../row';
 import gameHelper from '@helpers/Game/gameHelper';
 import { gameType } from '@helpers/Game/gameType';
@@ -15,6 +15,8 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+const t = ((s: string) => s) as unknown as TFunction<'translation', undefined>;
+
 const makePlayer = (playerId: number, name: string, order?: number): PlayerDto => ({
   playerId,
   name,
@@ -25,7 +27,6 @@ const makePlayer = (playerId: number, name: string, order?: number): PlayerDto =
 });
 
 function setupOnesRow(players: PlayerDto[]): GameState {
-  const { t } = useTranslation();
   const helper = gameHelper(undefined);
   helper.generateNewGame(gameType.maxiYatzy);
   helper.setPlayers(players, t);
@@ -72,7 +73,6 @@ describe('Row component – column to player mapping', () => {
   it('keeps each cell bound to its player after the GameState is replaced with an updated one', () => {
     const playerA = makePlayer(0, 'A');
     const playerB = makePlayer(1, 'B');
-    const { t } = useTranslation();
     const helper = gameHelper(undefined);
     helper.generateNewGame(gameType.maxiYatzy);
     helper.setPlayers([playerA, playerB], t);

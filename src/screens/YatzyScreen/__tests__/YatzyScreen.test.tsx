@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, act } from '@testing-library/react-native';
-import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { TouchableOpacity } from 'react-native';
 import YatzyScreen from '../YatzyScreen';
 import { GameProvider } from '@helpers/Game/gameContext';
@@ -7,6 +7,8 @@ import { gameType } from '@helpers/Game/gameType';
 import gameHelper from '@helpers/Game/gameHelper';
 import { PlayerDto } from '@components/players/playerObject';
 import { Game } from '@helpers/Game/Game';
+
+const t = ((s: string) => s) as unknown as TFunction<'translation', undefined>;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -48,7 +50,6 @@ const makePlayer = (id: number, name: string): PlayerDto => ({
 });
 
 function seedGame(players: PlayerDto[]): Game {
-  const { t } = useTranslation();
   const helper = gameHelper(undefined);
   helper.generateNewGame(gameType.maxiYatzy);
   helper.setPlayers(players, t);
