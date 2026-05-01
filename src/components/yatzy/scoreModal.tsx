@@ -86,9 +86,11 @@ export function AddScoreModal(options: scoreModalProps) {
       playerScore.score = scoreNumber;
     }
     var isChanged: boolean = checkIfPlayerScoreIsChanged(playerScore);
-    if (isChanged) exitModal(playerScore, options.scoreToBeUpdated);
-
-    exitModal(undefined, options.scoreToBeUpdated);
+    if (isChanged) {
+      exitModal(playerScore, options.scoreToBeUpdated);
+    } else {
+      exitModal(undefined, options.scoreToBeUpdated);
+    }
   };
 
   function checkIfPlayerScoreIsChanged(playerScore: PlayerScore) {

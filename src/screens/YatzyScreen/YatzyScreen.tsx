@@ -66,7 +66,7 @@ export default function YatzyScreen({ navigation }: Props) {
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <View style={styles.title}></View>
-        {game?.players?.sort(sortPlayersByOrder).map(player => {
+        {game?.players && [...game.players].sort(sortPlayersByOrder).map(player => {
           return (
             <View key={player.playerId} style={[styles.player]}>
               <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
