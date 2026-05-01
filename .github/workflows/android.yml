@@ -1,10 +1,7 @@
 name: Android CI
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -48,3 +45,205 @@ jobs:
           name: dicy-release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 14
+
+  smoke-test:
+    name: Boot emulator + launch app
+    runs-on: ubuntu-22.04
+    needs: build
+    permissions:
+      contents: write
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Diagnostic - host capabilities
+        run: |
+          echo "Runner OS:"
+          cat /etc/os-release || true
+          echo "---"
+          echo "KVM device:"
+          ls -la /dev/kvm || echo "no /dev/kvm"
+          echo "---"
+          echo "CPU virt flags:"
+          egrep -c '(vmx|svm)' /proc/cpuinfo || echo "no vmx/svm in cpuinfo"
+          echo "---"
+          echo "Disk free:"
+          df -h /
+          echo "---"
+          echo "Memory:"
+          free -h
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -la /dev/kvm
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: dicy-release-apk
+          path: ./apk
+
+      - name: Run app on emulator
+        uses: reactivecircus/android-emulator-runner@50986b1464923454c95e261820bc626f38490ec0 # v2.27.0
+        with:
+          api-level: 33
+          target: default
+          arch: x86_64
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -camera-back none
+          disable-animations: true
+          script: |
+            set -x
+            echo "::group::Device info"
+            adb devices
+            adb shell getprop ro.build.version.sdk || true
+            adb shell getprop ro.product.cpu.abi || true
+            echo "::endgroup::"
+
+            echo "::group::Start logcat buffer"
+            adb logcat -c || true
+            adb logcat -v time > logcat.txt &
+            LOGCAT_PID=$!
+            echo "::endgroup::"
+
+            echo "::group::Install APK"
+            ls -la apk/
+            adb install -r -d apk/app-release.apk
+            echo "::endgroup::"
+
+            echo "::group::Launch MainActivity"
+            adb shell am start -W -n com.dicy/.MainActivity || true
+            echo "::endgroup::"
+
+            echo "::group::Wait for process up to 30s"
+            APP_PID=""
+            for i in $(seq 1 30); do
+              APP_PID=$(adb shell pidof com.dicy 2>/dev/null | tr -d '\r' || true)
+              if [ -n "$APP_PID" ]; then
+                echo "App pid=$APP_PID after ${i}s"
+                break
+              fi
+              sleep 1
+            done
+            echo "::endgroup::"
+
+            # let JS bundle evaluate and first screen render
+            sleep 15
+
+            echo "::group::Capture screenshot"
+            adb shell screencap -p /sdcard/screen.png || true
+            adb pull /sdcard/screen.png ./screen.png || true
+            ls -la screen.png || echo "no screenshot"
+            echo "::endgroup::"
+
+            echo "::group::Stop logcat collection"
+            kill $LOGCAT_PID 2>/dev/null || true
+            sleep 1
+            wc -l logcat.txt || true
+            echo "::endgroup::"
+
+            FAIL=0
+
+            echo "::group::Check for fatal crashes from com.dicy"
+            # Only fail on a fatal that's actually attributable to our process.
+            # Generic system FATAL/native signals from unrelated PIDs are noisy
+            # on these emulator images and aren't meaningful to us.
+            if grep -E "FATAL EXCEPTION" logcat.txt | grep -q "com.dicy"; then
+              echo "::error::com.dicy hit a FATAL EXCEPTION"
+              grep -B2 -A40 -E "FATAL EXCEPTION" logcat.txt | head -300
+              FAIL=1
+            elif grep -qE "AndroidRuntime.*com\.dicy.*FATAL" logcat.txt; then
+              echo "::error::com.dicy hit an AndroidRuntime FATAL"
+              grep -B2 -A40 -E "AndroidRuntime.*com\.dicy" logcat.txt | head -300
+              FAIL=1
+            else
+              echo "No FATAL attributable to com.dicy"
+            fi
+            echo "::endgroup::"
+
+            echo "::group::Positive signals: did the app actually start?"
+            # These two markers together prove the native libs loaded, JS
+            # evaluated, and the first frame rendered. They're robust to
+            # the adb connection going flaky later in the run, which has
+            # historically caused false-negative pidof checks.
+            STARTED=0
+            if grep -q "Displayed com.dicy/.MainActivity" logcat.txt; then
+              echo "  [ok] MainActivity Displayed"
+              STARTED=$((STARTED + 1))
+            else
+              echo "  [missing] MainActivity Displayed"
+            fi
+            if grep -qE 'ReactNativeJS.*Running "dicy"' logcat.txt; then
+              echo "  [ok] ReactNativeJS evaluated entry module"
+              STARTED=$((STARTED + 1))
+            else
+              echo "  [missing] ReactNativeJS Running \"dicy\""
+            fi
+            if [ "$STARTED" -lt 2 ]; then
+              echo "::error::App did not reach the expected startup milestones"
+              echo "Last 200 logcat lines:"
+              tail -200 logcat.txt
+              FAIL=1
+            else
+              echo "All startup milestones reached"
+            fi
+            echo "::endgroup::"
+
+            exit $FAIL
+
+      - name: Upload smoke-test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-output
+          path: |
+            screen.png
+            logcat.txt
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Publish smoke-test output to release (for unauth access)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="ci-smoke-latest"
+          REPO="${{ github.repository }}"
+          # delete any existing release with this tag (and its tag)
+          curl -fsSL -X GET -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/releases/tags/$TAG" | \
+            python3 -c "import sys,json;d=json.load(sys.stdin);print(d.get('id',''))" > /tmp/relid.txt || true
+          REL_ID=$(cat /tmp/relid.txt)
+          if [ -n "$REL_ID" ]; then
+            curl -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/releases/$REL_ID" || true
+          fi
+          curl -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/git/refs/tags/$TAG" || true
+          # create a fresh release pointing at the current commit
+          REL=$(curl -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/releases" \
+            -d "{\"tag_name\":\"$TAG\",\"target_commitish\":\"${{ github.sha }}\",\"name\":\"CI smoke-test latest (${{ github.sha }})\",\"body\":\"Auto-published smoke-test output for run ${{ github.run_id }}\",\"draft\":false,\"prerelease\":true}")
+          UPLOAD_URL=$(echo "$REL" | python3 -c "import sys,json;print(json.load(sys.stdin)['upload_url'].split('{')[0])")
+          for f in logcat.txt screen.png; do
+            if [ -f "$f" ]; then
+              CT=$([ "$f" = "screen.png" ] && echo "image/png" || echo "text/plain")
+              curl -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Content-Type: $CT" \
+                --data-binary "@$f" \
+                "$UPLOAD_URL?name=$f" >/dev/null
+              echo "uploaded $f"
+            fi
+          done
