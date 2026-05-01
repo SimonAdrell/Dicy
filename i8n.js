@@ -5,7 +5,6 @@ import RNLanguageDetector from '@os-team/i18next-react-native-language-detector'
 // import i18n from './i18n';
 import enTranslation from './language/json/en/translation.json';
 import seTranslation from './language/json/se/translation.json';
-import I18NextHttpBackend from 'i18next-http-backend';
 
 i18n
   .use(RNLanguageDetector)
