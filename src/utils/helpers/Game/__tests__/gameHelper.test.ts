@@ -72,6 +72,68 @@ describe('gameHelper – multiple players', () => {
         expect(p1InTwos?.score).toBeUndefined();
     });
 
+    describe('total score and bonus calculation', () => {
+        const a = makePlayer(0, 'A', 0);
+        const b = makePlayer(1, 'B', 1);
+
+        const setUpper = (helper: gameHelperType, playerId: number, rowIndex: number, score: number) => {
+            const row = (helper.getGame().upper ?? [])[rowIndex];
+            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId)!;
+            helper.scoreHandler().updatePlayerScore(row.score, { ...cell, score });
+        };
+        const setMiddle = (helper: gameHelperType, playerId: number, rowIndex: number, score: number) => {
+            const row = (helper.getGame().middle ?? [])[rowIndex];
+            const cell = row.PlayerScore.find(ps => ps.player.playerId === playerId)!;
+            helper.scoreHandler().updatePlayerScore(row.score, { ...cell, score });
+        };
+
+        it('does not award the bonus when the upper total is below the limit', () => {
+            const helper = setupHelper([a, b]);
+            // Maxi yatzy bonus limit is 75. 6 + 12 = 18 -> well below.
+            setUpper(helper, a.playerId, 0, 6);
+            setUpper(helper, a.playerId, 1, 12);
+            const playerA = helper.getGame().players?.find(p => p.playerId === a.playerId);
+            expect(playerA?.currentScore).toBe(18);
+        });
+
+        it('awards the bonus once the upper total reaches the limit', () => {
+            const helper = setupHelper([a, b]);
+            // Fill 6 upper rows at max for player A: 6+12+18+24+30+36 = 126 (>= 75).
+            [6, 12, 18, 24, 30, 36].forEach((s, i) => setUpper(helper, a.playerId, i, s));
+            const playerA = helper.getGame().players?.find(p => p.playerId === a.playerId);
+            // 126 + bonus 100 = 226.
+            expect(playerA?.currentScore).toBe(226);
+        });
+
+        it('only the player who reached the limit gets the bonus', () => {
+            const helper = setupHelper([a, b]);
+            [6, 12, 18, 24, 30, 36].forEach((s, i) => setUpper(helper, a.playerId, i, s));
+            setUpper(helper, b.playerId, 0, 3);
+            const playerB = helper.getGame().players?.find(p => p.playerId === b.playerId);
+            expect(playerB?.currentScore).toBe(3);
+        });
+
+        it('sums upper + middle + lower (and bonus) into currentScore', () => {
+            const helper = setupHelper([a, b]);
+            [6, 12, 18, 24, 30, 36].forEach((s, i) => setUpper(helper, a.playerId, i, s));
+            setMiddle(helper, a.playerId, 0, 12); // pair = 12
+            const playerA = helper.getGame().players?.find(p => p.playerId === a.playerId);
+            // 126 (upper) + 100 (bonus) + 12 (middle) = 238
+            expect(playerA?.currentScore).toBe(238);
+        });
+
+        it('getPlayersUpperScore returns each player\'s upper total in player-iteration order', () => {
+            const helper = setupHelper([a, b]);
+            setUpper(helper, a.playerId, 0, 6);
+            setUpper(helper, b.playerId, 1, 12);
+            const totals = helper.scoreHandler().getPlayersUpperScore();
+            const aTotal = totals.find(t => t.player.playerId === a.playerId);
+            const bTotal = totals.find(t => t.player.playerId === b.playerId);
+            expect(aTotal?.score).toBe(6);
+            expect(bTotal?.score).toBe(12);
+        });
+    });
+
     describe('column ordering after score updates (regression: wrong-column bug)', () => {
         // Players added through the in-app "new player" flow have order === undefined,
         // because submitNewPlayer never assigns an order. This regression test guards

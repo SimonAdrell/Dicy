@@ -43,7 +43,7 @@ test('Triggers function when pressing button', async () => {
   );
 
   await user.type(screen.getByTestId('App.username'), 'Player name');
-  await user.press(screen.getByRole('button'));
+  await user.press(screen.getByText('player.addNewPlayerSaveButton'));
 
   expect(mockFn).toHaveBeenCalled();
   expect(mockFn).toHaveBeenCalledWith('Player name', '');
