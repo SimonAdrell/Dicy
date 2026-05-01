@@ -30,6 +30,14 @@ const getPlayerId = (players: PlayerDto[]): number => {
         : 0;
 };
 
+const getNextOrder = (players: PlayerDto[]): number => {
+    let highest = -1;
+    players.forEach(p => {
+        if (p.order !== undefined && p.order > highest) highest = p.order;
+    });
+    return highest + 1;
+};
+
 const submitNewPlayer = (playerName: string, imageUrl: string, t: TFunction<"translation", undefined>, game: Game | undefined, setGame: Dispatch<SetStateAction<Game | undefined>>) => {
     const playerHandler = playerStorageHandler();
 
@@ -42,6 +50,7 @@ const submitNewPlayer = (playerName: string, imageUrl: string, t: TFunction<"tra
     player.name = playerName;
     player.playerId = getPlayerId(players);
     player.imageUrl = imageUrl;
+    player.order = getNextOrder(players);
     players.push(player);
     playerHandler.savePlayers(players);
     if (game) {

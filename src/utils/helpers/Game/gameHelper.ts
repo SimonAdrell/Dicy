@@ -45,7 +45,7 @@ const getBonusLimit = (typeOfGame: gameType): number => {
 
 const generateGameState = (names: Array<GameScore>, players: Array<PlayerDto>): Array<GameState> => {
     var playerScores: Array<PlayerScore> = []
-    players.sort(sortPlayersByOrder).forEach(element => {
+    ;[...players].sort(sortPlayersByOrder).forEach(element => {
         playerScores.push({
             player: element,
             isRemoved: false,

@@ -34,7 +34,7 @@ export default function Row(row: rowProps) {
       <Text style={[yatzyStyle.head, { fontWeight: 'light' }]}>
         {row.GameState.score.name}
       </Text>
-      {row.GameState.PlayerScore.sort(sortPlayerScoresByPlayersOrder).map(
+      {[...row.GameState.PlayerScore].sort(sortPlayerScoresByPlayersOrder).map(
         element => {
           const cellClick = () => {
             row.onPress(element, row.GameState.score);
