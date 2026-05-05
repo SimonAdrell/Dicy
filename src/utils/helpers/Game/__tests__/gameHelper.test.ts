@@ -103,8 +103,8 @@ describe('gameHelper – multiple players', () => {
             // Fill 6 upper rows at max for player A: 6+12+18+24+30+36 = 126 (>= 75).
             [6, 12, 18, 24, 30, 36].forEach((s, i) => setUpper(helper, a.playerId, i, s));
             const playerA = helper.getGame().players?.find(p => p.playerId === a.playerId);
-            // 126 + bonus 100 = 226.
-            expect(playerA?.currentScore).toBe(226);
+            // 126 + bonus 50 = 176.
+            expect(playerA?.currentScore).toBe(176);
         });
 
         it('only the player who reached the limit gets the bonus', () => {
@@ -120,8 +120,8 @@ describe('gameHelper – multiple players', () => {
             [6, 12, 18, 24, 30, 36].forEach((s, i) => setUpper(helper, a.playerId, i, s));
             setMiddle(helper, a.playerId, 0, 12); // pair = 12
             const playerA = helper.getGame().players?.find(p => p.playerId === a.playerId);
-            // 126 (upper) + 100 (bonus) + 12 (middle) = 238
-            expect(playerA?.currentScore).toBe(238);
+            // 126 (upper) + 50 (bonus) + 12 (middle) = 188
+            expect(playerA?.currentScore).toBe(188);
         });
 
         it('getPlayersUpperScore returns each player\'s upper total in player-iteration order', () => {

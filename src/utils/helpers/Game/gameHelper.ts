@@ -10,21 +10,13 @@ import { playerTotalScore } from "./playerTotalScore";
 import { scoreHandler } from "./scoreHandler";
 import { state } from "./state";
 import { TFunction } from "i18next";
+import { bonusScoreKey, bonusScoreStorage } from "@helpers/Storage/bonus/bonusScoreStorage";
+
+const DEFAULT_BONUS_SCORE = 50;
 
 const getBonusScore = (typeOfGame: gameType): number => {
-    let bonusScore: number = 75;
-    switch (typeOfGame) {
-        case gameType.maxiYatzy:
-            bonusScore = 100;
-            break;
-        case gameType.yatzy:
-            bonusScore = 50;
-            break;
-        default:
-            bonusScore = 75;
-            break;
-    }
-    return bonusScore;
+    const stored = bonusScoreStorage(bonusScoreKey(typeOfGame)).get();
+    return stored ?? DEFAULT_BONUS_SCORE;
 }
 
 const getBonusLimit = (typeOfGame: gameType): number => {
