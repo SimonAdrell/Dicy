@@ -8,21 +8,19 @@ import styles from './languageSettings.styles';
 
 const DEFAULT_BONUS_SCORE = 50;
 
-interface bonusScoreSettingsProps extends ViewProps { }
-
-type bonusInputProps = {
+type BonusInputProps = Readonly<{
   label: string;
   storage: itemStorage<number>;
   isDarkMode: boolean;
-};
+}>;
 
-function BonusInput({ label, storage, isDarkMode }: bonusInputProps) {
+function BonusInput({ label, storage, isDarkMode }: BonusInputProps) {
   const persisted = storage.get() ?? DEFAULT_BONUS_SCORE;
   const [text, setText] = useState(String(persisted));
   const mStyle = modalStyle(isDarkMode);
 
   const commit = () => {
-    const parsed = parseInt(text, 10);
+    const parsed = Number.parseInt(text, 10);
     if (Number.isFinite(parsed) && parsed >= 0) {
       storage.save(parsed);
       setText(String(parsed));
@@ -53,7 +51,7 @@ function BonusInput({ label, storage, isDarkMode }: bonusInputProps) {
   );
 }
 
-export function BonusScoreSettings(options: bonusScoreSettingsProps) {
+export function BonusScoreSettings(options: Readonly<ViewProps>) {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
