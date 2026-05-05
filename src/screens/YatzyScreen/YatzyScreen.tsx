@@ -19,10 +19,12 @@ import styles from './YatzyScreen.styles';
 import NextButton from '@components/shared/button';
 import { useTranslation } from 'react-i18next';
 import { SharedStyle } from '@styles/sharedStyle';
+import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
 export default function YatzyScreen({ navigation }: Props) {
+  useKeepAwake();
   const { t } = useTranslation();
   const playerHandler = playerStorageHandler();
   const [players] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
