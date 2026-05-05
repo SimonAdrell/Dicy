@@ -1,3 +1,4 @@
+import './src/utils/polyfills/backHandler';
 import {NativeModules} from 'react-native';
 
 NativeModules.ImagePickerManager = {
