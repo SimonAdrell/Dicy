@@ -2,6 +2,7 @@ import { useColorScheme, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { modalStyle } from '@styles/sharedStyle';
 import { LanguageSettings } from '@components/settings/languageSettings';
+import { BonusScoreSettings } from '@components/settings/bonusScoreSettings';
 
 type settingsModalOptions = {
   visible: boolean;
@@ -27,6 +28,7 @@ export function SettingsModal(options: settingsModalOptions) {
         <View style={mStyle.centeredView}>
           <View style={mStyle.modalView}>
             <LanguageSettings />
+            <BonusScoreSettings style={{ marginTop: 20 }} />
           </View>
         </View>
       </Modal>

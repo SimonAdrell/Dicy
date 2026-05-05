@@ -55,6 +55,11 @@
       "header": "Choose language",
       "se": "Svenska",
       "en": "English"
+    },
+    "bonusScoreSettings": {
+      "header": "Bonus score",
+      "maxiYatzy": "Maxi Yatzy",
+      "yatzy": "Yatzy"
     }
   }
 }
