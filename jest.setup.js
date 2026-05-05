@@ -13,4 +13,11 @@ jest.mock('react-native-image-crop-picker', () => {
       openCamera: jest.fn().mockImplementation(() => Promise.resolve()),
     };
   });
+
+jest.mock('@sayem314/react-native-keep-awake', () => ({
+    useKeepAwake: jest.fn(),
+    activateKeepAwake: jest.fn(),
+    deactivateKeepAwake: jest.fn(),
+    default: () => null,
+  }));
   
