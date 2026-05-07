@@ -1,14 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DieFace from '@components/shared/DieFace';
 
-type gameTypeItems = {
+type gameTypeItems = Readonly<{
   gameName: string;
   gameTagLine: string;
   pips: number;
   categories: number;
   bonusLimit: number;
   onSelected: () => void;
-};
+}>;
 
 export default function GameTypeItem({
   onSelected,

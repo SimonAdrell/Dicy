@@ -9,11 +9,11 @@ const PIP_POSITIONS: Record<number, [number, number][]> = {
   6: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]],
 };
 
-type DieFaceProps = {
+type DieFaceProps = Readonly<{
   pips: number;
   size?: number;
   tone?: 'light' | 'dark';
-};
+}>;
 
 export default function DieFace({ pips, size = 48, tone = 'light' }: DieFaceProps) {
   const bg = tone === 'light' ? '#fff' : '#005b4f';
@@ -32,13 +32,13 @@ export default function DieFace({ pips, size = 48, tone = 'light' }: DieFaceProp
         backgroundColor: bg,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: tone === 'light' ? 0.10 : 0.30,
+        shadowOpacity: tone === 'light' ? 0.1 : 0.3,
         shadowRadius: 6,
         elevation: 3,
       }}>
-      {dots.map(([row, col], i) => (
+      {dots.map(([row, col]) => (
         <View
-          key={i}
+          key={`${row}-${col}`}
           style={{
             position: 'absolute',
             top: row * cell + cell / 2 - pipRadius,

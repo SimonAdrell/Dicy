@@ -23,7 +23,7 @@ import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
-function SectionLabel({ label, hint }: { label: string; hint?: string }) {
+function SectionLabel({ label, hint }: Readonly<{ label: string; hint?: string }>) {
   return (
     <View style={styles.sectionLabel}>
       <Text style={styles.sectionLabelText}>{label}</Text>
