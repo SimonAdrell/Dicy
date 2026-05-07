@@ -129,6 +129,13 @@ export default function Player(props: playerProps) {
       <View
         {...props}
         style={{flexDirection: 'column', alignItems: 'center', height: '100%'}}>
+        {playerIsActiveGaming && props.playerDto.order !== undefined && (
+          <View style={styles.orderBadge}>
+            <Text style={styles.orderBadgeText}>
+              {props.playerDto.order + 1}
+            </Text>
+          </View>
+        )}
         <View style={{flex: 1, alignContent: 'center', marginLeft: 5}}>
           <Avatar src={props.playerDto.imageUrl} imageHeight={65} />
         </View>
@@ -183,5 +190,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#005b4f',
+  },
+  orderBadge: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#FFC700',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  orderBadgeText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#063b35',
   },
 });
