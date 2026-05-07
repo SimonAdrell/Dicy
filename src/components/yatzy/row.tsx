@@ -4,18 +4,15 @@ import {
   Text,
   TextStyle,
   TouchableOpacity,
-  useColorScheme,
   View,
   ViewProps,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { PlayerScore } from '@helpers/Game/PlayerScore';
-import { GameState } from '@helpers/Game/GameState';
-import { GameScore } from '@helpers/Game/GameScore';
-import { sortPlayerScoresByPlayersOrder } from '@helpers/Player/PlayerHelper';
-import { yatzyStyle } from '@styles/yatzyStyle/yatzyStyle';
-import { SharedStyle } from '@styles/sharedStyle';
-
+import {PlayerScore} from '@helpers/Game/PlayerScore';
+import {GameState} from '@helpers/Game/GameState';
+import {GameScore} from '@helpers/Game/GameScore';
+import {sortPlayerScoresByPlayersOrder} from '@helpers/Player/PlayerHelper';
+import {yatzyStyle} from '@styles/yatzyStyle/yatzyStyle';
 interface rowProps extends ViewProps {
   GameState: GameState;
   backgroundColor: string;
@@ -24,18 +21,16 @@ interface rowProps extends ViewProps {
   onPress: (playerScore: PlayerScore, scoreToBeUpdated: GameScore) => void;
 }
 export default function Row(row: rowProps) {
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
-  const sStyle = SharedStyle(isDarkMode);
   return (
     <View
       {...row}
-      style={[yatzyStyle.row, { backgroundColor: row.backgroundColor }]}>
-      <Text style={[yatzyStyle.head, { fontWeight: 'light' }]}>
+      style={[yatzyStyle.row, {backgroundColor: row.backgroundColor}]}>
+      <Text style={[yatzyStyle.head, {fontWeight: 'light'}]}>
         {row.GameState.score.name}
       </Text>
-      {[...row.GameState.PlayerScore].sort(sortPlayerScoresByPlayersOrder).map(
-        element => {
+      {[...row.GameState.PlayerScore]
+        .sort(sortPlayerScoresByPlayersOrder)
+        .map(element => {
           const cellClick = () => {
             row.onPress(element, row.GameState.score);
           };
@@ -43,7 +38,7 @@ export default function Row(row: rowProps) {
             <TouchableOpacity
               key={element.player.playerId}
               style={[
-                { alignItems: 'center', paddingTop: 5 },
+                {alignItems: 'center', paddingTop: 5},
                 yatzyStyle.cell,
                 element.isRemoved
                   ? row.removedCellStyle
@@ -53,24 +48,23 @@ export default function Row(row: rowProps) {
               ]}
               onPress={cellClick}>
               {element.isRemoved ? (
-                <Icon name="close" style={styles.removedIcon}></Icon>
+                <Icon name="close" style={styles.removedIcon} />
               ) : (
                 <Text
                   style={[
                     yatzyStyle.text,
-                    { fontWeight: 'bold', color: '#000' },
+                    {fontWeight: 'bold', color: '#000'},
                   ]}>
                   {element.isRemoved ? '' : element.score?.toLocaleString()}
                 </Text>
               )}
             </TouchableOpacity>
           );
-        },
-      )}
+        })}
     </View>
   );
 }
 
 var styles = StyleSheet.create({
-  removedIcon: { height: 80, fontSize: 18 },
+  removedIcon: {height: 80, fontSize: 18},
 });

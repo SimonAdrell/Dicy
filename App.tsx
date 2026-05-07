@@ -19,7 +19,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   const storage: itemStorage<string> = languageStorage('lang');
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     const loadLanguage = async () => {
@@ -31,6 +31,8 @@ function App(): React.JSX.Element {
       }
     };
     loadLanguage();
+    // storage and i18n are recreated every render; listing them would cause an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
