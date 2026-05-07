@@ -39,6 +39,7 @@ export default function DieFace({ pips, size = 48, tone = 'light' }: DieFaceProp
       {dots.map(([row, col]) => (
         <View
           key={`${row}-${col}`}
+          testID="pip"
           style={{
             position: 'absolute',
             top: row * cell + cell / 2 - pipRadius,
