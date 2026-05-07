@@ -17,9 +17,7 @@ export default function SumRow({backgroundColor, GameHelper}: rowProps) {
       {playersScore.sort(sortPlayerScoresByPlayersOrder).map(element => {
         return (
           <View style={styles.cell} key={element.player.playerId}>
-            <Text
-              key={element.player.toLocaleString()}
-              style={[styles.text, {fontWeight: 'bold', color: '#000'}]}>
+            <Text style={[styles.text, {fontWeight: 'bold', color: '#000'}]}>
               {element.score.toLocaleString()}
             </Text>
           </View>

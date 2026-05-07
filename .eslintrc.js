@@ -22,5 +22,16 @@ module.exports = {
       files: ['jest.setup.js', '**/__tests__/**', '**/*.test.*', '**/*.spec.*'],
       env: { jest: true },
     },
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+      },
+      rules: {
+        // Catches S6551: object coerced to string via default Object.toString()
+        '@typescript-eslint/no-base-to-string': 'error',
+      },
+    },
   ],
 };
