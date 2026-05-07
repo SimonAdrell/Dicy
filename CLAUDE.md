@@ -62,6 +62,39 @@ actual problem.
 they want the smoke-test label applied before merging.** Don't apply
 it unprompted.
 
+## Linting — run this before pushing
+
+**Always run lint before committing or opening a PR.** The lint CI workflow
+(`.github/workflows/lint.yml`) runs on every PR push and will block merging if
+it fails — catching issues there is much slower than catching them locally.
+
+```bash
+npm run lint        # ESLint across the whole project
+npm run lint:fix    # ESLint with auto-fix
+npm run format      # Prettier auto-format src/
+```
+
+**Pre-commit hook:** after `npm install`, husky automatically runs
+`lint-staged` on every `git commit` — staged `.ts/.tsx` files are
+ESLint-fixed and Prettier-formatted before the commit lands. If ESLint
+cannot auto-fix a violation, the commit is blocked with a clear error.
+
+### Rules that catch common issues
+
+| ESLint rule | What it prevents |
+|---|---|
+| `react/no-array-index-key` | Array index as JSX key (causes subtle re-render bugs) |
+| `@typescript-eslint/no-unused-vars` | Unused imports and variables |
+
+**SonarCloud** (`.github/workflows/` triggers on PR) catches additional
+issues that ESLint doesn't cover, including:
+- `Readonly<>` on component prop types (S6759)
+- Trailing zeros in numeric literals e.g. `0.10` → `0.1` (S7748)
+- `.sort()` called inline inside JSX (S4043)
+
+Fix any SonarCloud findings before requesting review. Check open issues at
+`https://sonarcloud.io/project/issues?id=SimonAdrell_Dicy&pullRequest=<PR#>&issueStatuses=OPEN`.
+
 ## Notable past fixes (read before debugging launch crashes)
 
 - `MainApplication.kt` must call
