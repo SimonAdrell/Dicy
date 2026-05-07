@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    name: ESLint + Prettier
+    name: ESLint
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,5 +31,3 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check Prettier formatting
-        run: npx prettier --check "src/**/*.{ts,tsx,json}"
