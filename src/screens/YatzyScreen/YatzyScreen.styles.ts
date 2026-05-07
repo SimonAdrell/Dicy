@@ -1,10 +1,15 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  container: { flex: 1, paddingTop: 20, backgroundColor: '#F1F3F9', padding: 10 },
-  title: { flex: 1, textAlign: 'center', alignItems: 'center' },
-  player: { flex: 1, textAlign: 'center', alignItems: 'center', paddingBottom: 4 },
-  playerName: { fontSize: 11, fontWeight: '600', marginTop: 4 },
+  container: {flex: 1, paddingTop: 20, padding: 10},
+  title: {flex: 1, textAlign: 'center', alignItems: 'center'},
+  player: {
+    flex: 1,
+    textAlign: 'center',
+    alignItems: 'center',
+    paddingBottom: 4,
+  },
+  playerName: {fontSize: 11, fontWeight: '600', marginTop: 4},
   scoreChip: {
     marginTop: 2,
     paddingHorizontal: 6,
@@ -23,13 +28,13 @@ export default StyleSheet.create({
   scoreChipTextLeader: {
     color: '#063b35',
   },
-  row: { height: 28, flex: 1 },
-  headerRow: { flexDirection: 'row', paddingBottom: 8 },
-  board: { width: '100%' },
-  doneCell1: { backgroundColor: '#CCD5AE' },
-  doneCell2: { backgroundColor: '#E9EDC9' },
-  removedCell1: { backgroundColor: '#ededed' },
-  removedCell2: { backgroundColor: '#d3d3d3' },
+  row: {height: 28, flex: 1},
+  headerRow: {flexDirection: 'row', paddingBottom: 8},
+  board: {width: '100%'},
+  doneCell1: {backgroundColor: '#CCD5AE'},
+  doneCell2: {backgroundColor: '#E9EDC9'},
+  removedCell1: {backgroundColor: '#ededed'},
+  removedCell2: {backgroundColor: '#d3d3d3'},
   sectionLabel: {
     flexDirection: 'row',
     alignItems: 'baseline',

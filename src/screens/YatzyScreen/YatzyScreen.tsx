@@ -1,5 +1,11 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView, Text, useColorScheme, View} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {RootStackParamList} from '../../../App';
 import {useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';
@@ -92,7 +98,7 @@ export default function YatzyScreen(_: Props) {
   }, null);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
       {/* Player header row */}
       <View style={styles.headerRow}>
         <View style={styles.title} />
@@ -194,6 +200,6 @@ export default function YatzyScreen(_: Props) {
         visible={totalVisibility}
         onExit={() => setTotalVisibility(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 }
