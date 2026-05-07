@@ -23,6 +23,15 @@ import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Yatzy'>;
 
+function SectionLabel({ label, hint }: { label: string; hint?: string }) {
+  return (
+    <View style={styles.sectionLabel}>
+      <Text style={styles.sectionLabelText}>{label}</Text>
+      {hint ? <Text style={styles.sectionLabelHint}>{hint}</Text> : null}
+    </View>
+  );
+}
+
 export default function YatzyScreen({ navigation }: Props) {
   useKeepAwake();
   const { t } = useTranslation();
@@ -43,6 +52,7 @@ export default function YatzyScreen({ navigation }: Props) {
     setCurrentGameScore(scoreToBeUpdated);
     setScoreModalVisible(!scoreModalVisible);
   };
+
   let gamingHelper = gameHelper(game);
 
   const updateGame = (
@@ -52,106 +62,106 @@ export default function YatzyScreen({ navigation }: Props) {
     setScoreModalVisible(!scoreModalVisible);
     if (playerScore === undefined) return;
     if (scoreToBeUpdated === undefined) return;
-
-    gamingHelper
-      .scoreHandler()
-      .updatePlayerScore(scoreToBeUpdated, playerScore);
+    gamingHelper.scoreHandler().updatePlayerScore(scoreToBeUpdated, playerScore);
   };
-  const color1: string = '#FFF';
-  const color2: string = '#F1F3F9';
 
+  const color1 = '#FFF';
+  const color2 = '#F1F3F9';
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  const sStyle = SharedStyle(isDarkMode)
+  const sStyle = SharedStyle(isDarkMode);
+
+  // Determine leader (highest currentScore)
+  const sortedPlayers = game?.players ? [...game.players].sort(sortPlayersByOrder) : [];
+  const leaderId = sortedPlayers.reduce<number | null>((best, p) => {
+    if (best === null) return p.playerId;
+    const bestScore = sortedPlayers.find(x => x.playerId === best)?.currentScore ?? 0;
+    return p.currentScore > bestScore ? p.playerId : best;
+  }, null);
+
   return (
     <View style={styles.container}>
+      {/* Player header row */}
       <View style={styles.headerRow}>
-        <View style={styles.title}></View>
-        {game?.players && [...game.players].sort(sortPlayersByOrder).map(player => {
+        <View style={styles.title} />
+        {sortedPlayers.map(player => {
+          const isLeader = leaderId === player.playerId && player.currentScore > 0;
           return (
-            <View key={player.playerId} style={[styles.player]}>
-              <Avatar imageHeight={40} src={player.imageUrl}></Avatar>
-              <Text style={[styles.playerName, sStyle.fontColor]}>
-                {player.name}{' '}
-              </Text>
+            <View key={player.playerId} style={styles.player}>
+              <Avatar imageHeight={40} src={player.imageUrl} />
+              <Text style={[styles.playerName, sStyle.fontColor]}>{player.name}</Text>
+              <View style={[styles.scoreChip, isLeader && styles.scoreChipLeader]}>
+                <Text style={[styles.scoreChipText, isLeader && styles.scoreChipTextLeader]}>
+                  {player.currentScore}
+                </Text>
+              </View>
             </View>
           );
         })}
       </View>
-      <ScrollView style={[styles.board]}>
-        {game?.upper?.map((element, index) => {
-          return (
-            <Row
-              onPress={onRowPress}
-              GameState={element}
-              key={300 + index}
-              backgroundColor={index % 2 == 0 ? color1 : color2}
-              doneCellStyle={
-                index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
-              }
-              removedCellStyle={
-                index % 2 == 0 ? styles.removedCell1 : styles.removedCell2
-              }
-            />
-          );
-        })}
-        <SumRow GameHelper={gamingHelper} backgroundColor={'#fff8f1'} />
-        <BonusRow
-          GameHelper={gamingHelper}
-          backgroundColor={'#fff8f1'}></BonusRow>
-        {game?.middle?.map((element, index) => {
-          return (
-            <Row
-              onPress={onRowPress}
-              GameState={element}
-              key={100 + index}
-              backgroundColor={index % 2 == 0 ? color1 : color2}
-              doneCellStyle={
-                index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
-              }
-              removedCellStyle={
-                index % 2 == 0 ? styles.removedCell1 : styles.removedCell2
-              }
-            />
-          );
-        })}
-        {game?.lower?.map((element, index) => {
-          return (
-            <Row
-              onPress={onRowPress}
-              GameState={element}
-              key={200 + index}
-              backgroundColor={index % 2 == 0 ? color2 : color1}
-              doneCellStyle={
-                index % 2 == 0 ? styles.doneCell1 : styles.doneCell2
-              }
-              removedCellStyle={
-                index % 2 == 0 ? styles.removedCell1 : styles.removedCell2
-              }
-            />
-          );
-        })}
+
+      {/* Scoreboard */}
+      <ScrollView style={styles.board}>
+        <SectionLabel
+          label="Upper section"
+          hint={`Bonus at ${game?.bonusLimit ?? 63}`}
+        />
+        {game?.upper?.map((element, index) => (
+          <Row
+            onPress={onRowPress}
+            GameState={element}
+            key={300 + index}
+            backgroundColor={index % 2 === 0 ? color1 : color2}
+            doneCellStyle={index % 2 === 0 ? styles.doneCell1 : styles.doneCell2}
+            removedCellStyle={index % 2 === 0 ? styles.removedCell1 : styles.removedCell2}
+          />
+        ))}
+        <SumRow GameHelper={gamingHelper} backgroundColor="#fff8f1" />
+        <BonusRow GameHelper={gamingHelper} backgroundColor="#fff8f1" />
+
+        <SectionLabel label="Combinations" />
+        {game?.middle?.map((element, index) => (
+          <Row
+            onPress={onRowPress}
+            GameState={element}
+            key={100 + index}
+            backgroundColor={index % 2 === 0 ? color1 : color2}
+            doneCellStyle={index % 2 === 0 ? styles.doneCell1 : styles.doneCell2}
+            removedCellStyle={index % 2 === 0 ? styles.removedCell1 : styles.removedCell2}
+          />
+        ))}
+
+        <SectionLabel label="Yatzy" />
+        {game?.lower?.map((element, index) => (
+          <Row
+            onPress={onRowPress}
+            GameState={element}
+            key={200 + index}
+            backgroundColor={index % 2 === 0 ? color2 : color1}
+            doneCellStyle={index % 2 === 0 ? styles.doneCell1 : styles.doneCell2}
+            removedCellStyle={index % 2 === 0 ? styles.removedCell1 : styles.removedCell2}
+          />
+        ))}
       </ScrollView>
+
       <NextButton
         text={t('yatzyScreen.showWinner')}
-        onPress={() => {
-          setTotalVisibility(!totalVisibility);
-        }}
+        onPress={() => setTotalVisibility(!totalVisibility)}
       />
+
       <AddScoreModal
         players={players}
         scoreToBeUpdated={currentGameScore}
         playerScore={currentPlayerScore}
         visible={scoreModalVisible}
         onExit={updateGame}
-        hideModal={() => setScoreModalVisible(false)}></AddScoreModal>
+        hideModal={() => setScoreModalVisible(false)}
+      />
       <PlayersScoreModal
         GameHelper={gamingHelper}
         visible={totalVisibility}
-        onExit={() => {
-          setTotalVisibility(false);
-        }}
+        onExit={() => setTotalVisibility(false)}
       />
     </View>
   );

@@ -66,12 +66,18 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
               {playersTotalScore
                 ?.sort((a, b) => b.currentScore - a.currentScore)
                 .map((element, index) => {
+                  const isWinner = index === 0;
                   return (
                     <ScoreModalPlayer
                       key={index + ''}
                       place={(index += 1)}
                       player={element}
-                      style={[mStyle.playerRow, sStyle.itemBackground]}
+                      style={[
+                        mStyle.playerRow,
+                        isWinner
+                          ? { backgroundColor: '#FFC700' }
+                          : sStyle.itemBackground,
+                      ]}
                     />
                   );
                 })}
