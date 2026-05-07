@@ -1,4 +1,4 @@
-import {Alert, SafeAreaView, useColorScheme, View} from 'react-native';
+import {Alert, SafeAreaView, Text, useColorScheme, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';
 import {RootStackParamList} from '../../../App';
@@ -12,7 +12,14 @@ import NextButton from '@components/shared/button';
 import {useTranslation} from 'react-i18next';
 import NewPlayer from '@components/players/newPlayer';
 import {SharedStyle} from '@styles/sharedStyle';
+import DieFace from '@components/shared/DieFace';
+import {gameType} from '@helpers/Game/gameType';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerPicker'>;
+
+function gamePips(type: gameType | undefined): number {
+  return type === gameType.yatzy ? 5 : 6;
+}
 
 export default function PlayerScreen({navigation}: Props) {
   const {t} = useTranslation();
@@ -48,9 +55,25 @@ export default function PlayerScreen({navigation}: Props) {
     }
   };
 
+  const gameTypeName =
+    game?.gameType === gameType.yatzy
+      ? t('gameType.yatzy.name')
+      : t('gameType.maxiYatzy.name');
+
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
       <View style={styles.wrapperContainer}>
+        {/* Game context header */}
+        <View style={styles.gameHeader}>
+          <DieFace pips={gamePips(game?.gameType)} size={36} tone="light" />
+          <View style={styles.gameHeaderText}>
+            <Text style={styles.gameHeaderTitle}>{gameTypeName}</Text>
+            <Text style={styles.gameHeaderSubtitle}>
+              {t('player.pickPlayers')}
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.playersWrapper}>
           <PlayerList players={players} gamingHelper={gamingHelper} />
         </View>

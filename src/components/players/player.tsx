@@ -6,15 +6,15 @@ import {
   ViewProps,
   useColorScheme,
 } from 'react-native';
-import { PlayerDto } from './playerObject';
-import { Avatar } from './PlayerAvatar';
+import {PlayerDto} from './playerObject';
+import {Avatar} from './PlayerAvatar';
 import playerStorageHandler from '@helpers/Storage/player/playerHandler';
-import { gameHelperType } from '@helpers/Game/gameHelperType';
-import { gameType } from '@helpers/Game/gameType';
-import { useState } from 'react';
+import {gameHelperType} from '@helpers/Game/gameHelperType';
+import {gameType} from '@helpers/Game/gameType';
+import {useState} from 'react';
 import ConfirmDialog from 'react-native-simple-dialogs/dist/ConfirmDialog';
-import { useTranslation } from 'react-i18next';
-import { SharedStyle } from '@styles/sharedStyle';
+import {useTranslation} from 'react-i18next';
+import {SharedStyle} from '@styles/sharedStyle';
 interface playerProps extends ViewProps {
   playerDto: PlayerDto;
   gamingHelper: gameHelperType;
@@ -22,7 +22,7 @@ interface playerProps extends ViewProps {
 
 export default function Player(props: playerProps) {
   const playerHandler = playerStorageHandler();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
@@ -108,7 +108,6 @@ export default function Player(props: playerProps) {
     playerHandler.savePlayers(players);
   };
 
-
   const sStyle = SharedStyle(isDarkMode);
 
   return (
@@ -116,7 +115,9 @@ export default function Player(props: playerProps) {
       style={[
         styles.container,
         sStyle.itemBackground,
-        playerIsActiveGaming ? sStyle.itemSelected : { shadowColor: '#000' },
+        playerIsActiveGaming
+          ? {...sStyle.itemSelected, borderColor: '#FFC700', borderWidth: 2}
+          : {shadowColor: '#000'},
       ]}
       key={props.playerDto.playerId}
       onPress={() => {
@@ -127,11 +128,11 @@ export default function Player(props: playerProps) {
       }}>
       <View
         {...props}
-        style={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-        <View style={{ flex: 1, alignContent: 'center', marginLeft: 5 }}>
-          <Avatar src={props.playerDto.imageUrl} imageHeight={65}></Avatar>
+        style={{flexDirection: 'column', alignItems: 'center', height: '100%'}}>
+        <View style={{flex: 1, alignContent: 'center', marginLeft: 5}}>
+          <Avatar src={props.playerDto.imageUrl} imageHeight={65} />
         </View>
-        <View style={{ flex: 1, flexDirection: 'column' }}>
+        <View style={{flex: 1, flexDirection: 'column'}}>
           <View
             style={{
               flex: 1,
@@ -140,7 +141,9 @@ export default function Player(props: playerProps) {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={[styles.sectionTitle, sStyle.fontColor]}>{props.playerDto.name}</Text>
+            <Text style={[styles.sectionTitle, sStyle.fontColor]}>
+              {props.playerDto.name}
+            </Text>
           </View>
         </View>
         <ConfirmDialog
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingBottom: 20,
     margin: 5,
-    borderRadius: 10,
+    borderRadius: 18,
     height: 130,
     opacity: 0.7,
   },
@@ -180,5 +183,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#005b4f',
-  }
+  },
 });

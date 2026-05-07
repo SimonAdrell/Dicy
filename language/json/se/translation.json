@@ -20,7 +20,8 @@
     "cancel": "Avbryt",
     "addPlayerHeader": "Lägg till ny spelare",
     "addNewPlayerPlaceHolder": "Namn",
-    "addNewPlayerSaveButton": "Lägg till"
+    "addNewPlayerSaveButton": "Lägg till",
+    "pickPlayers": "Välj spelare"
   },
   "yatzyScreen": {
     "showWinner": "Visa vinnare",
