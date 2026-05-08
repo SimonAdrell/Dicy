@@ -1,12 +1,26 @@
-import { Image, Pressable, Text, useColorScheme, View, ViewProps } from 'react-native';
-import { languageStorage } from '@helpers/Storage/language/languageStorage';
+import {
+  Image,
+  Pressable,
+  Text,
+  useColorScheme,
+  View,
+  ViewProps,
+} from 'react-native';
+import {languageStorage} from '@helpers/Storage/language/languageStorage';
 import styles from './languageSettings.styles';
-import { useTranslation } from 'react-i18next';
-import { modalStyle, SharedStyle } from '@styles/sharedStyle';
-interface languageSettingsProps extends ViewProps { }
+import {useTranslation} from 'react-i18next';
+import {modalStyle, SharedStyle} from '@styles/sharedStyle';
+interface languageSettingsProps extends ViewProps {}
+
+const selectedCardStyle = {
+  borderRadius: 18,
+  borderColor: '#FFC700',
+  borderWidth: 2,
+};
+const unselectedCardStyle = {borderRadius: 18, opacity: 0.7};
 
 export function LanguageSettings(options: languageSettingsProps) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
@@ -20,7 +34,7 @@ export function LanguageSettings(options: languageSettingsProps) {
   return (
     <View {...options}>
       <View style={mStyle.playerRow}>
-        <Text style={[styles.gameNameText, { fontSize: 32, padding: 20 }, mStyle.modalText]}>
+        <Text style={[styles.sectionHeader, mStyle.modalText]}>
           {t('settings.languageSettings.header')}
         </Text>
       </View>
@@ -29,23 +43,24 @@ export function LanguageSettings(options: languageSettingsProps) {
           onPress={() => changeLanguage('en')}
           style={[
             mStyle.playerRow,
-            {
-              borderRadius: 10,
-              opacity: 0.7,
-            },
-            i18n.resolvedLanguage === 'en' ? sStyle.itemSelected : sStyle.itemBackground
+            i18n.resolvedLanguage === 'en'
+              ? {...sStyle.itemSelected, ...selectedCardStyle}
+              : {...sStyle.itemBackground, ...unselectedCardStyle},
           ]}>
-          <View
-            style={{
-              flex: 1,
-              padding: 10,
-            }}>
+          <View style={{flex: 1, padding: 10}}>
             <Image
               source={require('assets/flags/en.png')}
-              style={{ height: 65, width: 65 }}></Image>
+              style={{height: 65, width: 65}}
+            />
           </View>
-          <View style={{ flex: 3, padding: 20 }}>
-            <Text style={[styles.gameNameText, i18n.resolvedLanguage === 'en' ? sStyle.secondaryFontColor : sStyle.fontColor]}>
+          <View style={{flex: 3, padding: 20}}>
+            <Text
+              style={[
+                styles.gameNameText,
+                i18n.resolvedLanguage === 'en'
+                  ? sStyle.secondaryFontColor
+                  : sStyle.fontColor,
+              ]}>
               {t('settings.languageSettings.en')}
             </Text>
           </View>
@@ -56,24 +71,25 @@ export function LanguageSettings(options: languageSettingsProps) {
           onPress={() => changeLanguage('se')}
           style={[
             mStyle.playerRow,
-            {
-              borderRadius: 10,
-              marginTop: 20,
-              opacity: 0.7,
-            },
-            i18n.resolvedLanguage === 'se' ? sStyle.itemSelected : sStyle.itemBackground
+            {marginTop: 12},
+            i18n.resolvedLanguage === 'se'
+              ? {...sStyle.itemSelected, ...selectedCardStyle}
+              : {...sStyle.itemBackground, ...unselectedCardStyle},
           ]}>
-          <View
-            style={{
-              flex: 1,
-              padding: 10,
-            }}>
+          <View style={{flex: 1, padding: 10}}>
             <Image
               source={require('assets/flags/se.png')}
-              style={{ height: 65, width: 65 }}></Image>
+              style={{height: 65, width: 65}}
+            />
           </View>
-          <View style={{ flex: 3, padding: 20 }}>
-            <Text style={[styles.gameNameText, i18n.resolvedLanguage === 'se' ? sStyle.secondaryFontColor : sStyle.fontColor]}>
+          <View style={{flex: 3, padding: 20}}>
+            <Text
+              style={[
+                styles.gameNameText,
+                i18n.resolvedLanguage === 'se'
+                  ? sStyle.secondaryFontColor
+                  : sStyle.fontColor,
+              ]}>
               {t('settings.languageSettings.se')}
             </Text>
           </View>

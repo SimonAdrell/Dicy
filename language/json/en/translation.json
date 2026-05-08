@@ -20,7 +20,8 @@
     "cancel": "Cancel",
     "addPlayerHeader": "Add a new player",
     "addNewPlayerPlaceHolder": "Name of player",
-    "addNewPlayerSaveButton": "Add new player"
+    "addNewPlayerSaveButton": "Add new player",
+    "pickPlayers": "Pick players"
   },
   "yatzyScreen": {
     "showWinner": "Show winner",

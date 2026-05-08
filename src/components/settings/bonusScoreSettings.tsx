@@ -1,9 +1,12 @@
-import { useState } from 'react';
-import { Text, TextInput, useColorScheme, View, ViewProps } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { bonusScoreKey, bonusScoreStorage } from '@helpers/Storage/bonus/bonusScoreStorage';
-import { gameType } from '@helpers/Game/gameType';
-import { modalStyle } from '@styles/sharedStyle';
+import {useState} from 'react';
+import {Text, TextInput, useColorScheme, View, ViewProps} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  bonusScoreKey,
+  bonusScoreStorage,
+} from '@helpers/Storage/bonus/bonusScoreStorage';
+import {gameType} from '@helpers/Game/gameType';
+import {modalStyle} from '@styles/sharedStyle';
 import styles from './languageSettings.styles';
 
 const DEFAULT_BONUS_SCORE = 50;
@@ -11,12 +14,13 @@ const DEFAULT_BONUS_SCORE = 50;
 type BonusInputProps = Readonly<{
   label: string;
   storage: itemStorage<number>;
-  isDarkMode: boolean;
 }>;
 
-function BonusInput({ label, storage, isDarkMode }: BonusInputProps) {
-  const persisted = storage.get() ?? DEFAULT_BONUS_SCORE;
-  const [text, setText] = useState(String(persisted));
+function BonusInput({label, storage}: BonusInputProps) {
+  const isDarkMode = useColorScheme() === 'dark';
+  const [text, setText] = useState(() =>
+    String(storage.get() ?? DEFAULT_BONUS_SCORE),
+  );
   const mStyle = modalStyle(isDarkMode);
 
   const commit = () => {
@@ -30,15 +34,23 @@ function BonusInput({ label, storage, isDarkMode }: BonusInputProps) {
   };
 
   return (
-    <View style={[mStyle.playerRow, { alignItems: 'center' }]}>
-      <View style={{ flex: 2, paddingLeft: 10 }}>
-        <Text style={[styles.gameNameText, mStyle.modalText, { fontSize: 18, marginBottom: 0, textAlign: 'left' }]}>
+    <View style={[mStyle.playerRow, {alignItems: 'center'}]}>
+      <View style={{flex: 2, paddingLeft: 10}}>
+        <Text
+          style={[
+            styles.gameNameText,
+            mStyle.modalText,
+            {fontSize: 18, marginBottom: 0, textAlign: 'left'},
+          ]}>
           {label}
         </Text>
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <TextInput
-          style={[mStyle.textInput, { width: 80, marginBottom: 0, color: isDarkMode ? '#fff' : '#000' }]}
+          style={[
+            mStyle.textInput,
+            {width: 80, marginBottom: 0, color: isDarkMode ? '#fff' : '#000'},
+          ]}
           keyboardType="number-pad"
           maxLength={4}
           value={text}
@@ -52,30 +64,31 @@ function BonusInput({ label, storage, isDarkMode }: BonusInputProps) {
 }
 
 export function BonusScoreSettings(options: Readonly<ViewProps>) {
-  const { t } = useTranslation();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
+  const {t} = useTranslation();
+  const isDarkMode = useColorScheme() === 'dark';
   const mStyle = modalStyle(isDarkMode);
 
-  const maxiStorage: itemStorage<number> = bonusScoreStorage(bonusScoreKey(gameType.maxiYatzy));
-  const yatzyStorage: itemStorage<number> = bonusScoreStorage(bonusScoreKey(gameType.yatzy));
+  const maxiStorage: itemStorage<number> = bonusScoreStorage(
+    bonusScoreKey(gameType.maxiYatzy),
+  );
+  const yatzyStorage: itemStorage<number> = bonusScoreStorage(
+    bonusScoreKey(gameType.yatzy),
+  );
 
   return (
     <View {...options}>
       <View style={mStyle.playerRow}>
-        <Text style={[styles.gameNameText, { fontSize: 32, padding: 20 }, mStyle.modalText]}>
+        <Text style={[styles.sectionHeader, mStyle.modalText]}>
           {t('settings.bonusScoreSettings.header')}
         </Text>
       </View>
       <BonusInput
         label={t('settings.bonusScoreSettings.maxiYatzy')}
         storage={maxiStorage}
-        isDarkMode={isDarkMode}
       />
       <BonusInput
         label={t('settings.bonusScoreSettings.yatzy')}
         storage={yatzyStorage}
-        isDarkMode={isDarkMode}
       />
     </View>
   );

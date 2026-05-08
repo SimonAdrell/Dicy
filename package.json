@@ -6,15 +6,21 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
     "start": "react-native start",
     "test": "jest",
     "check-dependencies": "rnx-align-deps",
-    "fix-dependencies": "rnx-align-deps --write"
+    "fix-dependencies": "rnx-align-deps --write",
+    "prepare": "husky"
   },
-  "eslintConfig": {
-    "extends": [
-      "@react-native",
-      "plugin:testing-library/react-native"
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.json": [
+      "prettier --write"
     ]
   },
   "jest": {
@@ -84,6 +90,8 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-native": "^5.0.0",
     "eslint-plugin-testing-library": "^6.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
     "jest": "^29.2.1",
     "react-test-renderer": "18.3.1",
     "ts-jest": "^29.4.6",
