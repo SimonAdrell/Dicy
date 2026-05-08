@@ -18,8 +18,9 @@ type BonusInputProps = Readonly<{
 }>;
 
 function BonusInput({label, storage, isDarkMode}: BonusInputProps) {
-  const persisted = storage.get() ?? DEFAULT_BONUS_SCORE;
-  const [text, setText] = useState(String(persisted));
+  const [text, setText] = useState(() =>
+    String(storage.get() ?? DEFAULT_BONUS_SCORE),
+  );
   const mStyle = modalStyle(isDarkMode);
 
   const commit = () => {

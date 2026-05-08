@@ -84,18 +84,16 @@ export default function YatzyScreen(_: Props) {
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
 
-  // Determine leader (highest currentScore)
   const sortedPlayers = game?.players
     ? [...game.players].sort(sortPlayersByOrder)
     : [];
-  const leaderId = sortedPlayers.reduce<number | null>((best, p) => {
-    if (best === null) {
-      return p.playerId;
-    }
-    const bestScore =
-      sortedPlayers.find(x => x.playerId === best)?.currentScore ?? 0;
-    return p.currentScore > bestScore ? p.playerId : best;
-  }, null);
+  const leaderId = sortedPlayers.reduce<{id: number | null; score: number}>(
+    (best, p) =>
+      p.currentScore > best.score
+        ? {id: p.playerId, score: p.currentScore}
+        : best,
+    {id: null, score: -1},
+  ).id;
 
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>

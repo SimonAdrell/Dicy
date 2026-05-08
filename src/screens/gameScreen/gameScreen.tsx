@@ -1,21 +1,27 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
-import { SafeAreaView, ScrollView, Text, useColorScheme, View } from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../../App';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import gameHelper from '@helpers/Game/gameHelper';
-import { gameType } from '@helpers/Game/gameType';
-import { useGame } from '@helpers/Game/gameContext';
+import {gameType} from '@helpers/Game/gameType';
+import {useGame} from '@helpers/Game/gameContext';
 import GameTypeItem from '@components/game/gameTypeItem';
 import styles from './gameScreen.styles';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import SettingsIcon from '@components/settings/settingsIcon';
-import { SharedStyle } from '@styles/sharedStyle';
+import {SharedStyle} from '@styles/sharedStyle';
 import DieFace from '@components/shared/DieFace';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'GamePicker'>;
 
-const GameScreen = ({ navigation }: Props) => {
-  const { t } = useTranslation();
-  const { setGame } = useGame();
+const GameScreen = ({navigation}: Props) => {
+  const {t} = useTranslation();
+  const {setGame} = useGame();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
@@ -38,7 +44,6 @@ const GameScreen = ({ navigation }: Props) => {
         <View style={styles.brandingHeader}>
           <View style={styles.brandingRow}>
             <DieFace pips={5} size={42} tone="light" />
-            <View style={{ width: 6 }} />
             <DieFace pips={3} size={42} tone="dark" />
             <Text style={styles.brandingTitle}>Dicy</Text>
           </View>

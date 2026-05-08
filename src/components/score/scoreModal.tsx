@@ -20,7 +20,9 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     setAnimationVisibility(true);
   }
   var [animate, setAnimationVisibility] = useState<boolean>(true);
-  var playersTotalScore = options.GameHelper.getPlayers()?.slice();
+  var playersTotalScore = options.GameHelper.getPlayers()
+    ?.slice()
+    .sort((a, b) => b.currentScore - a.currentScore);
   const confettiRef = useRef<LottieView>(null);
   function triggerConfetti() {
     confettiRef.current?.play(0);
@@ -63,24 +65,22 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
 
           <View style={mStyle.modalView}>
             <View style={mStyle.modalText}>
-              {playersTotalScore
-                ?.sort((a, b) => b.currentScore - a.currentScore)
-                .map((element, index) => {
-                  const isWinner = index === 0;
-                  return (
-                    <ScoreModalPlayer
-                      key={element.playerId.toString()}
-                      place={(index += 1)}
-                      player={element}
-                      style={[
-                        mStyle.playerRow,
-                        isWinner
-                          ? {backgroundColor: '#FFC700'}
-                          : sStyle.itemBackground,
-                      ]}
-                    />
-                  );
-                })}
+              {playersTotalScore?.map((element, index) => {
+                const isWinner = index === 0;
+                return (
+                  <ScoreModalPlayer
+                    key={element.playerId.toString()}
+                    place={index + 1}
+                    player={element}
+                    style={[
+                      mStyle.playerRow,
+                      isWinner
+                        ? {backgroundColor: '#FFC700'}
+                        : sStyle.itemBackground,
+                    ]}
+                  />
+                );
+              })}
             </View>
             <NextButton text={t('yatzyScreen.close')} onPress={exitModal} />
           </View>
