@@ -70,16 +70,7 @@ export function AddScoreModal(options: scoreModalProps) {
 
   function getValidNumber(): number {
     const scoreNumber = Number(scoreString);
-    if (scoreNumber === undefined) {
-      return -1;
-    }
-    if (scoreNumber === null) {
-      return -1;
-    }
-    if (scoreNumber === 0) {
-      return -1;
-    }
-    if (isNaN(scoreNumber)) {
+    if (scoreNumber === 0 || isNaN(scoreNumber)) {
       return -1;
     }
     return scoreNumber;
@@ -96,7 +87,6 @@ export function AddScoreModal(options: scoreModalProps) {
       score: undefined,
       player: options.playerScore?.player,
     };
-    playerScore.isRemoved = isRemoved;
     if (scoreNumber > -1) {
       playerScore.score = scoreNumber;
     }

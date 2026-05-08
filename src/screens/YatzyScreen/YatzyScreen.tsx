@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import {RootStackParamList} from '../../../App';
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';
 import {Avatar} from '@components/players/PlayerAvatar';
 import Row from '@components/yatzy/row';
@@ -84,22 +84,16 @@ export default function YatzyScreen(_: Props) {
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
 
-  const sortedPlayers = useMemo(
-    () => (game?.players ? [...game.players].sort(sortPlayersByOrder) : []),
-
-    [game?.players],
-  );
-  const leaderId = useMemo(
-    () =>
-      sortedPlayers.reduce<{id: number | null; score: number}>(
-        (best, p) =>
-          p.currentScore > best.score
-            ? {id: p.playerId, score: p.currentScore}
-            : best,
-        {id: null, score: -1},
-      ).id,
-    [sortedPlayers],
-  );
+  const sortedPlayers = game?.players
+    ? [...game.players].sort(sortPlayersByOrder)
+    : [];
+  const leaderId = sortedPlayers.reduce<{id: number | null; score: number}>(
+    (best, p) =>
+      p.currentScore > best.score
+        ? {id: p.playerId, score: p.currentScore}
+        : best,
+    {id: null, score: -1},
+  ).id;
 
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>

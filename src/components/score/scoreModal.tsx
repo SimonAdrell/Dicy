@@ -1,6 +1,6 @@
 import {useColorScheme, View} from 'react-native';
 import Modal from 'react-native-modal';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useMemo, useState} from 'react';
 import {gameHelperType} from '@helpers/Game/gameHelperType';
 import {ScoreModalPlayer} from './playerScoreRow';
 import LottieView from 'lottie-react-native';
@@ -20,11 +20,16 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     setAnimationVisibility(true);
   }
   const [animate, setAnimationVisibility] = useState<boolean>(true);
-  const playersTotalScore = options.visible
-    ? options.GameHelper.getPlayers()
-        ?.slice()
-        .sort((a, b) => b.currentScore - a.currentScore)
-    : undefined;
+  const playersTotalScore = useMemo(
+    () =>
+      options.visible
+        ? options.GameHelper.getPlayers()
+            ?.slice()
+            .sort((a, b) => b.currentScore - a.currentScore)
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [options.visible],
+  );
   const confettiRef = useRef<LottieView>(null);
   function triggerConfetti() {
     confettiRef.current?.play(0);
