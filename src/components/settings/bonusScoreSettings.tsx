@@ -14,10 +14,10 @@ const DEFAULT_BONUS_SCORE = 50;
 type BonusInputProps = Readonly<{
   label: string;
   storage: itemStorage<number>;
-  isDarkMode: boolean;
 }>;
 
-function BonusInput({label, storage, isDarkMode}: BonusInputProps) {
+function BonusInput({label, storage}: BonusInputProps) {
+  const isDarkMode = useColorScheme() === 'dark';
   const [text, setText] = useState(() =>
     String(storage.get() ?? DEFAULT_BONUS_SCORE),
   );
@@ -65,8 +65,7 @@ function BonusInput({label, storage, isDarkMode}: BonusInputProps) {
 
 export function BonusScoreSettings(options: Readonly<ViewProps>) {
   const {t} = useTranslation();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
+  const isDarkMode = useColorScheme() === 'dark';
   const mStyle = modalStyle(isDarkMode);
 
   const maxiStorage: itemStorage<number> = bonusScoreStorage(
@@ -86,12 +85,10 @@ export function BonusScoreSettings(options: Readonly<ViewProps>) {
       <BonusInput
         label={t('settings.bonusScoreSettings.maxiYatzy')}
         storage={maxiStorage}
-        isDarkMode={isDarkMode}
       />
       <BonusInput
         label={t('settings.bonusScoreSettings.yatzy')}
         storage={yatzyStorage}
-        isDarkMode={isDarkMode}
       />
     </View>
   );

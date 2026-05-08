@@ -19,10 +19,12 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     options.onExit();
     setAnimationVisibility(true);
   }
-  var [animate, setAnimationVisibility] = useState<boolean>(true);
-  var playersTotalScore = options.GameHelper.getPlayers()
-    ?.slice()
-    .sort((a, b) => b.currentScore - a.currentScore);
+  const [animate, setAnimationVisibility] = useState<boolean>(true);
+  const playersTotalScore = options.visible
+    ? options.GameHelper.getPlayers()
+        ?.slice()
+        .sort((a, b) => b.currentScore - a.currentScore)
+    : undefined;
   const confettiRef = useRef<LottieView>(null);
   function triggerConfetti() {
     confettiRef.current?.play(0);

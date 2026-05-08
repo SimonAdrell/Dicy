@@ -63,10 +63,9 @@ export default function PlayerScreen({navigation}: Props) {
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
       <View style={styles.wrapperContainer}>
-        {/* Game context header */}
         <View style={styles.gameHeader}>
           <DieFace pips={gamePips(game?.gameType)} size={36} tone="light" />
-          <View style={styles.gameHeaderText}>
+          <View>
             <Text style={styles.gameHeaderTitle}>{gameTypeName}</Text>
             <Text style={styles.gameHeaderSubtitle}>
               {t('player.pickPlayers')}

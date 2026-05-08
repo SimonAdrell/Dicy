@@ -6,15 +6,15 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useState } from 'react';
-import { Avatar } from '../players/PlayerAvatar';
-import { PlayerDto } from '../players/playerObject';
+import {useState} from 'react';
+import {Avatar} from '../players/PlayerAvatar';
+import {PlayerDto} from '../players/playerObject';
 import Modal from 'react-native-modal';
 import React from 'react';
-import { PlayerScore } from '@helpers/Game/PlayerScore';
-import { GameScore } from '@helpers/Game/GameScore';
-import { modalStyle, SharedStyle } from '@styles/sharedStyle';
-import { useTranslation } from 'react-i18next';
+import {PlayerScore} from '@helpers/Game/PlayerScore';
+import {GameScore} from '@helpers/Game/GameScore';
+import {modalStyle, SharedStyle} from '@styles/sharedStyle';
+import {useTranslation} from 'react-i18next';
 import NextButton from '@components/shared/button';
 
 export type scoreModalProps = {
@@ -29,10 +29,23 @@ export type scoreModalProps = {
   ) => void;
 };
 
-const NUMPAD_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'];
+const NUMPAD_KEYS = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  'C',
+  '0',
+  '⌫',
+];
 
 export function AddScoreModal(options: scoreModalProps) {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
   const toggleSwitch = () => onEnabledChange(previousState => !previousState);
   const [scoreString, onChangeScore] = useState<string>('');
@@ -57,10 +70,18 @@ export function AddScoreModal(options: scoreModalProps) {
 
   function getValidNumber(): number {
     const scoreNumber = Number(scoreString);
-    if (scoreNumber === undefined) return -1;
-    if (scoreNumber === null) return -1;
-    if (scoreNumber === 0) return -1;
-    if (isNaN(scoreNumber)) return -1;
+    if (scoreNumber === undefined) {
+      return -1;
+    }
+    if (scoreNumber === null) {
+      return -1;
+    }
+    if (scoreNumber === 0) {
+      return -1;
+    }
+    if (isNaN(scoreNumber)) {
+      return -1;
+    }
     return scoreNumber;
   }
 
@@ -89,20 +110,27 @@ export function AddScoreModal(options: scoreModalProps) {
 
   function checkIfPlayerScoreIsChanged(playerScore: PlayerScore) {
     let isChanged = false;
-    if (options.playerScore?.isRemoved !== playerScore.isRemoved) isChanged = true;
-    if (options.playerScore?.score !== playerScore.score) isChanged = true;
+    if (options.playerScore?.isRemoved !== playerScore.isRemoved) {
+      isChanged = true;
+    }
+    if (options.playerScore?.score !== playerScore.score) {
+      isChanged = true;
+    }
     return isChanged;
   }
 
   function getPlayer(playerId: number | undefined): PlayerDto | undefined {
-    if (playerId === undefined) return undefined;
-    return options.players.filter(p => p.playerId === playerId).find(() => true);
+    if (playerId === undefined) {
+      return undefined;
+    }
+    return options.players.find(p => p.playerId === playerId);
   }
 
   const onModalShow = () => {
     onChangePlayer(getPlayer(options.playerScore?.player.playerId));
-    if (options.playerScore?.score)
+    if (options.playerScore?.score) {
       onChangeScore(options.playerScore.score.toLocaleString());
+    }
     onEnabledChange(options.playerScore?.isRemoved);
   };
 
@@ -137,46 +165,42 @@ export function AddScoreModal(options: scoreModalProps) {
         onModalWillHide={onModalWillHide}>
         <View style={mstyle.centeredView}>
           <View style={mstyle.modalView}>
-            {/* Player avatar + name */}
             <View style={mstyle.modalText}>
               <Avatar
                 src={player === undefined ? undefined : player.imageUrl}
                 imageHeight={72}
               />
-              <Text style={[sStyle.fontColor, { fontSize: 14, marginTop: 4 }]}>
+              <Text style={[sStyle.fontColor, {fontSize: 14, marginTop: 4}]}>
                 {player?.name}
               </Text>
             </View>
 
-            {/* Category name */}
             <Text
               style={[
                 mstyle.modalText,
-                { fontSize: 20, fontWeight: '700' },
-                isRemoved ? { textDecorationLine: 'line-through' } : {},
+                {fontSize: 20, fontWeight: '700'},
+                isRemoved ? {textDecorationLine: 'line-through'} : {},
               ]}>
               {options.scoreToBeUpdated?.name}
             </Text>
 
-            {/* SET hint for fixed-score categories */}
             {setScore != null && (
-              <Text style={[mstyle.tinyModalText, { opacity: 0.6 }]}>
+              <Text style={[mstyle.tinyModalText, {opacity: 0.6}]}>
                 SET {setScore}
               </Text>
             )}
 
-            {/* Score display */}
-            <View style={[numpadStyles.scoreDisplay, isRemoved && { opacity: 0.4 }]}>
+            <View
+              style={[numpadStyles.scoreDisplay, isRemoved && {opacity: 0.4}]}>
               <Text
                 style={[
                   numpadStyles.scoreText,
-                  isRemoved && { textDecorationLine: 'line-through' },
+                  isRemoved && {textDecorationLine: 'line-through'},
                 ]}>
-                {scoreString || ''}
+                {scoreString}
               </Text>
             </View>
 
-            {/* Quick-fill button for fixed-score categories */}
             {setScore != null && !isRemoved && scoreString === '' && (
               <TouchableOpacity
                 style={numpadStyles.quickFillButton}
@@ -187,7 +211,6 @@ export function AddScoreModal(options: scoreModalProps) {
               </TouchableOpacity>
             )}
 
-            {/* Numpad */}
             <View style={numpadStyles.numpad}>
               {NUMPAD_KEYS.map(key => {
                 const isAction = key === 'C' || key === '⌫';
@@ -207,20 +230,18 @@ export function AddScoreModal(options: scoreModalProps) {
               })}
             </View>
 
-            {/* Cross-out toggle */}
-            <View style={[mstyle.formView, { flexDirection: 'row', gap: 12 }]}>
-              <Text style={[mstyle.tinyModalText, { margin: 0 }]}>
+            <View style={[mstyle.formView, {flexDirection: 'row', gap: 12}]}>
+              <Text style={[mstyle.tinyModalText, {margin: 0}]}>
                 {t('yatzyScreen.crossOut')}
               </Text>
               <Switch
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isRemoved}
-                style={{ transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }] }}
+                style={{transform: [{scaleX: 1.3}, {scaleY: 1.3}]}}
               />
             </View>
 
-            {/* Save button */}
             <View style={mstyle.saveView}>
               <NextButton onPress={onSave} text={t('yatzyScreen.savePoints')} />
             </View>

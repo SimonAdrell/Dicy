@@ -19,9 +19,6 @@ export default StyleSheet.create({
     paddingBottom: 12,
     gap: 12,
   },
-  gameHeaderText: {
-    flexDirection: 'column',
-  },
   gameHeaderTitle: {
     fontSize: 22,
     fontWeight: 'bold',

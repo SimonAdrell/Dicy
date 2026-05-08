@@ -40,7 +40,6 @@ const GameScreen = ({navigation}: Props) => {
           <SettingsIcon />
         </View>
 
-        {/* Dicy branding header */}
         <View style={styles.brandingHeader}>
           <View style={styles.brandingRow}>
             <DieFace pips={5} size={42} tone="light" />
