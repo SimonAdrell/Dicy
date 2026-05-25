@@ -101,7 +101,7 @@ export default function YatzyScreen(_: Props) {
 
       <ScrollView style={styles.board}>
         <SectionLabel
-          label="Upper section"
+          label={t('yatzyScreen.upperSection')}
           hint={`Bonus at ${game?.bonusLimit ?? 63}`}
         />
         {game?.upper?.map((element, index) => (
@@ -121,7 +121,7 @@ export default function YatzyScreen(_: Props) {
         <SumRow GameHelper={gamingHelper} backgroundColor="#fff8f1" />
         <BonusRow GameHelper={gamingHelper} backgroundColor="#fff8f1" />
 
-        <SectionLabel label="Combinations" />
+        <SectionLabel label={t('yatzyScreen.combinations')} />
         {game?.middle?.map((element, index) => (
           <Row
             onPress={onRowPress}

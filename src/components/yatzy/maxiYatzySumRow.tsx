@@ -6,15 +6,15 @@ type rowProps = {
   GameHelper: gameHelperType;
 };
 export default function SumRow({backgroundColor, GameHelper}: rowProps) {
-  var playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
-  var playersTotalScore = GameHelper.getPlayers();
+  const playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
+  const playersTotalScore = GameHelper.getPlayers();
   if (playersTotalScore === undefined) {
     throw new Error('No players found');
   }
   return (
     <View style={[styles.row, {backgroundColor: backgroundColor}]}>
       <Text style={styles.head}>Sum</Text>
-      {playersScore.sort(sortPlayerScoresByPlayersOrder).map(element => {
+      {[...playersScore].sort(sortPlayerScoresByPlayersOrder).map(element => {
         return (
           <View style={styles.cell} key={element.player.playerId}>
             <Text style={[styles.text, {fontWeight: 'bold', color: '#000'}]}>
@@ -27,7 +27,7 @@ export default function SumRow({backgroundColor, GameHelper}: rowProps) {
   );
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   row: {
     height: 28,
     flex: 1,

@@ -32,6 +32,7 @@ export function AddScoreModal(options: scoreModalProps) {
   );
   const inputRef = React.useRef<TextInput | null>(null);
   const [modalShown, setModalShown] = useState(false);
+  const hasExited = React.useRef(false);
 
   function clearModal() {
     onEnabledChange(false);
@@ -43,6 +44,10 @@ export function AddScoreModal(options: scoreModalProps) {
     playerScore: PlayerScore | undefined,
     scoreToBeUpdated: GameScore | undefined,
   ) {
+    if (hasExited.current) {
+      return;
+    }
+    hasExited.current = true;
     options.onExit(playerScore, scoreToBeUpdated);
     clearModal();
     options.hideModal();
@@ -98,6 +103,7 @@ export function AddScoreModal(options: scoreModalProps) {
   }
 
   const onModalShow = () => {
+    hasExited.current = false;
     setModalShown(true);
     onChangePlayer(getPlayer(options.playerScore?.player.playerId));
     if (options.playerScore?.score) {

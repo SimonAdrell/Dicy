@@ -28,6 +28,8 @@
     "close": "Stäng",
     "savePoints": "Spara poäng",
     "crossOut": "Stryk",
+    "upperSection": "Övre sektion",
+    "combinations": "Kombinationer",
     "yatzy": {
       "ones": "Ettor",
       "twos": "Tvåor",
@@ -50,6 +52,14 @@
       "chance": "Chans",
       "yatzy": "Yatzy"
     }
+  },
+  "gameScreen": {
+    "tagLine": "Inget papper, ingen penna. Välj din variant, ta fram tärningarna, håll koll på poängen.",
+    "chooseGame": "Välj ett spel"
+  },
+  "gameTypeItem": {
+    "categories": "kategorier",
+    "bonusAt": "Bonus vid"
   },
   "settings": {
     "languageSettings": {

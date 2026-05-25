@@ -28,6 +28,8 @@
     "close": "Close",
     "crossOut": "Cross out",
     "savePoints": "Save points",
+    "upperSection": "Upper section",
+    "combinations": "Combinations",
     "yatzy": {
       "ones": "Ones",
       "twos": "Twos",
@@ -50,6 +52,14 @@
       "chance": "Chance",
       "yatzy": "Yatzy"
     }
+  },
+  "gameScreen": {
+    "tagLine": "No paper, no pen. Pick your variant, drop in your dice, keep score.",
+    "chooseGame": "Choose a game"
+  },
+  "gameTypeItem": {
+    "categories": "categories",
+    "bonusAt": "Bonus at"
   },
   "settings": {
     "languageSettings": {

@@ -46,13 +46,11 @@ const GameScreen = ({navigation}: Props) => {
             <DieFace pips={3} size={42} tone="dark" />
             <Text style={styles.brandingTitle}>Dicy</Text>
           </View>
-          <Text style={styles.brandingSubtitle}>
-            No paper, no pen. Pick your variant, drop in your dice, keep score.
-          </Text>
+          <Text style={styles.brandingSubtitle}>{t('gameScreen.tagLine')}</Text>
         </View>
 
         <View style={styles.playersWrapper}>
-          <Text style={styles.sectionLabel}>Choose a game</Text>
+          <Text style={styles.sectionLabel}>{t('gameScreen.chooseGame')}</Text>
           <ScrollView style={styles.gameTypesWrapper}>
             <GameTypeItem
               pips={6}

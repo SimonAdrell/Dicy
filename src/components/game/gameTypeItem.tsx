@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import DieFace from '@components/shared/DieFace';
+import {useTranslation} from 'react-i18next';
 
 type gameTypeItems = Readonly<{
   gameName: string;
@@ -18,8 +19,12 @@ export default function GameTypeItem({
   categories,
   bonusLimit,
 }: gameTypeItems) {
+  const {t} = useTranslation();
   return (
-    <TouchableOpacity style={styles.card} onPress={onSelected} activeOpacity={0.82}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={onSelected}
+      activeOpacity={0.82}>
       <View style={styles.topRow}>
         <DieFace pips={pips} size={48} tone="light" />
         <View style={styles.textBlock}>
@@ -33,10 +38,10 @@ export default function GameTypeItem({
       <View style={styles.statsRow}>
         <Text style={styles.statText}>
           <Text style={styles.statBold}>{categories}</Text>
-          {' categories'}
+          {` ${t('gameTypeItem.categories')}`}
         </Text>
         <Text style={styles.statText}>
-          {'Bonus at '}
+          {`${t('gameTypeItem.bonusAt')} `}
           <Text style={styles.statBold}>{bonusLimit}</Text>
         </Text>
       </View>
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
+    shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 5,
