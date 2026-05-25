@@ -1,16 +1,9 @@
-import {
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Switch, Text, TextInput, useColorScheme, View} from 'react-native';
 import {useState} from 'react';
+import React from 'react';
 import {Avatar} from '../players/PlayerAvatar';
 import {PlayerDto} from '../players/playerObject';
 import Modal from 'react-native-modal';
-import React from 'react';
 import {PlayerScore} from '@helpers/Game/PlayerScore';
 import {GameScore} from '@helpers/Game/GameScore';
 import {modalStyle, SharedStyle} from '@styles/sharedStyle';
@@ -29,21 +22,6 @@ export type scoreModalProps = {
   ) => void;
 };
 
-const NUMPAD_KEYS = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  'C',
-  '0',
-  '⌫',
-];
-
 export function AddScoreModal(options: scoreModalProps) {
   const {t} = useTranslation();
   const [isRemoved, onEnabledChange] = useState(options.playerScore?.isRemoved);
@@ -52,6 +30,8 @@ export function AddScoreModal(options: scoreModalProps) {
   const [player, onChangePlayer] = useState<PlayerDto | undefined>(
     getPlayer(options.playerScore?.player.playerId),
   );
+  const inputRef = React.useRef<TextInput | null>(null);
+  const [modalShown, setModalShown] = useState(false);
 
   function clearModal() {
     onEnabledChange(false);
@@ -66,6 +46,7 @@ export function AddScoreModal(options: scoreModalProps) {
     options.onExit(playerScore, scoreToBeUpdated);
     clearModal();
     options.hideModal();
+    setModalShown(false);
   }
 
   function getValidNumber(): number {
@@ -117,28 +98,16 @@ export function AddScoreModal(options: scoreModalProps) {
   }
 
   const onModalShow = () => {
+    setModalShown(true);
     onChangePlayer(getPlayer(options.playerScore?.player.playerId));
     if (options.playerScore?.score) {
       onChangeScore(options.playerScore.score.toLocaleString());
     }
     onEnabledChange(options.playerScore?.isRemoved);
+    setTimeout(() => inputRef.current?.focus(), 100);
   };
 
   const onModalWillHide = () => exitModal(undefined, options.scoreToBeUpdated);
-
-  const handleNumpadKey = (key: string) => {
-    if (key === 'C') {
-      onChangeScore('');
-      return;
-    }
-    if (key === '⌫') {
-      onChangeScore(v => v.slice(0, -1));
-      return;
-    }
-    onChangeScore(v => (v + key).replace(/^0+(?=\d)/, ''));
-  };
-
-  const setScore = options.scoreToBeUpdated?.setScore;
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -168,68 +137,41 @@ export function AddScoreModal(options: scoreModalProps) {
             <Text
               style={[
                 mstyle.modalText,
-                {fontSize: 20, fontWeight: '700'},
                 isRemoved ? {textDecorationLine: 'line-through'} : {},
               ]}>
               {options.scoreToBeUpdated?.name}
             </Text>
-
-            {setScore != null && (
-              <Text style={[mstyle.tinyModalText, {opacity: 0.6}]}>
-                SET {setScore}
-              </Text>
-            )}
-
-            <View
-              style={[numpadStyles.scoreDisplay, isRemoved && {opacity: 0.4}]}>
-              <Text
-                style={[
-                  numpadStyles.scoreText,
-                  isRemoved && {textDecorationLine: 'line-through'},
-                ]}>
-                {scoreString}
-              </Text>
+            <Text style={mstyle.tinyModalText}>
+              Max: {options.scoreToBeUpdated?.topScore}
+            </Text>
+            <View style={mstyle.formView}>
+              {modalShown && (
+                <TextInput
+                  autoFocus={true}
+                  ref={inputRef}
+                  value={scoreString}
+                  onChangeText={onChangeScore}
+                  keyboardType="number-pad"
+                  style={mstyle.textInput}
+                />
+              )}
+              {!modalShown && (
+                <TextInput
+                  style={mstyle.textInput}
+                  onChangeText={onChangeScore}
+                />
+              )}
             </View>
-
-            {setScore != null && !isRemoved && scoreString === '' && (
-              <TouchableOpacity
-                style={numpadStyles.quickFillButton}
-                onPress={() => onChangeScore(String(setScore))}>
-                <Text style={numpadStyles.quickFillText}>
-                  Score the set value · {setScore}
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            <View style={numpadStyles.numpad}>
-              {NUMPAD_KEYS.map(key => {
-                const isAction = key === 'C' || key === '⌫';
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    disabled={!!isRemoved}
-                    onPress={() => handleNumpadKey(key)}
-                    style={[
-                      numpadStyles.key,
-                      isAction ? numpadStyles.keyAction : numpadStyles.keyDigit,
-                      isRemoved ? numpadStyles.keyDisabled : {},
-                    ]}>
-                    <Text style={numpadStyles.keyText}>{key}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-
-            <View style={[mstyle.formView, {flexDirection: 'row', gap: 12}]}>
-              <Text style={[mstyle.tinyModalText, {margin: 0}]}>
-                {t('yatzyScreen.crossOut')}
-              </Text>
+            <View style={mstyle.formView}>
               <Switch
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isRemoved}
-                style={{transform: [{scaleX: 1.3}, {scaleY: 1.3}]}}
+                style={{transform: [{scaleX: 1.6}, {scaleY: 1.6}]}}
               />
+              <Text style={[mstyle.tinyModalText, {margin: 6}]}>
+                {t('yatzyScreen.crossOut')}
+              </Text>
             </View>
 
             <View style={mstyle.saveView}>
@@ -241,68 +183,3 @@ export function AddScoreModal(options: scoreModalProps) {
     </View>
   );
 }
-
-const numpadStyles = StyleSheet.create({
-  scoreDisplay: {
-    backgroundColor: '#214540',
-    borderRadius: 14,
-    padding: 16,
-    minHeight: 64,
-    marginVertical: 12,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  scoreText: {
-    color: '#fff8f1',
-    fontSize: 40,
-    fontWeight: '700',
-    letterSpacing: -1,
-    minWidth: 20,
-    textAlign: 'center',
-  },
-  quickFillButton: {
-    backgroundColor: 'rgba(255,199,0,0.22)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,199,0,0.55)',
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    marginBottom: 8,
-    alignSelf: 'center',
-  },
-  quickFillText: {
-    color: '#063b35',
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  numpad: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 14,
-    width: '100%',
-  },
-  key: {
-    width: '30%',
-    height: 46,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  keyDigit: {
-    backgroundColor: 'rgba(255,255,255,0.85)',
-  },
-  keyAction: {
-    backgroundColor: 'rgba(255,255,255,0.55)',
-  },
-  keyDisabled: {
-    opacity: 0.4,
-  },
-  keyText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#063b35',
-  },
-});

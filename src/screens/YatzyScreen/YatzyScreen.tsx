@@ -84,43 +84,19 @@ export default function YatzyScreen(_: Props) {
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
 
-  const sortedPlayers = game?.players
-    ? [...game.players].sort(sortPlayersByOrder)
-    : [];
-  const leaderId = sortedPlayers.reduce<{id: number | null; score: number}>(
-    (best, p) =>
-      p.currentScore > best.score
-        ? {id: p.playerId, score: p.currentScore}
-        : best,
-    {id: null, score: -1},
-  ).id;
-
   return (
     <SafeAreaView style={[styles.container, sStyle.containerBackground]}>
       <View style={styles.headerRow}>
         <View style={styles.title} />
-        {sortedPlayers.map(player => {
-          const isLeader =
-            leaderId === player.playerId && player.currentScore > 0;
-          return (
+        {game?.players &&
+          [...game.players].sort(sortPlayersByOrder).map(player => (
             <View key={player.playerId} style={styles.player}>
               <Avatar imageHeight={40} src={player.imageUrl} />
               <Text style={[styles.playerName, sStyle.fontColor]}>
                 {player.name}
               </Text>
-              <View
-                style={[styles.scoreChip, isLeader && styles.scoreChipLeader]}>
-                <Text
-                  style={[
-                    styles.scoreChipText,
-                    isLeader && styles.scoreChipTextLeader,
-                  ]}>
-                  {player.currentScore}
-                </Text>
-              </View>
             </View>
-          );
-        })}
+          ))}
       </View>
 
       <ScrollView style={styles.board}>

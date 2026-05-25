@@ -10,24 +10,6 @@ export default StyleSheet.create({
     paddingBottom: 4,
   },
   playerName: {fontSize: 11, fontWeight: '600', marginTop: 4},
-  scoreChip: {
-    marginTop: 2,
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    borderRadius: 999,
-    backgroundColor: 'transparent',
-  },
-  scoreChipLeader: {
-    backgroundColor: '#FFC700',
-  },
-  scoreChipText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#0a3a35',
-  },
-  scoreChipTextLeader: {
-    color: '#063b35',
-  },
   row: {height: 28, flex: 1},
   headerRow: {flexDirection: 'row', paddingBottom: 8},
   board: {width: '100%'},
