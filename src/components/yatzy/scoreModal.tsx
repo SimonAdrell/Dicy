@@ -56,7 +56,7 @@ export function AddScoreModal(options: scoreModalProps) {
 
   function getValidNumber(): number {
     const scoreNumber = Number(scoreString);
-    if (scoreNumber === 0 || isNaN(scoreNumber)) {
+    if (scoreNumber === 0 || Number.isNaN(scoreNumber)) {
       return -1;
     }
     return scoreNumber;

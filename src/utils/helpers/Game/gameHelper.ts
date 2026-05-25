@@ -72,7 +72,7 @@ const updatePlayersScore = (
         upperTotalScore =
           upperTotalScore +
           s.PlayerScore.filter(
-            e => e.player.playerId == player.playerId && e.isRemoved == false,
+            e => e.player.playerId == player.playerId && !e.isRemoved,
           ).reduce((sum: number, current) => sum + (current.score ?? 0), 0);
       });
       upperTotalScore +=
@@ -83,7 +83,7 @@ const updatePlayersScore = (
       totalScore =
         totalScore +
         s.PlayerScore.filter(
-          e => e.player.playerId == player.playerId && e.isRemoved == false,
+          e => e.player.playerId == player.playerId && !e.isRemoved,
         ).reduce((sum: number, current) => sum + (current.score ?? 0), 0);
     });
     player.currentScore = totalScore;
@@ -149,6 +149,23 @@ const updateGameState = (
   return newGameState;
 };
 
+const computePlayersUpperScore = (savedGame: Game): Array<playerTotalScore> => {
+  if (savedGame.upper === undefined) {
+    throw new Error('Game not set up correctly');
+  }
+  const playerSumArray: playerTotalScore[] = [];
+  savedGame.players?.forEach(player => {
+    let upperTotalScore = 0;
+    savedGame.upper?.forEach(s => {
+      upperTotalScore += s.PlayerScore.filter(
+        e => e.player.playerId == player.playerId && !e.isRemoved,
+      ).reduce((sum: number, current) => sum + (current.score ?? 0), 0);
+    });
+    playerSumArray.push({player, score: upperTotalScore});
+  });
+  return playerSumArray;
+};
+
 const gameHelper = (game: Game | undefined): gameHelperType => {
   let savedGame: Game;
   if (game) {
@@ -203,34 +220,7 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
           updatePlayersScore(savedGame, scores, savedGame.upper);
           return savedGame;
         },
-        getPlayersUpperScore: (): Array<playerTotalScore> => {
-          if (savedGame.upper === undefined) {
-            throw new Error('Game not set up correctly');
-          }
-
-          const playerSumArray: playerTotalScore[] = [];
-
-          savedGame.players?.forEach(player => {
-            let upperTotalScore: number = 0;
-            savedGame.upper?.forEach(s => {
-              upperTotalScore =
-                upperTotalScore +
-                s.PlayerScore.filter(
-                  e =>
-                    e.player.playerId == player.playerId &&
-                    e.isRemoved == false,
-                ).reduce(
-                  (sum: number, current) => sum + (current.score ?? 0),
-                  0,
-                );
-            });
-            playerSumArray.push({
-              player: player,
-              score: upperTotalScore,
-            });
-          });
-          return playerSumArray;
-        },
+        getPlayersUpperScore: () => computePlayersUpperScore(savedGame),
       };
     },
   };

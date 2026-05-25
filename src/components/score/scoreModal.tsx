@@ -16,7 +16,7 @@ export type playersScoreModalProps = {
 export function PlayersScoreModal(options: playersScoreModalProps) {
   const {t} = useTranslation();
   const hasExited = useRef(false);
-  const [animate, setAnimationVisibility] = useState<boolean>(true);
+  const [animate, setAnimate] = useState<boolean>(true);
 
   const exitModal = useCallback(() => {
     if (hasExited.current) {
@@ -24,7 +24,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     }
     hasExited.current = true;
     options.onExit();
-    setAnimationVisibility(true);
+    setAnimate(true);
   }, [options]);
   const playersTotalScore = useMemo(
     () =>
@@ -72,7 +72,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                 style={mStyle.lottie}
                 resizeMode="cover"
                 onAnimationFinish={() => {
-                  setAnimationVisibility(false);
+                  setAnimate(false);
                 }}
               />
             </View>
