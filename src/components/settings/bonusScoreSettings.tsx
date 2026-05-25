@@ -4,12 +4,11 @@ import {useTranslation} from 'react-i18next';
 import {
   bonusScoreKey,
   bonusScoreStorage,
+  DEFAULT_BONUS_SCORE,
 } from '@helpers/Storage/bonus/bonusScoreStorage';
 import {gameType} from '@helpers/Game/gameType';
 import {modalStyle} from '@styles/sharedStyle';
 import styles from './languageSettings.styles';
-
-const DEFAULT_BONUS_SCORE = 50;
 
 type BonusInputProps = Readonly<{
   label: string;

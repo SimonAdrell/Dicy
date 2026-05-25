@@ -98,7 +98,7 @@ export default function Player(props: playerProps) {
   };
 
   const deletePlayer = () => {
-    var players = playerHandler.getPlayers();
+    const players = playerHandler.getPlayers();
     const indexOfObject = players.findIndex(object => {
       return object.playerId === props.playerDto.playerId;
     });

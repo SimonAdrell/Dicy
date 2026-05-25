@@ -1,4 +1,4 @@
-import {act, fireEvent, render, screen} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import {TextInput} from 'react-native';
 import {AddScoreModal} from '../scoreModal';
 import {PlayerDto} from '@components/players/playerObject';
@@ -67,12 +67,7 @@ describe('AddScoreModal — onSave', () => {
     const onExit = jest.fn();
     render(<AddScoreModal {...defaultProps} onExit={onExit} />);
 
-    act(() => {
-      screen
-        .getByText('yatzyScreen.crossOut')
-        .parent?.parent?.findAll(n => n.props.onValueChange)?.[0]
-        ?.props.onValueChange();
-    });
+    fireEvent(screen.getByTestId('crossOutSwitch'), 'valueChange', true);
 
     fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
 

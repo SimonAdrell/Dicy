@@ -30,6 +30,10 @@
     "savePoints": "Save points",
     "upperSection": "Upper section",
     "combinations": "Combinations",
+    "yatzySection": "Yatzy",
+    "bonusAtHint": "Bonus at {{limit}}",
+    "bonus": "Bonus",
+    "sum": "Sum",
     "yatzy": {
       "ones": "Ones",
       "twos": "Twos",

@@ -170,6 +170,7 @@ export function AddScoreModal(options: scoreModalProps) {
             </View>
             <View style={mstyle.formView}>
               <Switch
+                testID="crossOutSwitch"
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isRemoved}

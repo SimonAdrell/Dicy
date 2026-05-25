@@ -65,6 +65,6 @@ export default function Row(row: rowProps) {
   );
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   removedIcon: {height: 80, fontSize: 18},
 });

@@ -1,6 +1,6 @@
 import {useColorScheme, View} from 'react-native';
 import Modal from 'react-native-modal';
-import React, {useRef, useMemo, useState} from 'react';
+import React, {useRef, useMemo, useState, useCallback} from 'react';
 import {gameHelperType} from '@helpers/Game/gameHelperType';
 import {ScoreModalPlayer} from './playerScoreRow';
 import LottieView from 'lottie-react-native';
@@ -15,11 +15,17 @@ export type playersScoreModalProps = {
 
 export function PlayersScoreModal(options: playersScoreModalProps) {
   const {t} = useTranslation();
-  function exitModal() {
+  const hasExited = useRef(false);
+  const [animate, setAnimationVisibility] = useState<boolean>(true);
+
+  const exitModal = useCallback(() => {
+    if (hasExited.current) {
+      return;
+    }
+    hasExited.current = true;
     options.onExit();
     setAnimationVisibility(true);
-  }
-  const [animate, setAnimationVisibility] = useState<boolean>(true);
+  }, [options]);
   const playersTotalScore = useMemo(
     () =>
       options.visible
@@ -31,9 +37,11 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
     [options.visible],
   );
   const confettiRef = useRef<LottieView>(null);
-  function triggerConfetti() {
+
+  const onShow = useCallback(() => {
+    hasExited.current = false;
     confettiRef.current?.play(0);
-  }
+  }, []);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const mStyle = modalStyle(isDarkMode);
@@ -45,7 +53,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
         isVisible={options.visible}
         onBackdropPress={exitModal}
         onModalWillHide={exitModal}
-        onShow={triggerConfetti}>
+        onShow={onShow}>
         <View style={mStyle.centeredView}>
           {animate && (
             <View

@@ -56,7 +56,7 @@ export default function YatzyScreen(_: Props) {
   ) => {
     setCurrentPlayerScore(playerScore);
     setCurrentGameScore(scoreToBeUpdated);
-    setScoreModalVisible(!scoreModalVisible);
+    setScoreModalVisible(prev => !prev);
   };
 
   let gamingHelper = gameHelper(game);
@@ -65,7 +65,7 @@ export default function YatzyScreen(_: Props) {
     playerScore: PlayerScore | undefined,
     scoreToBeUpdated: GameScore | undefined,
   ) => {
-    setScoreModalVisible(!scoreModalVisible);
+    setScoreModalVisible(prev => !prev);
     if (playerScore === undefined) {
       return;
     }
@@ -102,7 +102,7 @@ export default function YatzyScreen(_: Props) {
       <ScrollView style={styles.board}>
         <SectionLabel
           label={t('yatzyScreen.upperSection')}
-          hint={`Bonus at ${game?.bonusLimit ?? 63}`}
+          hint={t('yatzyScreen.bonusAtHint', {limit: game?.bonusLimit ?? 63})}
         />
         {game?.upper?.map((element, index) => (
           <Row
@@ -137,7 +137,7 @@ export default function YatzyScreen(_: Props) {
           />
         ))}
 
-        <SectionLabel label="Yatzy" />
+        <SectionLabel label={t('yatzyScreen.yatzySection')} />
         {game?.lower?.map((element, index) => (
           <Row
             onPress={onRowPress}

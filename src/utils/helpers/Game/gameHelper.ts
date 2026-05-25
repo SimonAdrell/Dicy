@@ -19,9 +19,8 @@ import {TFunction} from 'i18next';
 import {
   bonusScoreKey,
   bonusScoreStorage,
+  DEFAULT_BONUS_SCORE,
 } from '@helpers/Storage/bonus/bonusScoreStorage';
-
-const DEFAULT_BONUS_SCORE = 50;
 
 const getBonusScore = (typeOfGame: gameType): number => {
   const stored = bonusScoreStorage(bonusScoreKey(typeOfGame)).get();

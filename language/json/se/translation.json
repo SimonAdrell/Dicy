@@ -30,6 +30,10 @@
     "crossOut": "Stryk",
     "upperSection": "Övre sektion",
     "combinations": "Kombinationer",
+    "yatzySection": "Yatzy",
+    "bonusAtHint": "Bonus vid {{limit}}",
+    "bonus": "Bonus",
+    "sum": "Summa",
     "yatzy": {
       "ones": "Ettor",
       "twos": "Tvåor",

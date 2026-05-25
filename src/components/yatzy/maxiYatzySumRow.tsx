@@ -1,19 +1,17 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {gameHelperType} from '@helpers/Game/gameHelperType';
 import {sortPlayerScoresByPlayersOrder} from '@helpers/Player/PlayerHelper';
-type rowProps = {
+import {useTranslation} from 'react-i18next';
+type rowProps = Readonly<{
   backgroundColor: string;
   GameHelper: gameHelperType;
-};
+}>;
 export default function SumRow({backgroundColor, GameHelper}: rowProps) {
+  const {t} = useTranslation();
   const playersScore = GameHelper.scoreHandler().getPlayersUpperScore();
-  const playersTotalScore = GameHelper.getPlayers();
-  if (playersTotalScore === undefined) {
-    throw new Error('No players found');
-  }
   return (
     <View style={[styles.row, {backgroundColor: backgroundColor}]}>
-      <Text style={styles.head}>Sum</Text>
+      <Text style={styles.head}>{t('yatzyScreen.sum')}</Text>
       {[...playersScore].sort(sortPlayerScoresByPlayersOrder).map(element => {
         return (
           <View style={styles.cell} key={element.player.playerId}>
