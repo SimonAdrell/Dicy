@@ -1,24 +1,24 @@
-import { StyleSheet } from "react-native";
+import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-    languageContainer: {
-        padding: 20,
-        flex: 1,
-        flexDirection: 'column'
-    },
-    languageRow: {
-        flex: 1,
-        lineHeight: 32,
-        color: '#000',
-        borderWidth: 3
-    },
-    gameNameText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    }, gameTagLineText: {
-        color: '#00aa98',
-    },
-    scoreText: {
-        fontSize: 32
-    }
+  languageContainer: {
+    padding: 20,
+    flex: 1,
+    flexDirection: 'column',
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    padding: 10,
+  },
+  gameNameText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  gameTagLineText: {
+    color: '#00aa98',
+  },
+  scoreText: {
+    fontSize: 32,
+  },
 });

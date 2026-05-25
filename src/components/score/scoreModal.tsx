@@ -1,11 +1,11 @@
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {useColorScheme, View} from 'react-native';
 import Modal from 'react-native-modal';
-import React, { useRef, useState } from 'react';
-import { gameHelperType } from '@helpers/Game/gameHelperType';
-import { ScoreModalPlayer } from './playerScoreRow';
+import React, {useRef, useMemo, useState, useCallback} from 'react';
+import {gameHelperType} from '@helpers/Game/gameHelperType';
+import {ScoreModalPlayer} from './playerScoreRow';
 import LottieView from 'lottie-react-native';
-import { useTranslation } from 'react-i18next';
-import { modalStyle, SharedStyle } from '@styles/sharedStyle';
+import {useTranslation} from 'react-i18next';
+import {modalStyle, SharedStyle} from '@styles/sharedStyle';
 import NextButton from '@components/shared/button';
 export type playersScoreModalProps = {
   GameHelper: gameHelperType;
@@ -14,17 +14,34 @@ export type playersScoreModalProps = {
 };
 
 export function PlayersScoreModal(options: playersScoreModalProps) {
-  const { t } = useTranslation();
-  function exitModal() {
+  const {t} = useTranslation();
+  const hasExited = useRef(false);
+  const [animate, setAnimate] = useState<boolean>(true);
+
+  const exitModal = useCallback(() => {
+    if (hasExited.current) {
+      return;
+    }
+    hasExited.current = true;
     options.onExit();
-    setAnimationVisibility(true);
-  }
-  var [animate, setAnimationVisibility] = useState<boolean>(true);
-  var playersTotalScore = options.GameHelper.getPlayers()?.slice();
+    setAnimate(true);
+  }, [options]);
+  const playersTotalScore = useMemo(
+    () =>
+      options.visible
+        ? options.GameHelper.getPlayers()
+            ?.slice()
+            .sort((a, b) => b.currentScore - a.currentScore)
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [options.visible],
+  );
   const confettiRef = useRef<LottieView>(null);
-  function triggerConfetti() {
+
+  const onShow = useCallback(() => {
+    hasExited.current = false;
     confettiRef.current?.play(0);
-  }
+  }, []);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const mStyle = modalStyle(isDarkMode);
@@ -36,7 +53,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
         isVisible={options.visible}
         onBackdropPress={exitModal}
         onModalWillHide={exitModal}
-        onShow={triggerConfetti}>
+        onShow={onShow}>
         <View style={mStyle.centeredView}>
           {animate && (
             <View
@@ -55,7 +72,7 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
                 style={mStyle.lottie}
                 resizeMode="cover"
                 onAnimationFinish={() => {
-                  setAnimationVisibility(false);
+                  setAnimate(false);
                 }}
               />
             </View>
@@ -63,20 +80,24 @@ export function PlayersScoreModal(options: playersScoreModalProps) {
 
           <View style={mStyle.modalView}>
             <View style={mStyle.modalText}>
-              {playersTotalScore
-                ?.sort((a, b) => b.currentScore - a.currentScore)
-                .map((element, index) => {
-                  return (
-                    <ScoreModalPlayer
-                      key={index + ''}
-                      place={(index += 1)}
-                      player={element}
-                      style={[mStyle.playerRow, sStyle.itemBackground]}
-                    />
-                  );
-                })}
+              {playersTotalScore?.map((element, index) => {
+                const isWinner = index === 0;
+                return (
+                  <ScoreModalPlayer
+                    key={element.playerId.toString()}
+                    place={index + 1}
+                    player={element}
+                    style={[
+                      mStyle.playerRow,
+                      isWinner
+                        ? {backgroundColor: '#FFC700'}
+                        : sStyle.itemBackground,
+                    ]}
+                  />
+                );
+              })}
             </View>
-            <NextButton text={t('yatzyScreen.close')} onPress={exitModal}></NextButton>
+            <NextButton text={t('yatzyScreen.close')} onPress={exitModal} />
           </View>
         </View>
       </Modal>

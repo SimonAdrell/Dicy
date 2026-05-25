@@ -20,13 +20,20 @@
     "cancel": "Cancel",
     "addPlayerHeader": "Add a new player",
     "addNewPlayerPlaceHolder": "Name of player",
-    "addNewPlayerSaveButton": "Add new player"
+    "addNewPlayerSaveButton": "Add new player",
+    "pickPlayers": "Pick players"
   },
   "yatzyScreen": {
     "showWinner": "Show winner",
     "close": "Close",
     "crossOut": "Cross out",
     "savePoints": "Save points",
+    "upperSection": "Upper section",
+    "combinations": "Combinations",
+    "yatzySection": "Yatzy",
+    "bonusAtHint": "Bonus at {{limit}}",
+    "bonus": "Bonus",
+    "sum": "Sum",
     "yatzy": {
       "ones": "Ones",
       "twos": "Twos",
@@ -49,6 +56,14 @@
       "chance": "Chance",
       "yatzy": "Yatzy"
     }
+  },
+  "gameScreen": {
+    "tagLine": "No paper, no pen. Pick your variant, drop in your dice, keep score.",
+    "chooseGame": "Choose a game"
+  },
+  "gameTypeItem": {
+    "categories": "categories",
+    "bonusAt": "Bonus at"
   },
   "settings": {
     "languageSettings": {
