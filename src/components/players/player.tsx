@@ -117,7 +117,7 @@ export default function Player(props: playerProps) {
         sStyle.itemBackground,
         playerIsActiveGaming
           ? {...sStyle.itemSelected, borderColor: '#FFC700', borderWidth: 2}
-          : {shadowColor: '#000'},
+          : {shadowColor: '#000', opacity: 0.7},
       ]}
       key={props.playerDto.playerId}
       onPress={() => {
@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 18,
     height: 130,
-    opacity: 0.7,
   },
   sectionTitle: {
     fontSize: 18,

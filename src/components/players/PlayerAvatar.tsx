@@ -119,6 +119,9 @@ export const NewPlayerAvatar = (props: AvatarProps) => {
               fontWeight: 'light',
             },
             props.style,
+            // The "add player" avatar is always placed on the light itemBackground
+            // (overridden via props.style), so the glyph must be dark in both modes.
+            {color: '#063b35'},
           ]}
         />
       )}

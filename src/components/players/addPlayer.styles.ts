@@ -13,7 +13,6 @@ export default (isDarkMode: boolean) => {
       paddingBottom: 20,
       margin: 5,
       height: 100,
-      opacity: 0.6,
     },
     containerShadow: {
       shadowColor: '#000000',
