@@ -87,13 +87,14 @@ const modalStyle = (isDarkMode: boolean) =>
 const SharedStyle = (isDarkMode: boolean) =>
   StyleSheet.create({
     // Text on light "card" surfaces (item backgrounds, winner row, yatzy cards).
-    // Darkened from #005b4f so normal-size text clears AA (4.5:1) even on the
-    // lightest dark-mode card (#7dc1b7 -> 6.04:1).
+    // These surfaces stay light in both schemes, so the colour does not vary by
+    // mode. Darkened from #005b4f so normal-size text clears AA (4.5:1) even on
+    // the lightest dark-mode card (#7dc1b7 -> 6.04:1).
     fontColor: {
-      color: isDarkMode ? '#063b35' : '#063b35',
+      color: '#063b35',
     },
     secondaryFontColor: {
-      color: isDarkMode ? '#063b35' : '#063b35',
+      color: '#063b35',
     },
     // Text drawn directly on the screen/modal container background. The container
     // is dark teal (#214540) in dark mode and medium teal (#6db8ae) in light mode,
