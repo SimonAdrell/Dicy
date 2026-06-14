@@ -44,13 +44,17 @@ const GameScreen = ({navigation}: Props) => {
           <View style={styles.brandingRow}>
             <DieFace pips={5} size={42} tone="light" />
             <DieFace pips={3} size={42} tone="dark" />
-            <Text style={styles.brandingTitle}>Dicy</Text>
+            <Text style={[styles.brandingTitle, sStyle.onContainer]}>Dicy</Text>
           </View>
-          <Text style={styles.brandingSubtitle}>{t('gameScreen.tagLine')}</Text>
+          <Text style={[styles.brandingSubtitle, sStyle.onContainerMuted]}>
+            {t('gameScreen.tagLine')}
+          </Text>
         </View>
 
         <View style={styles.playersWrapper}>
-          <Text style={styles.sectionLabel}>{t('gameScreen.chooseGame')}</Text>
+          <Text style={[styles.sectionLabel, sStyle.onContainerMuted]}>
+            {t('gameScreen.chooseGame')}
+          </Text>
           <ScrollView style={styles.gameTypesWrapper}>
             <GameTypeItem
               pips={6}

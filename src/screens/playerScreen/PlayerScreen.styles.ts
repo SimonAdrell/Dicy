@@ -22,11 +22,9 @@ export default StyleSheet.create({
   gameHeaderTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#063b35',
   },
   gameHeaderSubtitle: {
     fontSize: 13,
-    color: '#0a4a44',
     marginTop: 1,
   },
   playersWrapper: {

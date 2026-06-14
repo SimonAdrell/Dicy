@@ -92,7 +92,7 @@ export default function YatzyScreen(_: Props) {
           [...game.players].sort(sortPlayersByOrder).map(player => (
             <View key={player.playerId} style={styles.player}>
               <Avatar imageHeight={40} src={player.imageUrl} />
-              <Text style={[styles.playerName, sStyle.fontColor]}>
+              <Text style={[styles.playerName, sStyle.onContainer]}>
                 {player.name}
               </Text>
             </View>

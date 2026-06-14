@@ -40,7 +40,7 @@ export default (isDarkMode: boolean) => {
     iconStyle: {
       fontSize: 28,
       fontWeight: 'light',
-      color: SharedStyle(isDarkMode).itemBackground.backgroundColor,
+      color: SharedStyle(isDarkMode).onContainer.color,
     },
     textContainer: {
       flex: 5,
@@ -57,7 +57,7 @@ export default (isDarkMode: boolean) => {
     textStyle: {
       fontSize: 24,
       fontWeight: 'light',
-      color: SharedStyle(isDarkMode).fontColor.color,
+      color: SharedStyle(isDarkMode).onContainer.color,
     },
   });
 };

@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#005b4f',
+    color: '#063b35',
   },
   orderBadge: {
     position: 'absolute',

@@ -36,8 +36,7 @@ export default StyleSheet.create({
   },
   sectionLabelHint: {
     fontSize: 10,
-    color: '#0a3a35',
-    opacity: 0.5,
+    color: '#3d6e68',
     fontFamily: 'monospace',
   },
 });
