@@ -25,8 +25,8 @@ export default function BonusRow({backgroundColor, GameHelper}: rowProps) {
             <Text
               style={[
                 yatzyStyle.text,
-                {fontWeight: 'bold', color: earned ? '#063b35' : '#7a8a86'},
-                earned ? {backgroundColor: '#CCD5AE'} : {opacity: 0.55},
+                {fontWeight: 'bold', color: earned ? '#063b35' : '#5b6b67'},
+                earned ? {backgroundColor: '#CCD5AE'} : {},
               ]}>
               {`+${game.bonusScore}`}
             </Text>

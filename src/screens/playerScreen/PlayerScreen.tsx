@@ -66,8 +66,10 @@ export default function PlayerScreen({navigation}: Props) {
         <View style={styles.gameHeader}>
           <DieFace pips={gamePips(game?.gameType)} size={36} tone="light" />
           <View>
-            <Text style={styles.gameHeaderTitle}>{gameTypeName}</Text>
-            <Text style={styles.gameHeaderSubtitle}>
+            <Text style={[styles.gameHeaderTitle, sStyle.onContainer]}>
+              {gameTypeName}
+            </Text>
+            <Text style={[styles.gameHeaderSubtitle, sStyle.onContainerMuted]}>
               {t('player.pickPlayers')}
             </Text>
           </View>

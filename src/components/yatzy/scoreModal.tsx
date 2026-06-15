@@ -135,7 +135,7 @@ export function AddScoreModal(options: scoreModalProps) {
                 src={player === undefined ? undefined : player.imageUrl}
                 imageHeight={72}
               />
-              <Text style={[sStyle.fontColor, {fontSize: 14, marginTop: 4}]}>
+              <Text style={[sStyle.onContainer, {fontSize: 14, marginTop: 4}]}>
                 {player?.name}
               </Text>
             </View>
