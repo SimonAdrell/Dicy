@@ -60,7 +60,7 @@
     "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.29.2",
     "@babel/preset-typescript": "^7.28.5",
     "@babel/runtime": "^7.29.2",
@@ -104,7 +104,7 @@
     "fast-xml-parser": "^5.7.2",
     "handlebars": "^4.7.9",
     "lodash": "^4.17.24",
-    "brace-expansion": "^2.0.3"
+    "brace-expansion": "^2.1.4"
   },
   "rnx-kit": {
     "kitType": "app",
