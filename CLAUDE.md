@@ -1,6 +1,6 @@
 # Dicy
 
-React Native 0.88 (bridgeless / new-arch) Android app. Requires Node >= 22.11.
+React Native 0.88 (bridgeless / new-arch) Android app. Requires Node >= 22.22.1 (RN needs 22.11; lint-staged 17 needs 22.22.1).
 
 ## Android smoke-test workflow
 
