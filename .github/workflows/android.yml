@@ -31,8 +31,10 @@ jobs:
 
       # --ignore-scripts skips the postinstall hook, so apply patches/
       # explicitly (react-native-modal needs its RN 0.88 fix in the APK).
+      # Runs the lockfile-pinned patch-package via the npm script, never
+      # an unpinned npx download.
       - name: Apply patch-package patches
-        run: npx patch-package
+        run: npm run postinstall
 
       - name: Set up JDK 17
         uses: actions/setup-java@v6

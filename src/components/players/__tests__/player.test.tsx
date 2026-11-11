@@ -5,57 +5,38 @@ import {gameType} from '@helpers/Game/gameType';
 import {PlayerDto} from '../playerObject';
 jest.mock('@helpers/Image/ImageTaker');
 
+async function renderPlayer() {
+  const gamingHelper = gameHelper(undefined);
+  gamingHelper.generateNewGame(gameType.maxiYatzy);
+
+  const testPlayer: PlayerDto = {
+    name: 'TestPlayer 1',
+    imageUrl: '',
+    playerId: 0,
+    plusImage: false,
+    currentScore: 0,
+    order: 1,
+  };
+
+  const {getByText} = await render(
+    <Player gamingHelper={gamingHelper} playerDto={testPlayer} />,
+  );
+  return {gamingHelper, testPlayer, item: getByText(testPlayer.name)};
+}
+
 describe('player', () => {
   it('Adds player to player list', async () => {
-    // Arrange
-    var gamingHelper = gameHelper(undefined);
-    gamingHelper.generateNewGame(gameType.maxiYatzy);
+    const {gamingHelper, testPlayer, item} = await renderPlayer();
 
-    const testPlayer: PlayerDto = {
-      name: 'TestPlayer 1',
-      imageUrl: '',
-      playerId: 0,
-      plusImage: false,
-      currentScore: 0,
-      order: 1,
-    };
-
-    const {getByText} = await render(
-      <Player gamingHelper={gamingHelper} playerDto={testPlayer} />,
-    );
-
-    const item = getByText(testPlayer.name);
-
-    // Act
     await fireEvent(item, 'click');
 
-    // Assert
     expect(gamingHelper.getPlayers()).toContain(testPlayer);
   });
+
   it('Removes player to player list', async () => {
-    // Arrange
-    var gamingHelper = gameHelper(undefined);
-    gamingHelper.generateNewGame(gameType.maxiYatzy);
+    const {gamingHelper, testPlayer, item} = await renderPlayer();
 
-    const testPlayer: PlayerDto = {
-      name: 'TestPlayer 1',
-      imageUrl: '',
-      playerId: 0,
-      plusImage: false,
-      currentScore: 0,
-      order: 1,
-    };
-
-    const {getByText} = await render(
-      <Player gamingHelper={gamingHelper} playerDto={testPlayer} />,
-    );
-
-    const item = getByText(testPlayer.name);
-
-    // Act
     await fireEvent(item, 'click');
-
-    // Assert
     expect(gamingHelper.getPlayers()).toContainEqual(testPlayer);
 
     await fireEvent(item, 'click');

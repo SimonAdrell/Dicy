@@ -25,23 +25,13 @@ const makeHelper = (
   }) as unknown as gameHelperType;
 
 describe('BonusRow', () => {
-  it('shows the bonus score text for all players regardless of earned status', async () => {
+  it.each([
+    ['regardless of earned status', 0],
+    ['when the player has not yet earned it', 30],
+    ['when the player has earned it', 63],
+  ])('shows the bonus score %s', async (_case, upperScore) => {
     await render(
-      <BonusRow backgroundColor="#fff" GameHelper={makeHelper(0)} />,
-    );
-    expect(screen.getByText('+50')).toBeTruthy();
-  });
-
-  it('shows the bonus score when the player has not yet earned it', async () => {
-    await render(
-      <BonusRow backgroundColor="#fff" GameHelper={makeHelper(30)} />,
-    );
-    expect(screen.getByText('+50')).toBeTruthy();
-  });
-
-  it('shows the bonus score when the player has earned it', async () => {
-    await render(
-      <BonusRow backgroundColor="#fff" GameHelper={makeHelper(63)} />,
+      <BonusRow backgroundColor="#fff" GameHelper={makeHelper(upperScore)} />,
     );
     expect(screen.getByText('+50')).toBeTruthy();
   });

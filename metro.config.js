@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 // Path aliases. Keep in sync with tsconfig.json "paths" and the jest
