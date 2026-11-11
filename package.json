@@ -79,7 +79,7 @@
     "@react-native/jest-preset": "0.88.1",
     "@react-native/metro-config": "0.88.1",
     "@react-native/typescript-config": "0.88.1",
-    "@rnx-kit/align-deps": "^3.4.2",
+    "@rnx-kit/align-deps": "^5.0.1",
     "@testing-library/react-native": "^13.3.3",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.12",
