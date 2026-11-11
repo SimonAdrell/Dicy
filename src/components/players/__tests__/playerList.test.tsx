@@ -1,4 +1,4 @@
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import gameHelper from '@helpers/Game/gameHelper';
 import {gameType} from '@helpers/Game/gameType';
 import {PlayerDto} from '../playerObject';
@@ -45,7 +45,7 @@ describe('playerList', () => {
       order: undefined,
     };
 
-    const {getByText} = render(
+    await render(
       <GameProvider>
         <PlayerList
           gamingHelper={gamingHelper}
@@ -55,13 +55,11 @@ describe('playerList', () => {
     );
 
     // Act
-    await waitFor(() => {
-      const item = getByText(testPlayer.name);
-      const item2 = getByText(testPlayer2.name);
+    const item = screen.getByText(testPlayer.name);
+    const item2 = screen.getByText(testPlayer2.name);
 
-      fireEvent(item, 'click');
-      fireEvent(item2, 'click');
-    });
+    await fireEvent(item, 'click');
+    await fireEvent(item2, 'click');
 
     // Assert
     expect(gamingHelper.getPlayers()).toContain(testPlayer);
@@ -91,7 +89,7 @@ describe('playerList', () => {
       order: undefined,
     };
 
-    const {getByText} = render(
+    await render(
       <GameProvider>
         <PlayerList
           gamingHelper={gamingHelper}
@@ -101,19 +99,17 @@ describe('playerList', () => {
     );
 
     // Act
-    await waitFor(() => {
-      const item = getByText(testPlayer.name);
-      const item2 = getByText(testPlayer2.name);
+    const item = screen.getByText(testPlayer.name);
+    const item2 = screen.getByText(testPlayer2.name);
 
-      // Add player One
-      fireEvent(item, 'click');
+    // Add player One
+    await fireEvent(item, 'click');
 
-      // Add player Two
-      fireEvent(item2, 'click');
+    // Add player Two
+    await fireEvent(item2, 'click');
 
-      // Remove player Two
-      fireEvent(item2, 'click');
-    });
+    // Remove player Two
+    await fireEvent(item2, 'click');
 
     // Assert
 
@@ -147,7 +143,7 @@ describe('playerList', () => {
       order: undefined,
     };
 
-    const {getByText} = render(
+    await render(
       <GameProvider>
         <PlayerList
           gamingHelper={gamingHelper}
@@ -157,16 +153,14 @@ describe('playerList', () => {
     );
 
     // Act
-    await waitFor(() => {
-      const item = getByText(testPlayer.name);
-      const item2 = getByText(testPlayer2.name);
+    const item = screen.getByText(testPlayer.name);
+    const item2 = screen.getByText(testPlayer2.name);
 
-      // Add player One
-      fireEvent(item, 'click');
+    // Add player One
+    await fireEvent(item, 'click');
 
-      // Add player Two
-      fireEvent(item2, 'click');
-    });
+    // Add player Two
+    await fireEvent(item2, 'click');
 
     expect(gamingHelper.getPlayers()?.sort(sortPlayersByOrder)[0]).toEqual(
       testPlayer,
@@ -175,16 +169,11 @@ describe('playerList', () => {
       testPlayer2,
     );
 
-    await waitFor(() => {
-      const item = getByText(testPlayer.name);
-      const item2 = getByText(testPlayer2.name);
+    // Removes player One
+    await fireEvent(item, 'click');
 
-      // Removes player One
-      fireEvent(item, 'click');
-
-      // Removes player Two
-      fireEvent(item2, 'click');
-    });
+    // Removes player Two
+    await fireEvent(item2, 'click');
 
     expect(
       gamingHelper.getPlayers()?.some(player => player == testPlayer),
@@ -193,16 +182,11 @@ describe('playerList', () => {
       gamingHelper.getPlayers()?.some(player => player == testPlayer2),
     ).toBe(false);
 
-    await waitFor(() => {
-      const item = getByText(testPlayer.name);
-      const item2 = getByText(testPlayer2.name);
+    // Adds player Two
+    await fireEvent(item2, 'click');
 
-      // Adds player Two
-      fireEvent(item2, 'click');
-
-      // Adds player One
-      fireEvent(item, 'click');
-    });
+    // Adds player One
+    await fireEvent(item, 'click');
 
     gamingHelper.getPlayers()?.sort(sortPlayersByOrder);
 

@@ -37,6 +37,7 @@ export default function Row(row: rowProps) {
           return (
             <TouchableOpacity
               key={element.player.playerId}
+              testID="scoreCell"
               style={[
                 {alignItems: 'center', paddingTop: 5},
                 yatzyStyle.cell,

@@ -155,6 +155,7 @@ export function AddScoreModal(options: scoreModalProps) {
             <View style={mstyle.formView}>
               {modalShown && (
                 <TextInput
+                  testID="scoreInput"
                   autoFocus={true}
                   ref={inputRef}
                   value={scoreString}
@@ -165,6 +166,7 @@ export function AddScoreModal(options: scoreModalProps) {
               )}
               {!modalShown && (
                 <TextInput
+                  testID="scoreInput"
                   style={mstyle.textInput}
                   onChangeText={onChangeScore}
                 />
