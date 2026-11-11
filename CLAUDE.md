@@ -113,6 +113,11 @@ Fix any SonarCloud findings before requesting review. Check open issues at
   (applied by `patch-package` on `postinstall`) strips those calls.
   `react-native-modal` is pinned to the exact patched version; re-create
   the patch if you bump it.
+- ESLint 9 flat config lives in `eslint.config.js` and builds on
+  `@react-native/eslint-config/flat`. RN 0.88's config still depends on
+  `eslint-plugin-ft-flow` 2.x (ESLint 8 only; crashes with
+  `context.getAllComments is not a function`), so `package.json`
+  `overrides` forces it to the project's ft-flow 3.x.
 - Path aliases (`@components`, `@helpers`, `@styles`) are resolved by a
   custom `resolveRequest` in `metro.config.js` and by `moduleNameMapper`
   in the `jest` block of `package.json` (not a Babel plugin). Keep both in
