@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'
@@ -29,14 +29,19 @@ jobs:
       - name: Install Node dependencies
         run: npm ci --legacy-peer-deps --ignore-scripts
 
+      # --ignore-scripts skips the postinstall hook, so apply patches/
+      # explicitly (react-native-modal needs its RN 0.88 fix in the APK).
+      - name: Apply patch-package patches
+        run: npx patch-package
+
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
         with:
           # The action's default ('tools platform-tools') fails: the legacy
           # 'tools' package no longer exists in the SDK repository.
@@ -50,7 +55,7 @@ jobs:
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload release APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dicy-release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
@@ -68,7 +73,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Diagnostic - host capabilities
         run: |
@@ -95,19 +100,19 @@ jobs:
           ls -la /dev/kvm
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Download release APK
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dicy-release-apk
           path: ./apk
 
       - name: Run app on emulator
-        uses: reactivecircus/android-emulator-runner@50986b1464923454c95e261820bc626f38490ec0 # v2.27.0
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 33
           target: default
@@ -118,7 +123,7 @@ jobs:
 
       - name: Upload smoke-test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: smoke-test-output
           path: |
