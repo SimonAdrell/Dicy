@@ -49,7 +49,7 @@ export function LanguageSettings(options: languageSettingsProps) {
           ]}>
           <View style={{flex: 1, padding: 10}}>
             <Image
-              source={require('assets/flags/en.png')}
+              source={require('../../../assets/flags/en.png')}
               style={{height: 65, width: 65}}
             />
           </View>
@@ -78,7 +78,7 @@ export function LanguageSettings(options: languageSettingsProps) {
           ]}>
           <View style={{flex: 1, padding: 10}}>
             <Image
-              source={require('assets/flags/se.png')}
+              source={require('../../../assets/flags/se.png')}
               style={{height: 65, width: 65}}
             />
           </View>

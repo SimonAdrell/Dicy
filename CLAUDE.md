@@ -1,6 +1,6 @@
 # Dicy
 
-React Native 0.77 (bridgeless / new-arch) Android app.
+React Native 0.88 (bridgeless / new-arch) Android app. Requires Node >= 22.11.
 
 ## Android smoke-test workflow
 
@@ -97,12 +97,23 @@ Fix any SonarCloud findings before requesting review. Check open issues at
 
 ## Notable past fixes (read before debugging launch crashes)
 
-- `MainApplication.kt` must call
-  `SoLoader.init(this, OpenSourceMergedSoMapping)` (not
-  `SoLoader.init(this, false)`). RN 0.77 ships a single merged
-  `libreactnative.so` that contains many sub-libraries; without the
-  mapping, `ReactActivityDelegate.onCreate` force-finishes
-  `MainActivity` with `dlopen failed: library "libreact_featureflagsjni.so" not found`.
+- `MainApplication.kt` must call `loadReactNative(this)` in `onCreate`
+  (current RN template). It does the
+  `SoLoader.init(this, OpenSourceMergedSoMapping)` setup internally. RN
+  ships a single merged `libreactnative.so` that contains many
+  sub-libraries; without that mapping (e.g. a hand-written
+  `SoLoader.init(this, false)`), `ReactActivityDelegate.onCreate`
+  force-finishes `MainActivity` with
+  `dlopen failed: library "libreact_featureflagsjni.so" not found`.
 - `android/gradle.properties` sets `org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m`;
   the previous 2 GB heap OOM'd during the Jetifier transform of
   `react-android-0.77.x`.
+- RN 0.88 removed `InteractionManager`. `react-native-modal` (13.x and
+  14.0.0-rc) still calls it, so `patches/react-native-modal+*.patch`
+  (applied by `patch-package` on `postinstall`) strips those calls.
+  `react-native-modal` is pinned to the exact patched version; re-create
+  the patch if you bump it.
+- Path aliases (`@components`, `@helpers`, `@styles`) are resolved by a
+  custom `resolveRequest` in `metro.config.js` and by `moduleNameMapper`
+  in the `jest` block of `package.json` (not a Babel plugin). Keep both in
+  sync with `tsconfig.json` `paths`.

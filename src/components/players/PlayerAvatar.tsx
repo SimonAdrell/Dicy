@@ -8,7 +8,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@react-native-vector-icons/material-design-icons/static';
 import {takenImage} from '../../utils/helpers/Image/takenImage';
 import takePicture from '../../utils/helpers/Image/ImageTaker';
 

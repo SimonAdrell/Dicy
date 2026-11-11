@@ -1,7 +1,7 @@
 import {View, Text, ViewProps, Pressable, useColorScheme} from 'react-native';
 import style from './addPlayer.styles';
 import {useTranslation} from 'react-i18next';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@react-native-vector-icons/material-design-icons/static';
 import {AddUserModal} from './addPlayerModal';
 import {useState} from 'react';
 import {submitNewPlayer} from '@helpers/Player/PlayerHelper';
@@ -15,7 +15,7 @@ const AddNewPlayer = (options: addNewPlayerProps) => {
   const {setGame, game} = useGame();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  
+
   const submitPlayer = (playerName: string, imageUrl: string) => {
     setModalVisible(false);
     submitNewPlayer(playerName, imageUrl, t, game, setGame);
@@ -29,7 +29,7 @@ const AddNewPlayer = (options: addNewPlayerProps) => {
       {...options}
       onPress={() => setModalVisible(true)}>
       <View style={playerStyle.iconContainer}>
-        <Icon name="plus" style={playerStyle.iconStyle}></Icon>
+        <Icon name="plus" style={playerStyle.iconStyle} />
       </View>
       <View style={playerStyle.textContainer}>
         <Text style={playerStyle.textStyle}>{t('player.addPlayerHeader')}</Text>
@@ -40,7 +40,8 @@ const AddNewPlayer = (options: addNewPlayerProps) => {
         onSubmit={submitPlayer}
         onBackdropPress={() => {
           setModalVisible(false);
-        }}></AddUserModal>
+        }}
+      />
     </Pressable>
   );
 };

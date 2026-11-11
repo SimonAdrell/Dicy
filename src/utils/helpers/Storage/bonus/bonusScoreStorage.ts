@@ -1,9 +1,9 @@
-import {MMKV} from 'react-native-mmkv';
+import {createMMKV} from 'react-native-mmkv';
 import {gameType} from '@helpers/Game/gameType';
 
 export const DEFAULT_BONUS_SCORE = 50;
 
-const storage = new MMKV();
+const storage = createMMKV();
 
 const bonusScoreKey = (typeOfGame: gameType): string => {
   switch (typeOfGame) {

@@ -30,7 +30,9 @@ export function AddScoreModal(options: scoreModalProps) {
   const [player, onChangePlayer] = useState<PlayerDto | undefined>(
     getPlayer(options.playerScore?.player.playerId),
   );
-  const inputRef = React.useRef<TextInput | null>(null);
+  const inputRef = React.useRef<React.ComponentRef<typeof TextInput> | null>(
+    null,
+  );
   const [modalShown, setModalShown] = useState(false);
   const hasExited = React.useRef(false);
 
