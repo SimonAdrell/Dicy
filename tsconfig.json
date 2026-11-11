@@ -2,16 +2,12 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "jsx": "react-native",
-    "baseUrl": ".",
+    // Keep in sync with the resolver in metro.config.js and the jest
+    // "moduleNameMapper" in package.json.
     "paths": {
-      "*": ["src/*"],
-      "tests": ["tests/*"],
-      "@components/*": 
-        ["src/components/*"],
-      "@helpers/*": 
-        ["src/utils/helpers/*"],
-      "@styles/*": 
-        ["src/styles/*"],
-    },
+      "@components/*": ["./src/components/*"],
+      "@helpers/*": ["./src/utils/helpers/*"],
+      "@styles/*": ["./src/styles/*"]
+    }
   }
 }
