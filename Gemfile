@@ -6,3 +6,13 @@ ruby ">= 2.6.10"
 # Exclude problematic versions of cocoapods and activesupport that causes build failures.
 gem 'cocoapods', '>= 1.13', '!= 1.15.0', '!= 1.15.1'
 gem 'activesupport', '>= 6.1.7.5', '!= 7.1.0'
+# xcodeproj is deliberately NOT capped at < 1.26.0 like the RN template:
+# 1.28.1 is needed for the rexml security fixes (see #138).
+gem 'concurrent-ruby', '< 1.3.4'
+
+# Ruby 3.4.0 has removed some libraries from the standard library.
+gem 'bigdecimal'
+gem 'logger'
+gem 'benchmark'
+gem 'mutex_m'
+gem 'nkf'
