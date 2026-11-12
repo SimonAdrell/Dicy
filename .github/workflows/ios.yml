@@ -55,6 +55,8 @@ jobs:
           # Ruby >= 3.2. Use the runner's own bundler instead.
           BV=$(ruby -e 'require "bundler/version"; puts Bundler::VERSION')
           echo "BUNDLER_VERSION=$BV" >> "$GITHUB_ENV"
+          # Install exactly what Gemfile.lock pins; fail if it is out of date.
+          bundle config set --local frozen true
           BUNDLER_VERSION=$BV bundle install
 
       - name: pod install

@@ -38,7 +38,7 @@ kill "$LOGPID" 2>/dev/null
 
 CRASH="none"
 REPORT=$(ls -t ~/Library/Logs/DiagnosticReports/dicy*.ips 2>/dev/null | head -1)
-if [ -n "$REPORT" ]; then
+if [[ -n "$REPORT" ]]; then
   CRASH=$(basename "$REPORT")
   head -c 20000 "$REPORT" > crash.txt
 fi
@@ -48,7 +48,7 @@ if grep -qE "Unhandled JS Exception|RCTFatal|TypeError|ReferenceError|Invariant 
   JSERR=$(grep -m1 -E "Unhandled JS Exception|RCTFatal|TypeError|ReferenceError|Invariant Violation" sim.log | cut -c1-200)
 fi
 
-if [ "$ALIVE" = "yes" ] && [ "$CRASH" = "none" ]; then V=PASS; else V=FAIL; fi
+if [[ "$ALIVE" == "yes" && "$CRASH" == "none" ]]; then V=PASS; else V=FAIL; fi
 {
   echo "### Verdict: $V"
   echo ""
@@ -62,4 +62,4 @@ if [ "$ALIVE" = "yes" ] && [ "$CRASH" = "none" ]; then V=PASS; else V=FAIL; fi
 } > verdict.txt
 cat verdict.txt
 
-[ "$V" = "PASS" ]
+[[ "$V" == "PASS" ]]
