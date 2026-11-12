@@ -11,6 +11,10 @@ buildscript {
         google()
         mavenCentral()
     }
+    // Lock the Gradle plugin classpath (buildscript-gradle.lockfile).
+    configurations.classpath {
+        resolutionStrategy.activateDependencyLocking()
+    }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
@@ -19,3 +23,11 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// Dependency locking (gradle.lockfile) for this project and :app only.
+// Autolinked libraries live in node_modules, so they are not locked here.
+// Regenerate after changing Android/RN dependencies:
+//   ./gradlew dependencies :app:dependencies buildEnvironment --write-locks
+dependencyLocking {
+    lockAllConfigurations()
+}

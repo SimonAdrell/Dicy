@@ -140,3 +140,9 @@ Fix any SonarCloud findings before requesting review. Check open issues at
   custom `resolveRequest` in `metro.config.js` and by `moduleNameMapper`
   in the `jest` block of `package.json` (not a Babel plugin). Keep both in
   sync with `tsconfig.json` `paths`.
+- Gradle dependency locking is on for the root project and `:app`
+  (`android/buildscript-gradle.lockfile`, `android/settings-gradle.lockfile`,
+  `android/app/gradle.lockfile`). After bumping React Native or any
+  Android dependency, regenerate the locks or the build fails with
+  "Resolved dependencies were missing from lock state":
+  `cd android && ./gradlew dependencies :app:dependencies buildEnvironment --write-locks`
