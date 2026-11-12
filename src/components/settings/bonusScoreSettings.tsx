@@ -12,7 +12,7 @@ import styles from './languageSettings.styles';
 
 type BonusInputProps = Readonly<{
   label: string;
-  storage: itemStorage<number>;
+  storage: ItemStorage<number>;
 }>;
 
 function BonusInput({label, storage}: BonusInputProps) {
@@ -67,10 +67,10 @@ export function BonusScoreSettings(options: Readonly<ViewProps>) {
   const isDarkMode = useColorScheme() === 'dark';
   const mStyle = modalStyle(isDarkMode);
 
-  const maxiStorage: itemStorage<number> = bonusScoreStorage(
+  const maxiStorage: ItemStorage<number> = bonusScoreStorage(
     bonusScoreKey(gameType.maxiYatzy),
   );
-  const yatzyStorage: itemStorage<number> = bonusScoreStorage(
+  const yatzyStorage: ItemStorage<number> = bonusScoreStorage(
     bonusScoreKey(gameType.yatzy),
   );
 

@@ -36,7 +36,6 @@ test('Triggers function when pressing button', async () => {
       visible={visible}
       onSubmit={mockFn}
       onBackdropPress={onBackdropPress}
-      name={'player.addPlayerHeader'}
     />,
   );
 

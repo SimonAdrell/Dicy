@@ -3,12 +3,14 @@ import { PlayerDto } from '../players/playerObject';
 import { Avatar } from '../players/PlayerAvatar';
 import { SharedStyle } from '@styles/sharedStyle';
 
-interface scoreModalPlayerProps extends ViewProps {
-  player: PlayerDto;
-  place: number;
-}
+type ScoreModalPlayerProps = Readonly<
+  ViewProps & {
+    player: PlayerDto;
+    place: number;
+  }
+>;
 
-export function ScoreModalPlayer(options: scoreModalPlayerProps) {
+export function ScoreModalPlayer(options: ScoreModalPlayerProps) {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);

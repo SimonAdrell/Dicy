@@ -5,6 +5,7 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 import {Game} from './Game';
@@ -26,8 +27,9 @@ function useGame(): GameContextType {
 
 const GameProvider = (props: {children: ReactNode}): ReactElement => {
   const [game, setGame] = useState<Game | undefined>(undefined);
+  const value = useMemo(() => ({game, setGame}), [game]);
 
-  return <GameContext.Provider {...props} value={{game, setGame}} />;
+  return <GameContext.Provider {...props} value={value} />;
 };
 
 export {GameProvider, useGame};

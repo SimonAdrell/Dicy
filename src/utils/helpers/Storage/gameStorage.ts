@@ -1,7 +1,7 @@
 import {createMMKV} from 'react-native-mmkv';
 import {Game} from '../Game/Game';
 
-const gameStorage = (key: string): storage<Game> => {
+const gameStorage = (key: string): ArrayStorage<Game> => {
   const storage = createMMKV();
   return {
     save: (games: Array<Game>) => {

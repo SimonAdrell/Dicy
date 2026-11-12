@@ -73,8 +73,8 @@ describe('YatzyScreen integration', () => {
     const b = makePlayer(1, 'Bob');
     await renderYatzyScreen([a, b]);
 
-    await screen.findByText(/Alice/);
-    await screen.findByText(/Bob/);
+    expect(await screen.findByText(/Alice/)).toBeTruthy();
+    expect(await screen.findByText(/Bob/)).toBeTruthy();
   });
 
   it('renders the expected total of cells (one per player per row) without crashing', async () => {

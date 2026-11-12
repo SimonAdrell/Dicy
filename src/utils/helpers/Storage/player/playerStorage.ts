@@ -1,7 +1,7 @@
 import {createMMKV} from 'react-native-mmkv';
 import {PlayerDto} from '@components/players/playerObject';
 
-const playerDtoStorage = (key: string): storage<PlayerDto> => {
+const playerDtoStorage = (key: string): ArrayStorage<PlayerDto> => {
   const storage = createMMKV();
   return {
     save: (players: Array<PlayerDto>) => {

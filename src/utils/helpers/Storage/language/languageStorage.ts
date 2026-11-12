@@ -1,6 +1,6 @@
 import {createMMKV} from 'react-native-mmkv';
 
-const languageStorage = (key: string): itemStorage<string> => {
+const languageStorage = (key: string): ItemStorage<string> => {
   const storage = createMMKV();
   return {
     save: (languageCode: string) => storage.set(key, languageCode),

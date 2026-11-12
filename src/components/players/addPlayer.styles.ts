@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {SharedStyle} from '@styles/sharedStyle';
 
-export default (isDarkMode: boolean) => {
+export default function addPlayerStyles(isDarkMode: boolean) {
   return StyleSheet.create({
     container: {
       borderWidth: 1,
@@ -59,4 +59,4 @@ export default (isDarkMode: boolean) => {
       color: SharedStyle(isDarkMode).onContainer.color,
     },
   });
-};
+}

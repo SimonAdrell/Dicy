@@ -1,12 +1,12 @@
 import { Text, TouchableOpacity, useColorScheme } from "react-native";
 import styles from './button.style'
 
-interface buttonProp {
+type ButtonProps = Readonly<{
     text: string,
     onPress: () => void
-}
+}>;
 
-export default function NextButton(options: buttonProp) {
+export default function NextButton(options: ButtonProps) {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
     const style = styles(isDarkMode);

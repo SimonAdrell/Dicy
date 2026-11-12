@@ -30,13 +30,13 @@ export default function PlayerScreen({navigation}: Props) {
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
 
-  const [players, setActivePlayers] = useState<Array<PlayerDto>>(
+  const [players, setPlayers] = useState<Array<PlayerDto>>(
     playerHandler.getPlayers(),
   );
   useEffect(() => {
     let listener = playerHandler.setListener((changedKey: string) => {
       if (changedKey === 'players') {
-        setActivePlayers(playerHandler.getPlayers());
+        setPlayers(playerHandler.getPlayers());
       }
     });
     return () => {
