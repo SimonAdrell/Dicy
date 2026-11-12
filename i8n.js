@@ -10,7 +10,6 @@ i18n
   .use(RNLanguageDetector)
   .use(initReactI18next)
   .init({
-    compatibilityJSON: 'v3',
     debug: false,
     fallbackLng: 'en',
     supportedLngs: ['en', 'se'],

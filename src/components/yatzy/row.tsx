@@ -7,7 +7,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@react-native-vector-icons/material-design-icons/static';
 import {PlayerScore} from '@helpers/Game/PlayerScore';
 import {GameState} from '@helpers/Game/GameState';
 import {GameScore} from '@helpers/Game/GameScore';
@@ -37,6 +37,7 @@ export default function Row(row: rowProps) {
           return (
             <TouchableOpacity
               key={element.player.playerId}
+              testID="scoreCell"
               style={[
                 {alignItems: 'center', paddingTop: 5},
                 yatzyStyle.cell,

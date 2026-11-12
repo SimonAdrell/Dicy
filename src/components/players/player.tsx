@@ -12,7 +12,7 @@ import playerStorageHandler from '@helpers/Storage/player/playerHandler';
 import {gameHelperType} from '@helpers/Game/gameHelperType';
 import {gameType} from '@helpers/Game/gameType';
 import {useState} from 'react';
-import ConfirmDialog from 'react-native-simple-dialogs/dist/ConfirmDialog';
+import {ConfirmDialog} from 'react-native-simple-dialogs';
 import {useTranslation} from 'react-i18next';
 import {SharedStyle} from '@styles/sharedStyle';
 interface playerProps extends ViewProps {

@@ -19,6 +19,11 @@ const selectedCardStyle = {
 };
 const unselectedCardStyle = {borderRadius: 18, opacity: 0.7};
 
+const LANGUAGES = [
+  {code: 'en', flag: require('../../../assets/flags/en.png')},
+  {code: 'se', flag: require('../../../assets/flags/se.png')},
+] as const;
+
 export function LanguageSettings(options: languageSettingsProps) {
   const {t, i18n} = useTranslation();
   const colorScheme = useColorScheme();
@@ -38,63 +43,35 @@ export function LanguageSettings(options: languageSettingsProps) {
           {t('settings.languageSettings.header')}
         </Text>
       </View>
-      <View>
-        <Pressable
-          onPress={() => changeLanguage('en')}
-          style={[
-            mStyle.playerRow,
-            i18n.resolvedLanguage === 'en'
-              ? {...sStyle.itemSelected, ...selectedCardStyle}
-              : {...sStyle.itemBackground, ...unselectedCardStyle},
-          ]}>
-          <View style={{flex: 1, padding: 10}}>
-            <Image
-              source={require('assets/flags/en.png')}
-              style={{height: 65, width: 65}}
-            />
-          </View>
-          <View style={{flex: 3, padding: 20}}>
-            <Text
+      {LANGUAGES.map(({code, flag}, position) => {
+        const isSelected = i18n.resolvedLanguage === code;
+        return (
+          <View key={code}>
+            <Pressable
+              onPress={() => changeLanguage(code)}
               style={[
-                styles.gameNameText,
-                i18n.resolvedLanguage === 'en'
-                  ? sStyle.secondaryFontColor
-                  : sStyle.fontColor,
+                mStyle.playerRow,
+                position > 0 && {marginTop: 12},
+                isSelected
+                  ? {...sStyle.itemSelected, ...selectedCardStyle}
+                  : {...sStyle.itemBackground, ...unselectedCardStyle},
               ]}>
-              {t('settings.languageSettings.en')}
-            </Text>
+              <View style={{flex: 1, padding: 10}}>
+                <Image source={flag} style={{height: 65, width: 65}} />
+              </View>
+              <View style={{flex: 3, padding: 20}}>
+                <Text
+                  style={[
+                    styles.gameNameText,
+                    isSelected ? sStyle.secondaryFontColor : sStyle.fontColor,
+                  ]}>
+                  {t(`settings.languageSettings.${code}`)}
+                </Text>
+              </View>
+            </Pressable>
           </View>
-        </Pressable>
-      </View>
-      <View>
-        <Pressable
-          onPress={() => changeLanguage('se')}
-          style={[
-            mStyle.playerRow,
-            {marginTop: 12},
-            i18n.resolvedLanguage === 'se'
-              ? {...sStyle.itemSelected, ...selectedCardStyle}
-              : {...sStyle.itemBackground, ...unselectedCardStyle},
-          ]}>
-          <View style={{flex: 1, padding: 10}}>
-            <Image
-              source={require('assets/flags/se.png')}
-              style={{height: 65, width: 65}}
-            />
-          </View>
-          <View style={{flex: 3, padding: 20}}>
-            <Text
-              style={[
-                styles.gameNameText,
-                i18n.resolvedLanguage === 'se'
-                  ? sStyle.secondaryFontColor
-                  : sStyle.fontColor,
-              ]}>
-              {t('settings.languageSettings.se')}
-            </Text>
-          </View>
-        </Pressable>
-      </View>
+        );
+      })}
     </View>
   );
 }

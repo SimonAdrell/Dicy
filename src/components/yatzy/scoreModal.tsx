@@ -30,7 +30,9 @@ export function AddScoreModal(options: scoreModalProps) {
   const [player, onChangePlayer] = useState<PlayerDto | undefined>(
     getPlayer(options.playerScore?.player.playerId),
   );
-  const inputRef = React.useRef<TextInput | null>(null);
+  const inputRef = React.useRef<React.ComponentRef<typeof TextInput> | null>(
+    null,
+  );
   const [modalShown, setModalShown] = useState(false);
   const hasExited = React.useRef(false);
 
@@ -153,6 +155,7 @@ export function AddScoreModal(options: scoreModalProps) {
             <View style={mstyle.formView}>
               {modalShown && (
                 <TextInput
+                  testID="scoreInput"
                   autoFocus={true}
                   ref={inputRef}
                   value={scoreString}
@@ -163,6 +166,7 @@ export function AddScoreModal(options: scoreModalProps) {
               )}
               {!modalShown && (
                 <TextInput
+                  testID="scoreInput"
                   style={mstyle.textInput}
                   onChangeText={onChangeScore}
                 />

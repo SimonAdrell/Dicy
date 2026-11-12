@@ -1,23 +1,27 @@
-import { fireEvent, render } from '@testing-library/react-native';
-import { TFunction } from 'i18next';
+import {fireEvent, render} from '@testing-library/react-native';
+import {TFunction} from 'i18next';
 import Row from '../row';
 import gameHelper from '@helpers/Game/gameHelper';
-import { gameType } from '@helpers/Game/gameType';
-import { PlayerDto } from '@components/players/playerObject';
-import { GameState } from '@helpers/Game/GameState';
-import { GameScore } from '@helpers/Game/GameScore';
-import { PlayerScore } from '@helpers/Game/PlayerScore';
+import {gameType} from '@helpers/Game/gameType';
+import {PlayerDto} from '@components/players/playerObject';
+import {GameState} from '@helpers/Game/GameState';
+import {GameScore} from '@helpers/Game/GameScore';
+import {PlayerScore} from '@helpers/Game/PlayerScore';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (str: string) => str,
-    i18n: { changeLanguage: () => new Promise(() => {}) },
+    i18n: {changeLanguage: () => new Promise(() => {})},
   }),
 }));
 
 const t = ((s: string) => s) as unknown as TFunction<'translation', undefined>;
 
-const makePlayer = (playerId: number, name: string, order?: number): PlayerDto => ({
+const makePlayer = (
+  playerId: number,
+  name: string,
+  order?: number,
+): PlayerDto => ({
   playerId,
   name,
   imageUrl: '',
@@ -34,13 +38,13 @@ function setupOnesRow(players: PlayerDto[]): GameState {
 }
 
 describe('Row component – column to player mapping', () => {
-  it('passes the correct PlayerScore to onPress for each column when players have order: undefined', () => {
+  it('passes the correct PlayerScore to onPress for each column when players have order: undefined', async () => {
     const playerA = makePlayer(0, 'A');
     const playerB = makePlayer(1, 'B');
     const onesRow = setupOnesRow([playerA, playerB]);
 
     const onPress = jest.fn();
-    const { UNSAFE_getAllByType } = render(
+    const {getAllByTestId} = await render(
       <Row
         GameState={onesRow}
         backgroundColor=""
@@ -50,27 +54,28 @@ describe('Row component – column to player mapping', () => {
       />,
     );
 
-    // The Row renders one TouchableOpacity per player column.
-    const TouchableOpacity =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('react-native').TouchableOpacity;
-    const cells = UNSAFE_getAllByType(TouchableOpacity);
+    // The Row renders one score cell per player column.
+    const cells = getAllByTestId('scoreCell');
     expect(cells).toHaveLength(2);
 
-    fireEvent.press(cells[0]);
+    await fireEvent.press(cells[0]);
     expect(onPress).toHaveBeenLastCalledWith(
-      expect.objectContaining({ player: expect.objectContaining({ playerId: playerA.playerId }) }),
+      expect.objectContaining({
+        player: expect.objectContaining({playerId: playerA.playerId}),
+      }),
       onesRow.score,
     );
 
-    fireEvent.press(cells[1]);
+    await fireEvent.press(cells[1]);
     expect(onPress).toHaveBeenLastCalledWith(
-      expect.objectContaining({ player: expect.objectContaining({ playerId: playerB.playerId }) }),
+      expect.objectContaining({
+        player: expect.objectContaining({playerId: playerB.playerId}),
+      }),
       onesRow.score,
     );
   });
 
-  it('keeps each cell bound to its player after the GameState is replaced with an updated one', () => {
+  it('keeps each cell bound to its player after the GameState is replaced with an updated one', async () => {
     const playerA = makePlayer(0, 'A');
     const playerB = makePlayer(1, 'B');
     const helper = gameHelper(undefined);
@@ -78,13 +83,17 @@ describe('Row component – column to player mapping', () => {
     helper.setPlayers([playerA, playerB], t);
 
     const before = (helper.getGame().upper ?? [])[0];
-    const aCell = before.PlayerScore.find(ps => ps.player.playerId === playerA.playerId);
-    if (!aCell) { throw new Error('A cell missing'); }
-    helper.scoreHandler().updatePlayerScore(before.score, { ...aCell, score: 5 });
+    const aCell = before.PlayerScore.find(
+      ps => ps.player.playerId === playerA.playerId,
+    );
+    if (!aCell) {
+      throw new Error('A cell missing');
+    }
+    helper.scoreHandler().updatePlayerScore(before.score, {...aCell, score: 5});
     const after = (helper.getGame().upper ?? [])[0];
 
     const onPress = jest.fn();
-    const { UNSAFE_getAllByType } = render(
+    const {getAllByTestId} = await render(
       <Row
         GameState={after}
         backgroundColor=""
@@ -94,24 +103,22 @@ describe('Row component – column to player mapping', () => {
       />,
     );
 
-    const TouchableOpacity =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('react-native').TouchableOpacity;
-    const cells = UNSAFE_getAllByType(TouchableOpacity);
+    const cells = getAllByTestId('scoreCell');
 
     // Column 0 must still belong to player A (now with the score).
-    fireEvent.press(cells[0]);
+    await fireEvent.press(cells[0]);
     expect(onPress).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        player: expect.objectContaining({ playerId: playerA.playerId }),
+        player: expect.objectContaining({playerId: playerA.playerId}),
         score: 5,
       }),
       after.score,
     );
 
     // Column 1 must still belong to player B (unscored).
-    fireEvent.press(cells[1]);
-    const lastCall: [PlayerScore, GameScore] = onPress.mock.calls[onPress.mock.calls.length - 1];
+    await fireEvent.press(cells[1]);
+    const lastCall: [PlayerScore, GameScore] =
+      onPress.mock.calls[onPress.mock.calls.length - 1];
     expect(lastCall[0].player.playerId).toBe(playerB.playerId);
     expect(lastCall[0].score).toBeUndefined();
   });

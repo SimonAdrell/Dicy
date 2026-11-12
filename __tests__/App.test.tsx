@@ -28,7 +28,7 @@ jest.mock('@react-navigation/native', () => {
 });
 
 describe('renders correctly', () => {
-  it('App renders correctly', () => {
-    expect(render(<App />)).toBeTruthy();
+  it('App renders correctly', async () => {
+    expect(await render(<App />)).toBeTruthy();
   });
 });

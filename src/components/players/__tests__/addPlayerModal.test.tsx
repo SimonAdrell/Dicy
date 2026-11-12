@@ -18,12 +18,10 @@ jest.mock('react-i18next', () => ({
   },
 }));
 
-function setup<T>(jsx: React.ReactElement<T>) {
+async function setup<T>(jsx: React.ReactElement<T>) {
   return {
     user: userEvent.setup(),
-    // Import `render` from the framework library of your choice.
-    // See https://testing-library.com/docs/dom-testing-library/install#wrappers
-    ...render(jsx),
+    ...(await render(jsx)),
   };
 }
 
@@ -33,7 +31,7 @@ test('Triggers function when pressing button', async () => {
   const onBackdropPress = () => {};
   const mockFn = jest.fn();
 
-  const {user} = setup(
+  const {user} = await setup(
     <AddUserModal
       visible={visible}
       onSubmit={mockFn}

@@ -1,5 +1,5 @@
 import {TouchableOpacity, useColorScheme, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@react-native-vector-icons/material-design-icons/static';
 import {SettingsModal} from './settingsModal';
 import {useState} from 'react';
 import {SharedStyle} from '@styles/sharedStyle';

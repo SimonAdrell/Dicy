@@ -1,5 +1,4 @@
 import {fireEvent, render, screen} from '@testing-library/react-native';
-import {TextInput} from 'react-native';
 import {AddScoreModal} from '../scoreModal';
 import {PlayerDto} from '@components/players/playerObject';
 import {GameScore} from '@helpers/Game/GameScore';
@@ -40,12 +39,12 @@ const defaultProps = {
 /* ── Save behaviour ─────────────────────────────────────────────── */
 
 describe('AddScoreModal — onSave', () => {
-  it('calls onExit with the entered score when a value is typed then Save', () => {
+  it('calls onExit with the entered score when a value is typed then Save', async () => {
     const onExit = jest.fn();
-    render(<AddScoreModal {...defaultProps} onExit={onExit} />);
+    await render(<AddScoreModal {...defaultProps} onExit={onExit} />);
 
-    fireEvent.changeText(screen.UNSAFE_getByType(TextInput), '5');
-    fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
+    await fireEvent.changeText(screen.getByTestId('scoreInput'), '5');
+    await fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
 
     expect(onExit).toHaveBeenCalledTimes(1);
     expect(onExit).toHaveBeenCalledWith(
@@ -54,22 +53,22 @@ describe('AddScoreModal — onSave', () => {
     );
   });
 
-  it('calls onExit with undefined when nothing changed', () => {
+  it('calls onExit with undefined when nothing changed', async () => {
     const onExit = jest.fn();
-    render(<AddScoreModal {...defaultProps} onExit={onExit} />);
+    await render(<AddScoreModal {...defaultProps} onExit={onExit} />);
 
-    fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
+    await fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
 
     expect(onExit).toHaveBeenCalledWith(undefined, onesScore);
   });
 
-  it('passes isRemoved=true when the cross-out toggle is switched', () => {
+  it('passes isRemoved=true when the cross-out toggle is switched', async () => {
     const onExit = jest.fn();
-    render(<AddScoreModal {...defaultProps} onExit={onExit} />);
+    await render(<AddScoreModal {...defaultProps} onExit={onExit} />);
 
-    fireEvent(screen.getByTestId('crossOutSwitch'), 'valueChange', true);
+    await fireEvent(screen.getByTestId('crossOutSwitch'), 'valueChange', true);
 
-    fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
+    await fireEvent.press(screen.getByText('yatzyScreen.savePoints'));
 
     expect(onExit).toHaveBeenCalledWith(
       expect.objectContaining({isRemoved: true}),

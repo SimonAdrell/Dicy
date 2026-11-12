@@ -11,27 +11,27 @@ const baseProps = {
 };
 
 describe('GameTypeItem', () => {
-  it('renders the game name and tagline', () => {
-    render(<GameTypeItem {...baseProps} />);
+  it('renders the game name and tagline', async () => {
+    await render(<GameTypeItem {...baseProps} />);
     expect(screen.getByText('Maxi Yatzy')).toBeTruthy();
     expect(screen.getByText('Played with 6 six-sided dice')).toBeTruthy();
   });
 
-  it('renders the category count and bonus limit in the stats footer', () => {
-    render(<GameTypeItem {...baseProps} />);
+  it('renders the category count and bonus limit in the stats footer', async () => {
+    await render(<GameTypeItem {...baseProps} />);
     expect(screen.getByText('20')).toBeTruthy();
     expect(screen.getByText('75')).toBeTruthy();
   });
 
-  it('calls onSelected when pressed', () => {
+  it('calls onSelected when pressed', async () => {
     const onSelected = jest.fn();
-    render(<GameTypeItem {...baseProps} onSelected={onSelected} />);
-    fireEvent.press(screen.getByText('Maxi Yatzy'));
+    await render(<GameTypeItem {...baseProps} onSelected={onSelected} />);
+    await fireEvent.press(screen.getByText('Maxi Yatzy'));
     expect(onSelected).toHaveBeenCalledTimes(1);
   });
 
-  it('renders a die face with the correct pip count', () => {
-    render(<GameTypeItem {...baseProps} pips={5} />);
+  it('renders a die face with the correct pip count', async () => {
+    await render(<GameTypeItem {...baseProps} pips={5} />);
     expect(screen.getAllByTestId('pip')).toHaveLength(5);
   });
 });
