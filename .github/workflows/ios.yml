@@ -76,7 +76,8 @@ jobs:
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |
-          if git diff --quiet -- ios/Podfile.lock; then
+          # --porcelain also reports the file when it is new/untracked.
+          if [[ -z "$(git status --porcelain -- ios/Podfile.lock)" ]]; then
             echo "Podfile.lock unchanged"
             exit 0
           fi
@@ -140,21 +141,39 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ci-ios-smoke-latest
           SHA: ${{ github.sha }}
           RUN_ID: ${{ github.run_id }}
         run: |
           # Best-effort: don't let release-API flakes mask the verdict.
+          # Same REST calls as android.yml (gh release create got a 403).
           set +e
-          TAG="ci-ios-smoke-latest"
-          gh release delete "$TAG" --cleanup-tag -y
-          FILES=""
+          REPO="$GITHUB_REPOSITORY"
+          API="https://api.github.com/repos/$REPO"
+          curl --proto '=https' -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            -o /tmp/rel.json "$API/releases/tags/$TAG"
+          REL_ID=$(python3 -c "import json;print(json.load(open('/tmp/rel.json')).get('id',''))" 2>/dev/null)
+          if [[ -n "$REL_ID" ]]; then
+            curl --proto '=https' -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/releases/$REL_ID"
+          fi
+          curl --proto '=https' -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/git/refs/tags/$TAG"
+          PAYLOAD=$(python3 -c "import json,os;print(json.dumps({'tag_name':os.environ['TAG'],'target_commitish':os.environ['SHA'],'name':'CI iOS smoke-test latest ('+os.environ['SHA']+')','body':'Auto-published iOS smoke-test output for run '+os.environ['RUN_ID'],'draft':False,'prerelease':True}))")
+          curl --proto '=https' -sSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" -o /tmp/new.json "$API/releases" -d "$PAYLOAD"
+          UPLOAD_URL=$(python3 -c "import json;print(json.load(open('/tmp/new.json')).get('upload_url','').split('{')[0])" 2>/dev/null)
+          if [[ -z "$UPLOAD_URL" ]]; then
+            echo "::warning::Release create failed; verdict is still in the job summary + PR comment"
+            cat /tmp/new.json
+            exit 0
+          fi
           for f in screen.png sim.log crash.txt verdict.txt xcodebuild.log ios/Podfile.lock; do
-            [ -f "$f" ] && FILES="$FILES $f"
+            if [[ -f "$f" ]]; then
+              case "$f" in *.png) CT=image/png ;; *) CT=text/plain ;; esac
+              curl --proto '=https' -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Content-Type: $CT" --data-binary "@$f" \
+                "$UPLOAD_URL?name=$(basename "$f")" >/dev/null && echo "uploaded $f"
+            fi
           done
-          # shellcheck disable=SC2086
-          gh release create "$TAG" $FILES --prerelease --target "$SHA" \
-            --title "CI iOS smoke-test latest ($SHA)" \
-            --notes "Auto-published iOS smoke-test output for run $RUN_ID"
           exit 0
 
       - name: Comment verdict on PR
