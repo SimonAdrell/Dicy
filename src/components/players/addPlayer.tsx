@@ -7,9 +7,9 @@ import {useState} from 'react';
 import {submitNewPlayer} from '@helpers/Player/PlayerHelper';
 import {useGame} from '@helpers/Game/gameContext';
 
-interface addNewPlayerProps extends ViewProps {}
+type AddNewPlayerProps = Readonly<ViewProps>;
 
-const AddNewPlayer = (options: addNewPlayerProps) => {
+const AddNewPlayer = (options: AddNewPlayerProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {t} = useTranslation();
   const {setGame, game} = useGame();
@@ -35,7 +35,6 @@ const AddNewPlayer = (options: addNewPlayerProps) => {
         <Text style={playerStyle.textStyle}>{t('player.addPlayerHeader')}</Text>
       </View>
       <AddUserModal
-        name={t('player.addPlayerHeader')}
         visible={modalVisible}
         onSubmit={submitPlayer}
         onBackdropPress={() => {

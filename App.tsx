@@ -18,19 +18,18 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
-  const storage: itemStorage<string> = languageStorage('lang');
+  const storage: ItemStorage<string> = languageStorage('lang');
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    const loadLanguage = async () => {
-      try {
-        const storedLanguage = storage.get();
-        if (storedLanguage) i18n.changeLanguage(storedLanguage);
-      } catch (e) {
-        console.log(e);
+    try {
+      const storedLanguage = storage.get();
+      if (storedLanguage) {
+        i18n.changeLanguage(storedLanguage).catch(console.log);
       }
-    };
-    loadLanguage();
+    } catch (e) {
+      console.log(e);
+    }
     // storage and i18n are recreated every render; listing them would cause an infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

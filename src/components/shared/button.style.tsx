@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-export default (isDarkMode: boolean) => StyleSheet.create({
+export default function buttonStyles(isDarkMode: boolean) {
+  return StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         alignItems: 'center', fontSize: 18,
@@ -10,4 +11,5 @@ export default (isDarkMode: boolean) => StyleSheet.create({
         backgroundColor: isDarkMode ? '#c4a32b' : '#FFC700',
         fontWeight: 'bold'
     },
-})
+  });
+}

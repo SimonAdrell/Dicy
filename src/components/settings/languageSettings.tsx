@@ -10,7 +10,7 @@ import {languageStorage} from '@helpers/Storage/language/languageStorage';
 import styles from './languageSettings.styles';
 import {useTranslation} from 'react-i18next';
 import {modalStyle, SharedStyle} from '@styles/sharedStyle';
-interface languageSettingsProps extends ViewProps {}
+type LanguageSettingsProps = Readonly<ViewProps>;
 
 const selectedCardStyle = {
   borderRadius: 18,
@@ -24,14 +24,14 @@ const LANGUAGES = [
   {code: 'se', flag: require('../../../assets/flags/se.png')},
 ] as const;
 
-export function LanguageSettings(options: languageSettingsProps) {
+export function LanguageSettings(options: LanguageSettingsProps) {
   const {t, i18n} = useTranslation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    const storage: itemStorage<string> = languageStorage('lang');
+    const storage: ItemStorage<string> = languageStorage('lang');
     storage.save(lng);
   };
   const mStyle = modalStyle(isDarkMode);

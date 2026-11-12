@@ -8,7 +8,7 @@ export interface IPlayerHandler {
 }
 
 const playerStorageHandler = (): IPlayerHandler => {
-  const playerStorage: storage<PlayerDto> = playerDtoStorage('players');
+  const playerStorage: ArrayStorage<PlayerDto> = playerDtoStorage('players');
   return {
     getPlayers: () => playerStorage.get(),
     savePlayers: (players: Array<PlayerDto>) => playerStorage.save(players),

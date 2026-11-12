@@ -4,12 +4,12 @@ import { modalStyle } from '@styles/sharedStyle';
 import { LanguageSettings } from '@components/settings/languageSettings';
 import { BonusScoreSettings } from '@components/settings/bonusScoreSettings';
 
-type settingsModalOptions = {
+type SettingsModalOptions = Readonly<{
   visible: boolean;
   onExit: () => void;
-};
+}>;
 
-export function SettingsModal(options: settingsModalOptions) {
+export function SettingsModal(options: SettingsModalOptions) {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const exitModal = () => {

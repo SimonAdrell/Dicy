@@ -7,11 +7,11 @@ import LottieView from 'lottie-react-native';
 import {useTranslation} from 'react-i18next';
 import {modalStyle, SharedStyle} from '@styles/sharedStyle';
 import NextButton from '@components/shared/button';
-export type playersScoreModalProps = {
+export type playersScoreModalProps = Readonly<{
   GameHelper: gameHelperType;
   visible: boolean;
   onExit: () => void;
-};
+}>;
 
 export function PlayersScoreModal(options: playersScoreModalProps) {
   const {t} = useTranslation();

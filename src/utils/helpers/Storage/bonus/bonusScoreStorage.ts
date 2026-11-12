@@ -15,7 +15,7 @@ const bonusScoreKey = (typeOfGame: gameType): string => {
   }
 };
 
-const bonusScoreStorage = (key: string): itemStorage<number> => {
+const bonusScoreStorage = (key: string): ItemStorage<number> => {
   return {
     save: (value: number) => storage.set(key, value),
     get: () => storage.getNumber(key),

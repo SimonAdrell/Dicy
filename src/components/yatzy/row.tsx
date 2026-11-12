@@ -13,14 +13,25 @@ import {GameState} from '@helpers/Game/GameState';
 import {GameScore} from '@helpers/Game/GameScore';
 import {sortPlayerScoresByPlayersOrder} from '@helpers/Player/PlayerHelper';
 import {yatzyStyle} from '@styles/yatzyStyle/yatzyStyle';
-interface rowProps extends ViewProps {
+type RowProps = Readonly<
+  ViewProps & {
   GameState: GameState;
   backgroundColor: string;
   doneCellStyle: StyleProp<TextStyle>;
   removedCellStyle: StyleProp<TextStyle>;
   onPress: (playerScore: PlayerScore, scoreToBeUpdated: GameScore) => void;
+}>;
+function cellStyle(
+  element: PlayerScore,
+  row: RowProps,
+): StyleProp<TextStyle> {
+  if (element.isRemoved) {
+    return row.removedCellStyle;
+  }
+  return element.score ? row.doneCellStyle : {};
 }
-export default function Row(row: rowProps) {
+
+export default function Row(row: RowProps) {
   return (
     <View
       {...row}
@@ -41,11 +52,7 @@ export default function Row(row: rowProps) {
               style={[
                 {alignItems: 'center', paddingTop: 5},
                 yatzyStyle.cell,
-                element.isRemoved
-                  ? row.removedCellStyle
-                  : element.score
-                    ? row.doneCellStyle
-                    : {},
+                cellStyle(element, row),
               ]}
               onPress={cellClick}>
               {element.isRemoved ? (

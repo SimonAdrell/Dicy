@@ -15,12 +15,14 @@ import {useState} from 'react';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
 import {useTranslation} from 'react-i18next';
 import {SharedStyle} from '@styles/sharedStyle';
-interface playerProps extends ViewProps {
-  playerDto: PlayerDto;
-  gamingHelper: gameHelperType;
-}
+type PlayerProps = Readonly<
+  ViewProps & {
+    playerDto: PlayerDto;
+    gamingHelper: gameHelperType;
+  }
+>;
 
-export default function Player(props: playerProps) {
+export default function Player(props: PlayerProps) {
   const playerHandler = playerStorageHandler();
   const {t} = useTranslation();
   const colorScheme = useColorScheme();
@@ -30,13 +32,13 @@ export default function Player(props: playerProps) {
     let players = props.gamingHelper.getPlayers();
     if (players) {
       return (
-        players.filter(e => e.playerId === props.playerDto.playerId).length > 0
+        players.some(e => e.playerId === props.playerDto.playerId)
       );
     }
     return false;
   };
 
-  const [playerIsActiveGaming, setPlayersIsGaming] =
+  const [playerIsActiveGaming, setPlayerIsActiveGaming] =
     useState<boolean>(playerIsGaming());
   const [confirmDialogVisible, setConfirmDialogVisible] =
     useState<boolean>(false);
@@ -52,22 +54,21 @@ export default function Player(props: playerProps) {
       props.playerDto.order = undefined;
       updatePlayers(players);
     }
-    setPlayersIsGaming(false);
+    setPlayerIsActiveGaming(false);
   };
 
   const addPlayerToGame = () => {
     let players = props.gamingHelper.getPlayers();
     if (players) {
       players?.push(props.playerDto);
-      const playerWithHighestOrder = players.reduce((prev, current) => {
-        const aOrder = prev.order !== undefined ? prev.order : -Infinity;
-        const bOrder = current.order !== undefined ? current.order : -Infinity;
-        return aOrder > bOrder ? prev : current;
-      });
-      const currentHighestOrder =
-        playerWithHighestOrder.order !== undefined
-          ? playerWithHighestOrder.order
-          : 0;
+      const playerWithHighestOrder = players.reduce<PlayerDto | undefined>(
+        (prev, current) =>
+          (prev?.order ?? -Infinity) > (current.order ?? -Infinity)
+            ? prev
+            : current,
+        undefined,
+      );
+      const currentHighestOrder = playerWithHighestOrder?.order ?? 0;
       props.playerDto.order = currentHighestOrder + 1;
       updatePlayers(players);
     } else {
@@ -76,7 +77,7 @@ export default function Player(props: playerProps) {
       players.push(props.playerDto);
       updatePlayers(players);
     }
-    setPlayersIsGaming(true);
+    setPlayerIsActiveGaming(true);
   };
 
   const updatePlayers = (players: PlayerDto[]) => {
@@ -94,7 +95,6 @@ export default function Player(props: playerProps) {
       return;
     }
     addPlayerToGame();
-    return;
   };
 
   const deletePlayer = () => {
