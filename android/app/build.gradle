@@ -108,6 +108,11 @@ android {
     }
 }
 
+// See the root build.gradle for how to regenerate app/gradle.lockfile.
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
