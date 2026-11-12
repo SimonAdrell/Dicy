@@ -62,6 +62,24 @@ actual problem.
 they want the smoke-test label applied before merging.** Don't apply
 it unprompted.
 
+## iOS smoke-test workflow (no Mac needed)
+
+Nobody on the project has a Mac, so all iOS native work is verified with
+`.github/workflows/ios.yml` on a GitHub `macos-15` runner (free: the repo is
+public). It runs `bundle install` + `pod install`, builds a Release
+simulator app (JS bundled, no Metro), launches it in an iPhone simulator
+and passes if the process is still alive 25 s later with no crash report.
+
+- Trigger: `ios-smoke-test` PR label (same label mechanics as `smoke-test`
+  above), or `workflow_dispatch` once the workflow is on `main`.
+- If `pod install` changes `ios/Podfile.lock`, the job commits it back to
+  the PR branch, so `git pull` afterwards.
+- Verdict: job summary, PR comment, and the `ci-ios-smoke-latest`
+  prerelease (`screen.png`, `sim.log`, `crash.txt`, `xcodebuild.log`,
+  `Podfile.lock`), downloadable without auth.
+- `Gemfile.lock` says `BUNDLED WITH 1.17.2`, which crashes on Ruby >= 3.2;
+  the workflow sets `BUNDLER_VERSION` to the runner's bundler.
+
 ## Linting — run this before pushing
 
 **Always run lint before committing or opening a PR.** The lint CI workflow

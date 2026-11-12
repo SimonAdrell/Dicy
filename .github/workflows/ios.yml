@@ -1,0 +1,198 @@
+name: iOS CI
+
+on:
+  workflow_dispatch:
+  # Add the `ios-smoke-test` label to a PR to fire a one-shot run against
+  # the PR's head ref. Remove and re-add the label to retrigger.
+  pull_request:
+    types: [labeled]
+
+jobs:
+  smoke-test:
+    name: pod install + build + launch in iOS simulator
+    runs-on: macos-15
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.label.name == 'ios-smoke-test')
+    permissions:
+      # contents: write lets the job commit a regenerated ios/Podfile.lock
+      # back to the PR branch (nobody on the project has a Mac).
+      contents: write
+      pull-requests: write
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # Check out the PR branch itself (not the merge ref) so a
+          # regenerated Podfile.lock can be pushed back to it.
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE/Contents/Developer"
+          xcodebuild -version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --legacy-peer-deps --ignore-scripts
+
+      # --ignore-scripts skips postinstall, so apply patches/ explicitly
+      # (react-native-modal needs its RN 0.88 InteractionManager fix).
+      - name: Apply patch-package patches
+        run: npm run postinstall
+
+      - name: Install Ruby gems
+        run: |
+          ruby -v
+          # Gemfile.lock records BUNDLED WITH 1.17.2, which cannot run on
+          # Ruby >= 3.2. Use the runner's own bundler instead.
+          BV=$(ruby -e 'require "bundler/version"; puts Bundler::VERSION')
+          echo "BUNDLER_VERSION=$BV" >> "$GITHUB_ENV"
+          # Install exactly what Gemfile.lock pins; fail if it is out of date.
+          bundle config set --local frozen true
+          BUNDLER_VERSION=$BV bundle install
+
+      - name: pod install
+        working-directory: ios
+        run: bundle exec pod install
+
+      - name: Upload Podfile.lock
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: Podfile.lock
+          path: ios/Podfile.lock
+          if-no-files-found: ignore
+
+      - name: Commit regenerated Podfile.lock to PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          # --porcelain also reports the file when it is new/untracked.
+          if [[ -z "$(git status --porcelain -- ios/Podfile.lock)" ]]; then
+            echo "Podfile.lock unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ios/Podfile.lock
+          git commit -m "Regenerate ios/Podfile.lock (CI pod install)"
+          git push origin "HEAD:refs/heads/$HEAD_REF"
+
+      - name: Build app for simulator (Release, JS bundled)
+        run: |
+          set +e
+          xcodebuild \
+            -workspace ios/dicy.xcworkspace \
+            -scheme dicy \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            build > xcodebuild.log 2>&1
+          STATUS=$?
+          grep -E "error:|warning: .*deprecated|\*\* BUILD" xcodebuild.log | head -100
+          # Fail on xcodebuild's own exit status: a partial dicy.app can
+          # exist even when the build failed (e.g. a resource copy error).
+          exit "$STATUS"
+
+      - name: Launch in simulator
+        run: bash .github/scripts/ios-smoke.sh
+
+      - name: Upload smoke-test artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-smoke-test-output
+          path: |
+            screen.png
+            sim.log
+            crash.txt
+            xcodebuild.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Write verdict to job summary
+        if: always()
+        env:
+          SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          {
+            echo "## iOS smoke-test"
+            echo ""
+            echo "Commit: \`$SHA\`  "
+            echo "Job status: \`$JOB_STATUS\`  "
+            echo ""
+            if [ -f verdict.txt ]; then cat verdict.txt; else
+              echo "### Verdict: FAIL (never reached launch — see pod install / xcodebuild steps)"
+              if [ -f xcodebuild.log ]; then
+                echo ""; echo '```'; grep -E "error:" xcodebuild.log | head -30; echo '```'
+              fi
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish output to ci-ios-smoke-latest release (for unauth access)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ci-ios-smoke-latest
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          # Best-effort: don't let release-API flakes mask the verdict.
+          # Same REST calls as android.yml (gh release create got a 403).
+          set +e
+          PROTO='=https'
+          REPO="$GITHUB_REPOSITORY"
+          API="https://api.github.com/repos/$REPO"
+          curl --proto "$PROTO" -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            -o /tmp/rel.json "$API/releases/tags/$TAG"
+          REL_ID=$(python3 -c "import json;print(json.load(open('/tmp/rel.json')).get('id',''))" 2>/dev/null)
+          if [[ -n "$REL_ID" ]]; then
+            curl --proto "$PROTO" -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/releases/$REL_ID"
+          fi
+          curl --proto "$PROTO" -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/git/refs/tags/$TAG"
+          PAYLOAD=$(python3 -c "import json,os;print(json.dumps({'tag_name':os.environ['TAG'],'target_commitish':os.environ['SHA'],'name':'CI iOS smoke-test latest ('+os.environ['SHA']+')','body':'Auto-published iOS smoke-test output for run '+os.environ['RUN_ID'],'draft':False,'prerelease':True}))")
+          curl --proto "$PROTO" -sSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" -o /tmp/new.json "$API/releases" -d "$PAYLOAD"
+          UPLOAD_URL=$(python3 -c "import json;print(json.load(open('/tmp/new.json')).get('upload_url','').split('{')[0])" 2>/dev/null)
+          if [[ -z "$UPLOAD_URL" ]]; then
+            echo "::warning::Release create failed; verdict is still in the job summary + PR comment"
+            cat /tmp/new.json
+            exit 0
+          fi
+          for f in screen.png sim.log crash.txt verdict.txt xcodebuild.log ios/Podfile.lock; do
+            if [[ -f "$f" ]]; then
+              case "$f" in *.png) CT=image/png ;; *) CT=text/plain ;; esac
+              curl --proto "$PROTO" -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Content-Type: $CT" --data-binary "@$f" \
+                "$UPLOAD_URL?name=$(basename "$f")" >/dev/null && echo "uploaded $f"
+            fi
+          done
+          exit 0
+
+      - name: Comment verdict on PR
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SHA: ${{ github.sha }}
+        run: |
+          set +e
+          {
+            echo "**iOS smoke-test** for \`${SHA:0:7}\` — $RUN_URL"
+            echo ""
+            if [ -f verdict.txt ]; then cat verdict.txt; else echo "Verdict: FAIL (build did not complete)"; fi
+          } > comment.md
+          gh pr comment "$PR_NUMBER" --body-file comment.md
