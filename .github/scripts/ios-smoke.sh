@@ -32,7 +32,7 @@ sleep 25
 xcrun simctl io "$UDID" screenshot screen.png
 
 ALIVE="no"
-xcrun simctl spawn "$UDID" launchctl list | grep -q "UIKitApplication:$BID" && ALIVE="yes"
+xcrun simctl spawn "$UDID" launchctl list | grep -qF "$BID" && ALIVE="yes"
 
 kill "$LOGPID" 2>/dev/null
 

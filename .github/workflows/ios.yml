@@ -89,7 +89,7 @@ jobs:
 
       - name: Build app for simulator (Release, JS bundled)
         run: |
-          set -o pipefail
+          set +e
           xcodebuild \
             -workspace ios/dicy.xcworkspace \
             -scheme dicy \
@@ -98,8 +98,12 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath ios/build \
             CODE_SIGNING_ALLOWED=NO \
-            build 2>&1 | tee xcodebuild.log | grep -E "error:|warning: .*deprecated|\*\* BUILD" || true
-          test -d ios/build/Build/Products/Release-iphonesimulator/dicy.app
+            build > xcodebuild.log 2>&1
+          STATUS=$?
+          grep -E "error:|warning: .*deprecated|\*\* BUILD" xcodebuild.log | head -100
+          # Fail on xcodebuild's own exit status: a partial dicy.app can
+          # exist even when the build failed (e.g. a resource copy error).
+          exit "$STATUS"
 
       - name: Launch in simulator
         run: bash .github/scripts/ios-smoke.sh
@@ -148,17 +152,18 @@ jobs:
           # Best-effort: don't let release-API flakes mask the verdict.
           # Same REST calls as android.yml (gh release create got a 403).
           set +e
+          PROTO='=https'
           REPO="$GITHUB_REPOSITORY"
           API="https://api.github.com/repos/$REPO"
-          curl --proto '=https' -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+          curl --proto "$PROTO" -fsSL -H "Authorization: Bearer $GH_TOKEN" \
             -o /tmp/rel.json "$API/releases/tags/$TAG"
           REL_ID=$(python3 -c "import json;print(json.load(open('/tmp/rel.json')).get('id',''))" 2>/dev/null)
           if [[ -n "$REL_ID" ]]; then
-            curl --proto '=https' -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/releases/$REL_ID"
+            curl --proto "$PROTO" -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/releases/$REL_ID"
           fi
-          curl --proto '=https' -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/git/refs/tags/$TAG"
+          curl --proto "$PROTO" -fsSL -X DELETE -H "Authorization: Bearer $GH_TOKEN" "$API/git/refs/tags/$TAG"
           PAYLOAD=$(python3 -c "import json,os;print(json.dumps({'tag_name':os.environ['TAG'],'target_commitish':os.environ['SHA'],'name':'CI iOS smoke-test latest ('+os.environ['SHA']+')','body':'Auto-published iOS smoke-test output for run '+os.environ['RUN_ID'],'draft':False,'prerelease':True}))")
-          curl --proto '=https' -sSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+          curl --proto "$PROTO" -sSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" -o /tmp/new.json "$API/releases" -d "$PAYLOAD"
           UPLOAD_URL=$(python3 -c "import json;print(json.load(open('/tmp/new.json')).get('upload_url','').split('{')[0])" 2>/dev/null)
           if [[ -z "$UPLOAD_URL" ]]; then
@@ -169,7 +174,7 @@ jobs:
           for f in screen.png sim.log crash.txt verdict.txt xcodebuild.log ios/Podfile.lock; do
             if [[ -f "$f" ]]; then
               case "$f" in *.png) CT=image/png ;; *) CT=text/plain ;; esac
-              curl --proto '=https' -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
+              curl --proto "$PROTO" -fsSL -X POST -H "Authorization: Bearer $GH_TOKEN" \
                 -H "Content-Type: $CT" --data-binary "@$f" \
                 "$UPLOAD_URL?name=$(basename "$f")" >/dev/null && echo "uploaded $f"
             fi
