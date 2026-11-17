@@ -9,3 +9,12 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      # Babel 8 needs @babel/core 8, but @react-native/babel-preset (0.88.1,
+      # 0.89 RC) still depends on @babel/core ^7. See closed #153 / #156.
+      - dependency-name: "@babel/*"
+        update-types: ["version-update:semver-major"]
+      # @react-native/eslint-config (0.88.1, 0.89 RC) only supports
+      # eslint ^8 || ^9. See closed #154.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
