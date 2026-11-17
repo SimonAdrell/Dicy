@@ -102,8 +102,23 @@
     "fast-xml-parser": "^5.7.2",
     "handlebars": "^4.7.9",
     "lodash": "^4.17.24",
-    "brace-expansion": "^2.1.4",
     "minimatch@>=7.0.0 <11.0.1": "^11.0.1",
+    "test-exclude@^7": {
+      "glob": "^14.0.2",
+      "minimatch": "^11.0.1"
+    },
+    "test-exclude@^6": {
+      "glob": "^7.2.3"
+    },
+    "jest-config": {
+      "glob": "^14.0.2"
+    },
+    "jest-runtime": {
+      "glob": "^14.0.2"
+    },
+    "@jest/reporters": {
+      "glob": "^14.0.2"
+    },
     "@typescript-eslint/typescript-estree": {
       "minimatch": "^11.0.1"
     },
