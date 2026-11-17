@@ -110,6 +110,7 @@
     "handlebars": "^4.7.9",
     "lodash": "^4.17.24",
     "brace-expansion": "^2.1.4",
+    "minimatch@>=7.0.0 <11.0.1": "^11.0.1",
     "@typescript-eslint/typescript-estree": {
       "minimatch": "^11.0.1"
     },
