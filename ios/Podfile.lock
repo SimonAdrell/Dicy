@@ -15,7 +15,7 @@ PODS:
     - hermes-engine/Pre-built (= 260318099.0.5)
   - hermes-engine/Pre-built (260318099.0.5)
   - lottie-ios (4.6.0)
-  - lottie-react-native (7.5.0):
+  - lottie-react-native (7.5.1):
     - hermes-engine
     - lottie-ios (= 4.6.0)
     - RCTRequired
@@ -2348,7 +2348,7 @@ SPEC CHECKSUMS:
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 79484fc4e58f328d01b9339ef899ca633d3702ee
   lottie-ios: 8f959969761e9c45d70353667d00af0e5b9cadb3
-  lottie-react-native: e7f8565b0128379bcbd023886551f926fc595b13
+  lottie-react-native: f75dc9defda85aa0e4d615a4ea7a09041599a457
   MMKVCore: 3d16ce9f7d411e135020915fde98a056859a1efa
   NitroMmkv: 1cbda910413acda474751ac9b2522a6d466f74ad
   NitroModules: f1a11047ebbb0202a7d0033d6e99ad0527d34b00
