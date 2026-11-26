@@ -1,7 +1,7 @@
 import {TFunction} from 'i18next';
 import {PlayerDto} from '@components/players/playerObject';
 import {Game} from '@helpers/Game/Game';
-import {submitNewPlayer} from '../PlayerHelper';
+import {submitNewPlayer, withGamePlayers} from '../PlayerHelper';
 
 const mockTranslate = ((s: string) => s) as unknown as TFunction<
   'translation',
@@ -118,5 +118,48 @@ describe('submitNewPlayer', () => {
 
     expect(game?.players?.map(p => p.name)).toEqual(['New']);
     expect(mockStoredPlayers.map(p => p.name)).toEqual(['Old1', 'Old2', 'New']);
+  });
+
+  it('keeps a partial selection and appends the new player to it', () => {
+    let game: Game | undefined;
+    const setGame = (g: any) => (game = typeof g === 'function' ? g(game) : g);
+    const stored = (playerId: number, name: string): PlayerDto => ({
+      name,
+      imageUrl: '',
+      playerId,
+      plusImage: false,
+      currentScore: 0,
+      order: playerId,
+    });
+    mockStoredPlayers = [
+      stored(0, 'Old1'),
+      stored(1, 'Old2'),
+      stored(2, 'Old3'),
+    ];
+    // Only Old2 is selected for the game.
+    game = withGamePlayers(undefined, [stored(1, 'Old2')], mockTranslate);
+
+    submitNewPlayer('New', '', mockTranslate, game, setGame);
+
+    expect(game?.players?.map(p => [p.name, p.order])).toEqual([
+      ['Old2', 0],
+      ['New', 1],
+    ]);
+  });
+
+  it('resets totals when the sheet is rebuilt', () => {
+    const scored: PlayerDto = {
+      name: 'A',
+      imageUrl: '',
+      playerId: 0,
+      plusImage: false,
+      currentScore: 42,
+      order: 0,
+    };
+
+    const game = withGamePlayers(undefined, [scored], mockTranslate);
+
+    expect(game.players?.[0].currentScore).toBe(0);
+    expect(scored.currentScore).toBe(42);
   });
 });

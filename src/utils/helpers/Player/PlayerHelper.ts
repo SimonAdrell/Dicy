@@ -53,7 +53,12 @@ const withGamePlayers = (
     helper.generateNewGame(gameType.maxiYatzy);
   }
   helper.setPlayers(
-    players.map((player, index) => ({...player, order: index})),
+    // The sheet is rebuilt empty, so totals from an earlier sheet must go too.
+    players.map((player, index) => ({
+      ...player,
+      order: index,
+      currentScore: 0,
+    })),
     t,
   );
   return helper.getGame();
@@ -122,4 +127,5 @@ export {
   isPlayerInGame,
   removePlayerFromGame,
   togglePlayerInGame,
+  withGamePlayers,
 };
