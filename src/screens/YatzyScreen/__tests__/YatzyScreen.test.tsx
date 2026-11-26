@@ -90,9 +90,9 @@ describe('YatzyScreen integration', () => {
     const {getAllByTestId} = await renderYatzyScreen([a, b]);
 
     const cells = getAllByTestId('scoreCell');
-    // 6 upper + 12 middle (maxiYatzy) + 1 lower = 19 rows, × 2 players = 38
+    // 6 upper + 13 middle (maxiYatzy) + 1 lower = 20 rows, × 2 players = 40
     // score cells.
-    expect(cells.length).toBeGreaterThanOrEqual(38);
+    expect(cells).toHaveLength(40);
   });
 
   it('does not crash when a cell is pressed on the live screen', async () => {
