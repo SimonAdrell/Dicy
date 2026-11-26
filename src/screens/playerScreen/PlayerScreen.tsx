@@ -1,4 +1,5 @@
-import {Alert, SafeAreaView, Text, useColorScheme, View} from 'react-native';
+import {Alert, Text, useColorScheme, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useEffect, useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';
 import {RootStackParamList} from '../../../App';

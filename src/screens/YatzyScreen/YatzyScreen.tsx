@@ -1,13 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {usePreventRemove} from '@react-navigation/native';
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Alert, ScrollView, Text, useColorScheme, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {RootStackParamList} from '../../../App';
 import {useState} from 'react';
 import {PlayerDto} from '@components/players/playerObject';

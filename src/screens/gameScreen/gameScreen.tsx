@@ -1,12 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../App';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {ScrollView, Text, useColorScheme, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import gameHelper from '@helpers/Game/gameHelper';
 import {gameType} from '@helpers/Game/gameType';
 import {useGame} from '@helpers/Game/gameContext';

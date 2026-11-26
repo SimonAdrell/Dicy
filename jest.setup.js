@@ -24,3 +24,8 @@ jest.mock('react-native-nitro-modules', () => ({
       }),
     },
   }));
+
+// The real provider waits for insets from native code before rendering.
+jest.mock('react-native-safe-area-context', () =>
+  require('react-native-safe-area-context/jest/mock').default,
+);
