@@ -1,33 +1,37 @@
-import { FlatList, StyleSheet, useColorScheme } from 'react-native';
-import { PlayerDto } from './playerObject';
+import {FlatList, StyleSheet, useColorScheme} from 'react-native';
+import {PlayerDto} from './playerObject';
 import Player from './player';
-import { gameHelperType } from '@helpers/Game/gameHelperType';
+import {gameHelperType} from '@helpers/Game/gameHelperType';
 import AddNewPlayer from './addPlayer';
-import { SharedStyle } from '@styles/sharedStyle';
+import {SharedStyle} from '@styles/sharedStyle';
 
 type playerListProps = {
   players: PlayerDto[];
   gamingHelper: gameHelperType;
 };
 
-const PlayerList = ({ players, gamingHelper }: playerListProps) => {
-  if (players.length == 0) {
-    players.push({
-      name: '',
-      imageUrl: '',
-      playerId: 0,
-      plusImage: true,
-      currentScore: 0,
-      order: undefined,
-    });
-  }
+const PlayerList = ({players, gamingHelper}: playerListProps) => {
+  // With no saved players, show a single "add player" card instead.
+  const data: PlayerDto[] =
+    players.length === 0
+      ? [
+          {
+            name: '',
+            imageUrl: '',
+            playerId: 0,
+            plusImage: true,
+            currentScore: 0,
+            order: undefined,
+          },
+        ]
+      : players;
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const sStyle = SharedStyle(isDarkMode);
   return (
     <FlatList
       key={2}
-      data={players}
+      data={data}
       style={styles.container}
       numColumns={2}
       renderItem={item => {

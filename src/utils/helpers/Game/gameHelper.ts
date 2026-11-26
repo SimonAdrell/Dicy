@@ -189,7 +189,10 @@ const gameHelper = (game: Game | undefined): gameHelperType => {
           : middleNamesMaxiYatzy(t),
         players,
       );
-      savedGame.lower = generateGameState(lowerNames(t), players);
+      savedGame.lower = generateGameState(
+        lowerNames(t, savedGame.gameType === gameType.yatzy ? 50 : 100),
+        players,
+      );
       savedGame.players = players;
       savedGame.state = state.readyForGame;
     },

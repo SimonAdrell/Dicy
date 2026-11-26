@@ -23,7 +23,12 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     try {
-      const storedLanguage = storage.get();
+      let storedLanguage = storage.get();
+      if (storedLanguage === 'se') {
+        // Swedish was stored under the wrong code ('se') before it became 'sv'.
+        storedLanguage = 'sv';
+        storage.save(storedLanguage);
+      }
       if (storedLanguage) {
         i18n.changeLanguage(storedLanguage).catch(console.log);
       }
