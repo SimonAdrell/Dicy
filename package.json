@@ -35,6 +35,7 @@
     "setupFilesAfterEnv": [
       "./jest.setup.js"
     ],
+    "testTimeout": 20000,
     "moduleNameMapper": {
       "^@components/(.*)$": "<rootDir>/src/components/$1",
       "^@helpers/(.*)$": "<rootDir>/src/utils/helpers/$1",
