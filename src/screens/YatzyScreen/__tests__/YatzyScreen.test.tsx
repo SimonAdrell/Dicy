@@ -16,6 +16,11 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+// The screen is rendered without a navigator here.
+jest.mock('@react-navigation/native', () => ({
+  usePreventRemove: jest.fn(),
+}));
+
 let mockSeededGame: Game | undefined;
 
 jest.mock('@helpers/Game/gameContext', () => {

@@ -1,5 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {usePreventRemove} from '@react-navigation/native';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   Text,
@@ -19,6 +21,7 @@ import gameHelper from '@helpers/Game/gameHelper';
 import {PlayerScore} from '@helpers/Game/PlayerScore';
 import {useGame} from '@helpers/Game/gameContext';
 import {GameScore} from '@helpers/Game/GameScore';
+import {Game} from '@helpers/Game/Game';
 import {PlayersScoreModal} from '@components/score/scoreModal';
 import {sortPlayersByOrder} from '@helpers/Player/PlayerHelper';
 import styles from './YatzyScreen.styles';
@@ -38,12 +41,35 @@ function SectionLabel({label, hint}: Readonly<{label: string; hint?: string}>) {
   );
 }
 
-export default function YatzyScreen(_: Props) {
+function hasAnyScore(game: Game | undefined): boolean {
+  return [
+    ...(game?.upper ?? []),
+    ...(game?.middle ?? []),
+    ...(game?.lower ?? []),
+  ].some(row =>
+    row.PlayerScore.some(ps => ps.isRemoved || ps.score !== undefined),
+  );
+}
+
+export default function YatzyScreen({navigation}: Props) {
   useKeepAwake();
   const {t} = useTranslation();
   const playerHandler = playerStorageHandler();
   const [players] = useState<Array<PlayerDto>>(playerHandler.getPlayers());
   const {game} = useGame();
+
+  // Leaving the sheet lets the player picker rebuild it, which wipes the
+  // scores, so ask first once anything has been entered.
+  usePreventRemove(hasAnyScore(game), ({data}) => {
+    Alert.alert(t('yatzyScreen.leaveTitle'), t('yatzyScreen.leaveMessage'), [
+      {text: t('yatzyScreen.leaveStay'), style: 'cancel'},
+      {
+        text: t('yatzyScreen.leaveConfirm'),
+        style: 'destructive',
+        onPress: () => navigation.dispatch(data.action),
+      },
+    ]);
+  });
 
   const [scoreModalVisible, setScoreModalVisible] = useState(false);
   const [totalVisibility, setTotalVisibility] = useState(false);

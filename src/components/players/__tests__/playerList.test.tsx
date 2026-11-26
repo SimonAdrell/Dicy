@@ -1,10 +1,9 @@
 import {fireEvent, render, screen} from '@testing-library/react-native';
-import gameHelper from '@helpers/Game/gameHelper';
-import {gameType} from '@helpers/Game/gameType';
 import {PlayerDto} from '../playerObject';
 import PlayerList from '../playerList';
 import {sortPlayersByOrder} from '@helpers/Player/PlayerHelper';
 import {GameProvider} from '@helpers/Game/gameContext';
+import {createGameProbe} from '../__testUtils__/gameProbe';
 jest.mock('@helpers/Image/ImageTaker');
 jest.mock('react-i18next', () => ({
   // this mock makes sure any components using the translate hook can use it without a warning being shown
@@ -31,22 +30,19 @@ const makePlayer = (playerId: number): PlayerDto => ({
 });
 
 async function renderPlayerList() {
-  const gamingHelper = gameHelper(undefined);
-  gamingHelper.generateNewGame(gameType.maxiYatzy);
+  const probe = createGameProbe();
   const testPlayer = makePlayer(0);
   const testPlayer2 = makePlayer(1);
 
   await render(
     <GameProvider>
-      <PlayerList
-        gamingHelper={gamingHelper}
-        players={[testPlayer, testPlayer2]}
-      />
+      <PlayerList players={[testPlayer, testPlayer2]} />
+      <probe.Probe />
     </GameProvider>,
   );
 
   return {
-    gamingHelper,
+    probe,
     testPlayer,
     testPlayer2,
     item: screen.getByText(testPlayer.name),
@@ -56,52 +52,43 @@ async function renderPlayerList() {
 
 describe('playerList', () => {
   it('Adds player to player list', async () => {
-    const {gamingHelper, testPlayer, testPlayer2, item, item2} =
-      await renderPlayerList();
+    const {probe, item, item2} = await renderPlayerList();
 
-    await fireEvent(item, 'click');
-    await fireEvent(item2, 'click');
+    await fireEvent.press(item);
+    await fireEvent.press(item2);
 
-    expect(gamingHelper.getPlayers()).toContain(testPlayer);
-    expect(gamingHelper.getPlayers()).toContain(testPlayer2);
+    expect(probe.playerIds()).toEqual([0, 1]);
   });
 
   it('Removes player from player list after added', async () => {
-    const {gamingHelper, testPlayer, testPlayer2, item, item2} =
-      await renderPlayerList();
+    const {probe, item, item2} = await renderPlayerList();
 
     // Add player One, add player Two, remove player Two
-    await fireEvent(item, 'click');
-    await fireEvent(item2, 'click');
-    await fireEvent(item2, 'click');
+    await fireEvent.press(item);
+    await fireEvent.press(item2);
+    await fireEvent.press(item2);
 
-    const players = gamingHelper.getPlayers();
-    expect(players).toContain(testPlayer);
-    expect(players?.some(player => player == testPlayer2)).toBe(false);
+    expect(probe.playerIds()).toEqual([0]);
   });
 
   it('When players is removed then added, order is changed', async () => {
-    const {gamingHelper, testPlayer, testPlayer2, item, item2} =
-      await renderPlayerList();
-    const sortedPlayers = () =>
-      gamingHelper.getPlayers()?.sort(sortPlayersByOrder);
+    const {probe, item, item2} = await renderPlayerList();
+    const sortedIds = () =>
+      [...probe.players()].sort(sortPlayersByOrder).map(p => p.playerId);
 
     // Add player One, then player Two
-    await fireEvent(item, 'click');
-    await fireEvent(item2, 'click');
-    expect(sortedPlayers()?.[0]).toEqual(testPlayer);
-    expect(sortedPlayers()?.[1]).toEqual(testPlayer2);
+    await fireEvent.press(item);
+    await fireEvent.press(item2);
+    expect(sortedIds()).toEqual([0, 1]);
 
     // Remove both
-    await fireEvent(item, 'click');
-    await fireEvent(item2, 'click');
-    expect(gamingHelper.getPlayers()?.some(p => p == testPlayer)).toBe(false);
-    expect(gamingHelper.getPlayers()?.some(p => p == testPlayer2)).toBe(false);
+    await fireEvent.press(item);
+    await fireEvent.press(item2);
+    expect(sortedIds()).toEqual([]);
 
     // Add player Two, then player One
-    await fireEvent(item2, 'click');
-    await fireEvent(item, 'click');
-    expect(sortedPlayers()?.[0]).toEqual(testPlayer2);
-    expect(sortedPlayers()?.[1]).toEqual(testPlayer);
+    await fireEvent.press(item2);
+    await fireEvent.press(item);
+    expect(sortedIds()).toEqual([1, 0]);
   });
 });

@@ -25,6 +25,10 @@
   },
   "yatzyScreen": {
     "showWinner": "Show winner",
+    "leaveTitle": "Leave the game?",
+    "leaveMessage": "The scores in this game can be lost if you go back.",
+    "leaveStay": "Keep playing",
+    "leaveConfirm": "Leave",
     "close": "Close",
     "crossOut": "Cross out",
     "savePoints": "Save points",

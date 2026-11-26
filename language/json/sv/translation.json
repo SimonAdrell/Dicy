@@ -25,6 +25,10 @@
   },
   "yatzyScreen": {
     "showWinner": "Visa vinnare",
+    "leaveTitle": "Lämna spelet?",
+    "leaveMessage": "Poängen i det här spelet kan gå förlorade om du går tillbaka.",
+    "leaveStay": "Fortsätt spela",
+    "leaveConfirm": "Lämna",
     "close": "Stäng",
     "savePoints": "Spara poäng",
     "crossOut": "Stryk",
