@@ -21,8 +21,11 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # Don't leave the token in .git/config while third-party code
+          # (npm, gems, pods, Gradle) runs later in this job.
+          persist-credentials: false
           # Check out the PR branch itself (not the merge ref) so a
           # regenerated Podfile.lock can be pushed back to it.
           ref: ${{ github.head_ref || github.ref_name }}
@@ -35,7 +38,7 @@ jobs:
           xcodebuild -version
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -65,7 +68,7 @@ jobs:
 
       - name: Upload Podfile.lock
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: Podfile.lock
           path: ios/Podfile.lock
@@ -75,6 +78,8 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:
           HEAD_REF: ${{ github.head_ref }}
+          # Only this step gets the token (checkout uses persist-credentials: false).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # --porcelain also reports the file when it is new/untracked.
           if [[ -z "$(git status --porcelain -- ios/Podfile.lock)" ]]; then
@@ -85,7 +90,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ios/Podfile.lock
           git commit -m "Regenerate ios/Podfile.lock (CI pod install)"
-          git push origin "HEAD:refs/heads/$HEAD_REF"
+          AUTH=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $AUTH" \
+            push origin "HEAD:refs/heads/$HEAD_REF"
 
       - name: Build app for simulator (Release, JS bundled)
         run: |
@@ -110,7 +117,7 @@ jobs:
 
       - name: Upload smoke-test artifacts
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ios-smoke-test-output
           path: |

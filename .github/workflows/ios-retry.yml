@@ -1,0 +1,60 @@
+name: iOS CI retry
+
+# GitHub's free macOS arm64 runners are sometimes out of capacity. The iOS
+# job then fails with "The job was not acquired by Runner of type hosted even
+# after multiple attempts" without running a single step. This workflow
+# re-runs the failed job in that case only, up to 3 extra attempts. Real
+# failures (build, pod install, crash) are never re-run.
+#
+# workflow_run always uses this file from the default branch, so changes here
+# take effect once merged to main. It checks out no code and only uses run and
+# job IDs from the event, so untrusted PR content is never executed.
+
+on:
+  workflow_run:
+    workflows: ["iOS CI"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  retry:
+    name: Re-run if no macOS runner was available
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt < 4
+    permissions:
+      actions: write # list jobs and re-run failed jobs
+      checks: read # read the job annotations
+    timeout-minutes: 5
+
+    steps:
+      - name: Re-run failed jobs that never got a runner
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          set -euo pipefail
+          # Jobs that failed or were cancelled without ever being assigned a runner.
+          job_ids=$(gh api "repos/$REPO/actions/runs/$RUN_ID/attempts/$ATTEMPT/jobs" \
+            --jq '.jobs[] | select(.conclusion == "failure" or .conclusion == "cancelled")
+                  | select((.runner_name // "") == "") | .id')
+
+          retry=false
+          for id in $job_ids; do
+            if gh api "repos/$REPO/check-runs/$id/annotations" --jq '.[].message' \
+                | grep -q 'not acquired by Runner'; then
+              echo "Job $id was never acquired by a runner."
+              retry=true
+            fi
+          done
+
+          if [[ "$retry" == true ]]; then
+            echo "Re-running failed jobs of run $RUN_ID (attempt $ATTEMPT)."
+            gh api -X POST "repos/$REPO/actions/runs/$RUN_ID/rerun-failed-jobs"
+            echo "### Re-ran iOS CI run $RUN_ID: no macOS runner was available (attempt $ATTEMPT)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Failure was not a runner-capacity problem; not re-running."
+            echo "### iOS CI run $RUN_ID failed for a real reason; not re-run" >> "$GITHUB_STEP_SUMMARY"
+          fi
