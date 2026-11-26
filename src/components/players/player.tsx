@@ -9,8 +9,11 @@ import {
 import {PlayerDto} from './playerObject';
 import {Avatar} from './PlayerAvatar';
 import playerStorageHandler from '@helpers/Storage/player/playerHandler';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
-import {gameType} from '@helpers/Game/gameType';
+import {useGame} from '@helpers/Game/gameContext';
+import {
+  removePlayerFromGame,
+  togglePlayerInGame,
+} from '@helpers/Player/PlayerHelper';
 import {useState} from 'react';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
 import {useTranslation} from 'react-i18next';
@@ -18,7 +21,6 @@ import {SharedStyle} from '@styles/sharedStyle';
 type PlayerProps = Readonly<
   ViewProps & {
     playerDto: PlayerDto;
-    gamingHelper: gameHelperType;
   }
 >;
 
@@ -28,83 +30,26 @@ export default function Player(props: PlayerProps) {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
-  const playerIsGaming = (): boolean => {
-    let players = props.gamingHelper.getPlayers();
-    if (players) {
-      return (
-        players.some(e => e.playerId === props.playerDto.playerId)
-      );
-    }
-    return false;
-  };
-
-  const [playerIsActiveGaming, setPlayerIsActiveGaming] =
-    useState<boolean>(playerIsGaming());
+  const {game, setGame} = useGame();
+  // Selection and order come from the game, so they cannot drift from it.
+  const playerInGame = game?.players?.find(
+    p => p.playerId === props.playerDto.playerId,
+  );
+  const playerIsActiveGaming = playerInGame !== undefined;
   const [confirmDialogVisible, setConfirmDialogVisible] =
     useState<boolean>(false);
-  const removePlayerFromGame = () => {
-    let players = props.gamingHelper.getPlayers();
-    if (players) {
-      const indexOfObject = players.findIndex(object => {
-        return object.playerId === props.playerDto.playerId;
-      });
-      if (indexOfObject !== -1) {
-        players.splice(indexOfObject, 1);
-      }
-      props.playerDto.order = undefined;
-      updatePlayers(players);
-    }
-    setPlayerIsActiveGaming(false);
-  };
-
-  const addPlayerToGame = () => {
-    let players = props.gamingHelper.getPlayers();
-    if (players) {
-      players?.push(props.playerDto);
-      const playerWithHighestOrder = players.reduce<PlayerDto | undefined>(
-        (prev, current) =>
-          (prev?.order ?? -Infinity) > (current.order ?? -Infinity)
-            ? prev
-            : current,
-        undefined,
-      );
-      const currentHighestOrder = playerWithHighestOrder?.order ?? 0;
-      props.playerDto.order = currentHighestOrder + 1;
-      updatePlayers(players);
-    } else {
-      players = new Array<PlayerDto>();
-      props.playerDto.order = 0;
-      players.push(props.playerDto);
-      updatePlayers(players);
-    }
-    setPlayerIsActiveGaming(true);
-  };
-
-  const updatePlayers = (players: PlayerDto[]) => {
-    if (props.gamingHelper.getGame()) {
-      props.gamingHelper.setPlayers(players, t);
-    } else {
-      props.gamingHelper.generateNewGame(gameType.maxiYatzy);
-      props.gamingHelper.setPlayers(players, t);
-    }
-  };
 
   const togglePlayerToGame = () => {
-    if (playerIsGaming()) {
-      removePlayerFromGame();
-      return;
-    }
-    addPlayerToGame();
+    setGame(togglePlayerInGame(game, props.playerDto, t));
   };
 
   const deletePlayer = () => {
-    const players = playerHandler.getPlayers();
-    const indexOfObject = players.findIndex(object => {
-      return object.playerId === props.playerDto.playerId;
-    });
-    if (indexOfObject !== -1) {
-      players.splice(indexOfObject, 1);
-    }
+    const players = playerHandler
+      .getPlayers()
+      .filter(p => p.playerId !== props.playerDto.playerId);
+    setConfirmDialogVisible(false);
+    // Drop the player from the game too, or they keep a column on the sheet.
+    setGame(removePlayerFromGame(game, props.playerDto.playerId, t));
     playerHandler.savePlayers(players);
   };
 
@@ -129,11 +74,9 @@ export default function Player(props: PlayerProps) {
       <View
         {...props}
         style={{flexDirection: 'column', alignItems: 'center', height: '100%'}}>
-        {playerIsActiveGaming && props.playerDto.order !== undefined && (
+        {playerInGame?.order !== undefined && (
           <View style={styles.orderBadge}>
-            <Text style={styles.orderBadgeText}>
-              {props.playerDto.order + 1}
-            </Text>
+            <Text style={styles.orderBadgeText}>{playerInGame.order + 1}</Text>
           </View>
         )}
         <View style={{flex: 1, alignContent: 'center', marginLeft: 5}}>

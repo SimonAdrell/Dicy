@@ -1,16 +1,14 @@
 import {FlatList, StyleSheet, useColorScheme} from 'react-native';
 import {PlayerDto} from './playerObject';
 import Player from './player';
-import {gameHelperType} from '@helpers/Game/gameHelperType';
 import AddNewPlayer from './addPlayer';
 import {SharedStyle} from '@styles/sharedStyle';
 
 type playerListProps = {
   players: PlayerDto[];
-  gamingHelper: gameHelperType;
 };
 
-const PlayerList = ({players, gamingHelper}: playerListProps) => {
+const PlayerList = ({players}: playerListProps) => {
   // With no saved players, show a single "add player" card instead.
   const data: PlayerDto[] =
     players.length === 0
@@ -34,13 +32,15 @@ const PlayerList = ({players, gamingHelper}: playerListProps) => {
       data={data}
       style={styles.container}
       numColumns={2}
+      keyExtractor={item =>
+        item.plusImage ? 'add-player' : String(item.playerId)
+      }
       renderItem={item => {
         return item.item.plusImage ? (
           <AddNewPlayer />
         ) : (
           <Player
             playerDto={item.item}
-            gamingHelper={gamingHelper}
             style={[styles.item, sStyle.itemBackground]}
           />
         );

@@ -36,6 +36,66 @@ const getNextOrder = (players: PlayerDto[]): number => {
   return highest + 1;
 };
 
+const playersInGame = (game: Game | undefined): PlayerDto[] =>
+  [...(game?.players ?? [])].sort(sortPlayersByOrder);
+
+/**
+ * Returns a new game whose players are exactly `players`, in the given
+ * order. The score sheet is rebuilt, so only use this before play starts.
+ */
+const withGamePlayers = (
+  game: Game | undefined,
+  players: PlayerDto[],
+  t: TFunction<'translation', undefined>,
+): Game => {
+  const helper = gameHelper(game ? {...game} : undefined);
+  if (!game) {
+    helper.generateNewGame(gameType.maxiYatzy);
+  }
+  helper.setPlayers(
+    // The sheet is rebuilt empty, so totals from an earlier sheet must go too.
+    players.map((player, index) => ({
+      ...player,
+      order: index,
+      currentScore: 0,
+    })),
+    t,
+  );
+  return helper.getGame();
+};
+
+const isPlayerInGame = (game: Game | undefined, playerId: number): boolean =>
+  game?.players?.some(p => p.playerId === playerId) ?? false;
+
+const removePlayerFromGame = (
+  game: Game | undefined,
+  playerId: number,
+  t: TFunction<'translation', undefined>,
+): Game | undefined => {
+  if (!isPlayerInGame(game, playerId)) {
+    return game;
+  }
+  return withGamePlayers(
+    game,
+    playersInGame(game).filter(p => p.playerId !== playerId),
+    t,
+  );
+};
+
+const togglePlayerInGame = (
+  game: Game | undefined,
+  player: PlayerDto,
+  t: TFunction<'translation', undefined>,
+): Game => {
+  const without = playersInGame(game).filter(
+    p => p.playerId !== player.playerId,
+  );
+  if (isPlayerInGame(game, player.playerId)) {
+    return withGamePlayers(game, without, t);
+  }
+  return withGamePlayers(game, [...playersInGame(game), player], t);
+};
+
 const submitNewPlayer = (
   playerName: string,
   imageUrl: string,
@@ -44,26 +104,19 @@ const submitNewPlayer = (
   setGame: Dispatch<SetStateAction<Game | undefined>>,
 ) => {
   const playerHandler = playerStorageHandler();
-
-  let players: PlayerDto[] = [];
-  if (Array.isArray(playerHandler.getPlayers())) {
-    players = playerHandler.getPlayers();
-  }
-  let gamingHelper = gameHelper(game);
-  let player = {} as PlayerDto;
-  player.name = playerName;
-  player.playerId = getPlayerId(players);
-  player.imageUrl = imageUrl;
-  player.order = getNextOrder(players);
-  players.push(player);
-  playerHandler.savePlayers(players);
-  if (game) {
-    gamingHelper.setPlayers(players, t);
-  } else {
-    gamingHelper.generateNewGame(gameType.maxiYatzy);
-    gamingHelper.setPlayers(players, t);
-  }
-  setGame(gamingHelper.getGame());
+  const stored = playerHandler.getPlayers();
+  const players: PlayerDto[] = Array.isArray(stored) ? [...stored] : [];
+  const player: PlayerDto = {
+    name: playerName,
+    playerId: getPlayerId(players),
+    imageUrl,
+    plusImage: false,
+    currentScore: 0,
+    order: getNextOrder(players),
+  };
+  playerHandler.savePlayers([...players, player]);
+  // Only the new player joins the game; the current selection is kept.
+  setGame(withGamePlayers(game, [...playersInGame(game), player], t));
 };
 
 export {
@@ -71,4 +124,8 @@ export {
   sortPlayersByOrder,
   getPlayerId,
   submitNewPlayer,
+  isPlayerInGame,
+  removePlayerFromGame,
+  togglePlayerInGame,
+  withGamePlayers,
 };
