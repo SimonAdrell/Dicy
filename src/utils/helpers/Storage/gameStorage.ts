@@ -13,7 +13,7 @@ const gameStorage = (key: string): ArrayStorage<Game> => {
         const games: Array<Game> = JSON.parse(gameString);
         return games;
       }
-      return {} as Array<Game>;
+      return [];
     },
     addListener: (onValueChanged: (key: string) => void): storageListener => {
       let addedListener = storage.addOnValueChangedListener(onValueChanged);

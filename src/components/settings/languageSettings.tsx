@@ -21,7 +21,7 @@ const unselectedCardStyle = {borderRadius: 18, opacity: 0.7};
 
 const LANGUAGES = [
   {code: 'en', flag: require('../../../assets/flags/en.png')},
-  {code: 'se', flag: require('../../../assets/flags/se.png')},
+  {code: 'sv', flag: require('../../../assets/flags/se.png')},
 ] as const;
 
 export function LanguageSettings(options: LanguageSettingsProps) {
