@@ -15,7 +15,7 @@ PODS:
     - hermes-engine/Pre-built (= 260318099.0.5)
   - hermes-engine/Pre-built (260318099.0.5)
   - lottie-ios (4.6.0)
-  - lottie-react-native (7.5.0):
+  - lottie-react-native (7.5.1):
     - hermes-engine
     - lottie-ios (= 4.6.0)
     - RCTRequired
@@ -1964,7 +1964,7 @@ PODS:
     - ReactNativeDependencies
     - TOCropViewController (~> 2.8.0)
     - Yoga
-  - RNLocalize (3.7.2):
+  - RNLocalize (3.8.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2348,7 +2348,7 @@ SPEC CHECKSUMS:
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 79484fc4e58f328d01b9339ef899ca633d3702ee
   lottie-ios: 8f959969761e9c45d70353667d00af0e5b9cadb3
-  lottie-react-native: e7f8565b0128379bcbd023886551f926fc595b13
+  lottie-react-native: f75dc9defda85aa0e4d615a4ea7a09041599a457
   MMKVCore: 3d16ce9f7d411e135020915fde98a056859a1efa
   NitroMmkv: 1cbda910413acda474751ac9b2522a6d466f74ad
   NitroModules: f1a11047ebbb0202a7d0033d6e99ad0527d34b00
@@ -2433,7 +2433,7 @@ SPEC CHECKSUMS:
   ReactCommon: b63ce798b898ed77c6cfdeb80b18080161f52ed5
   ReactNativeDependencies: a5164c3ebbe90d992022b5d9cbabbf770a6d7d05
   RNImageCropPicker: d720c15ca65ea60724cfc6578ad4d221f1446014
-  RNLocalize: 6b1ada941cb6116aace7d9f508a9fdd24d792ff8
+  RNLocalize: 2542cc9c916fa75364ad6e15741d008b785bc3bd
   RNScreens: f15a5bda1ddeff8575b8ce41d83885b67129f84b
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
