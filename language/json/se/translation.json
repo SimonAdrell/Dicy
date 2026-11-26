@@ -76,5 +76,13 @@
       "maxiYatzy": "Maxi Yatzy",
       "yatzy": "Yatzy"
     }
+  },
+  "camera": {
+    "noPermissionTitle": "Kameraåtkomst behövs",
+    "noPermissionMessage": "Tillåt kameraåtkomst i Inställningar för att ta en bild på spelaren.",
+    "openSettings": "Öppna Inställningar",
+    "cancel": "Avbryt",
+    "notAvailable": "Det finns ingen kamera på den här enheten.",
+    "failed": "Det gick inte att ta en bild. Försök igen."
   }
 }

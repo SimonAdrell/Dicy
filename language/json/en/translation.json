@@ -76,5 +76,13 @@
       "maxiYatzy": "Maxi Yatzy",
       "yatzy": "Yatzy"
     }
+  },
+  "camera": {
+    "noPermissionTitle": "Camera access needed",
+    "noPermissionMessage": "Allow camera access in Settings to take a player picture.",
+    "openSettings": "Open Settings",
+    "cancel": "Cancel",
+    "notAvailable": "No camera is available on this device.",
+    "failed": "Couldn't take a picture. Please try again."
   }
 }
