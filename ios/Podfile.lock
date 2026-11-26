@@ -1964,7 +1964,7 @@ PODS:
     - ReactNativeDependencies
     - TOCropViewController (~> 2.8.0)
     - Yoga
-  - RNLocalize (3.7.2):
+  - RNLocalize (3.8.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2433,7 +2433,7 @@ SPEC CHECKSUMS:
   ReactCommon: b63ce798b898ed77c6cfdeb80b18080161f52ed5
   ReactNativeDependencies: a5164c3ebbe90d992022b5d9cbabbf770a6d7d05
   RNImageCropPicker: d720c15ca65ea60724cfc6578ad4d221f1446014
-  RNLocalize: 6b1ada941cb6116aace7d9f508a9fdd24d792ff8
+  RNLocalize: 2542cc9c916fa75364ad6e15741d008b785bc3bd
   RNScreens: f15a5bda1ddeff8575b8ce41d83885b67129f84b
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
