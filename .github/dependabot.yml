@@ -18,3 +18,21 @@ updates:
       # eslint ^8 || ^9. See closed #154.
       - dependency-name: "eslint"
         update-types: ["version-update:semver-major"]
+      # The CLI is versioned with React Native (RN 0.88 template: CLI 20.2.0,
+      # RN 0.89: CLI 21), and cli, cli-platform-android and cli-platform-ios
+      # must match each other. See closed #162.
+      - dependency-name: "@react-native-community/cli*"
+        update-types: ["version-update:semver-major"]
+
+  # Ruby gems for CocoaPods (iOS builds). Gradle is not listed: every Android
+  # dependency is unversioned and pinned by the React Native Gradle plugin.
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions used by .github/workflows (pinned to commit SHAs).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
